@@ -218,7 +218,7 @@ export default function HomePage() {
       <div className="bg-secondary text-[#211114] overflow-hidden py-4" aria-label="Our promises">
         <div className="marquee-wrapper">
           <span className="marquee-text text-lg font-semibold">
-            {['Free digital proof on WhatsApp', 'Tamil, English or both', 'Gold foil, emboss and laser cut', 'Printed in Sivakasi', 'Courier across India', 'Bulk prices from 100 cards'].map((t) => <span key={t} className="mx-8">✦ {t}</span>)}
+            {['Free digital proof on WhatsApp', 'Tamil, English or both', 'Gold foil, emboss and laser cut', 'Printed in Sivakasi', 'Courier across India', 'Bulk prices from 100 cards'].map((t) => <span key={t} className="mx-8 inline-flex items-center gap-3"><span className="w-2.5 h-2.5 rotate-45 bg-primary" aria-hidden="true" />{t}</span>)}
           </span>
         </div>
       </div>
