@@ -11,7 +11,7 @@ import { nextInvoiceNumber, renumberPreview, renumberApply, renumberUndo } from 
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
-const VERSION = '0.9.0';
+const VERSION = '0.9.1';
 const ALLOWED_ORIGINS = String(process.env.ALLOWED_ORIGINS || 'https://digitz.zarocrackers.com,http://localhost:5173,http://127.0.0.1:5173,http://127.0.0.1:3009,http://localhost:3009,http://127.0.0.1:4199')
   .split(',').map((s) => s.trim()).filter(Boolean);
 
@@ -20,9 +20,12 @@ app.set('trust proxy', true);
 app.use(express.json({ limit: '12mb' }));
 
 // CORS: only the shop's own origins may call the API from a browser.
+// Temporary website hosting on Vercel (zaro-digitz….vercel.app, including preview deployments).
+const VERCEL_ORIGIN = /^https:\/\/zaro-?digitz[\w-]*\.vercel\.app$/i;
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+  if (origin && (ALLOWED_ORIGINS.includes(origin) || VERCEL_ORIGIN.test(origin))) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Vary', 'Origin');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');

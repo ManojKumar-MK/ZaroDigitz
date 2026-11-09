@@ -1,0 +1,7 @@
+# Temporary Vercel hosting serves only the website. The data API (api/) runs on Hostinger,
+# and server.js / server/ / netlify/ are for Node hosting, not Vercel.
+api
+server
+server.js
+netlify
+docs
