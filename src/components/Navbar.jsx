@@ -41,7 +41,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50">
       {/* Offer Bar */}
-      <div className="text-white py-2 overflow-hidden" style={{ background: `linear-gradient(90deg, ${BRAND_COLORS.wine} 0%, ${BRAND_COLORS.maroon} 45%, #9C6B1E 75%, ${BRAND_COLORS.wine} 100%)` }}>
+      <div className="text-[#F3DFA2] py-2 overflow-hidden" style={{ backgroundColor: BRAND_COLORS.black }}>
         <div className="marquee-wrapper">
             <span className="marquee-text text-sm font-medium tracking-wide">
             {settings.announcement ? settings.announcement : (<>
@@ -52,7 +52,7 @@ export default function Navbar() {
       </div>
 
       {/* Main Nav */}
-      <nav className="transition-all duration-300 backdrop-blur" style={{ backgroundColor: BRAND_COLORS.wine }}>
+      <nav style={{ backgroundColor: BRAND_COLORS.wine }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -62,11 +62,11 @@ export default function Navbar() {
                 width="48"
                 height="48"
                 alt="ZARO Digitz logo"
-                className="w-12 h-12 object-cover rounded-full border-2 border-white/70 shadow-lg group-hover:scale-110 transition-transform"
+                className="w-12 h-12 object-cover rounded-full group-hover:scale-110 transition-transform"
               />
               <div>
                 <div className="font-display font-bold text-white text-lg leading-tight">ZARO Digitz</div>
-                <div className="text-xs font-medium tracking-widest uppercase" style={{ color: BRAND_COLORS.gold }}>Wedding Cards &amp; Printing</div>
+                <div className="text-[13px] font-medium" style={{ color: BRAND_COLORS.gold }}>Wedding cards &amp; printing</div>
               </div>
             </Link>
 
@@ -76,16 +76,16 @@ export default function Navbar() {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="relative px-4 py-2 text-sm font-medium transition-colors rounded-lg group"
+                  className="relative px-4 py-2 text-[15px] font-medium transition-colors group"
                   style={{
                     color: location.pathname === link.to ? BRAND_COLORS.gold : '#E9DCCB',
                   }}
                 >
                   {link.label}
                   {location.pathname === link.to && (
-                    <motion.div layoutId="nav-underline" className="absolute bottom-0 left-0 right-0 h-0.5 rounded" style={{ background: `linear-gradient(90deg, ${BRAND_COLORS.maroon}, ${BRAND_COLORS.gold})` }} />
+                    <motion.div layoutId="nav-underline" className="absolute bottom-0 left-4 right-4 h-[3px]" style={{ backgroundColor: BRAND_COLORS.gold }} />
                   )}
-                  <span className="absolute inset-0 rounded-lg bg-white/0 group-hover:bg-white/5 transition-colors" />
+                  <span className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors" />
                 </Link>
               ))}
             </div>
@@ -94,7 +94,7 @@ export default function Navbar() {
             <div className="flex items-center gap-3">
               <Link
                 to="/cards"
-                className="on-light hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-black transition-transform hover:scale-105"
+                className="on-light hidden sm:inline-flex items-center gap-2 h-11 px-5 text-[15px] font-semibold text-black transition-transform hover:-translate-y-0.5"
                 style={{ backgroundColor: BRAND_COLORS.gold }}
               >
                 <FiGrid size={16} /> Browse Designs
@@ -131,7 +131,7 @@ export default function Navbar() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden bg-dark/98 border-t border-white/10 overflow-hidden"
+              className="md:hidden bg-dark overflow-hidden"
             >
               <div className="px-4 py-4 space-y-1">
                 {navLinks.map(link => (

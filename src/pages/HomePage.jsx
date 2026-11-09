@@ -1,357 +1,331 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView } from 'framer-motion';
-import { FiArrowRight, FiChevronLeft, FiChevronRight, FiPhone } from 'react-icons/fi';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { FaWhatsapp } from 'react-icons/fa';
-import ProductCard from '../components/ProductCard';
-import HeroShowcase from '../components/HeroShowcase';
 import Seo from '../components/Seo';
-import CategoryGrid from '../components/CategoryGrid';
-import FaqSection from '../components/FaqSection';
-import { faqSchema, getFaqs, categoryPath } from '../seo/catalog';
+import { faqSchema, getFaqs, categoryPath, productPath } from '../seo/catalog';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
-import { getCatalogProducts } from '../data/products';
-import {
-  LuBadgeCheck, LuBadgeIndianRupee, LuFileCheck2, LuHeart, LuLanguages, LuMessageCircle, LuPalette,
-  LuPrinter, LuSparkles, LuStamp, LuTruck,
-} from 'react-icons/lu';
+import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
+import { qtyRules } from '../utils/pricing';
+import { googleBusinessLinks, BUSINESS } from '../seo/site';
 
-// Animated counter
-function Counter({ target, suffix = '' }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef();
-  const inView = useInView(ref, { once: true });
+/* Pictures of the world around the shop (open licences, credited in the footer). */
+const STAGE = [
+  { src: '/world/kolam.jpg', alt: 'Women drawing a kolam outside a temple in Chennai' },
+  { src: '/world/marigold.jpg', alt: 'A shrine decorated with marigold garlands' },
+  { src: '/world/nadaswaram.jpg', alt: 'Nadaswaram players at a Tamil wedding' },
+  { src: '/world/offset-press.jpg', alt: 'Offset printing presses in an Indian print works' },
+];
 
-  useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const duration = 2000;
-    const step = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setCount(target); clearInterval(timer); }
-      else setCount(Math.floor(start));
-    }, 16);
-    return () => clearInterval(timer);
-  }, [inView, target]);
+const rise = {
+  hidden: { opacity: 0, y: 24 },
+  show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 } }),
+};
+const Rise = ({ i = 0, className, children, as = 'div' }) => {
+  const M = motion[as];
+  return <M variants={rise} custom={i} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }} className={className}>{children}</M>;
+};
 
-  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
-}
+const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+const fmtDate = (v) => {
+  if (!v) return '';
+  const d = new Date(`${v}T00:00:00`);
+  return Number.isNaN(d.getTime()) ? v : d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+};
 
-// Soft floating hearts and sparkles behind the hero
-function FloatingPetals() {
+/** Stripe of ink and paper bars, the card's only ornament (and the page's). */
+function Stripe({ tall = 'h-12' }) {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-      {[...Array(7)].map((_, idx) => {
-        const Icon = idx % 2 === 0 ? LuHeart : LuSparkles;
-        return (
-          <motion.div
-            key={idx}
-            className="absolute"
-            style={{ left: `${8 + idx * 13}%`, top: `${12 + (idx % 3) * 28}%` }}
-            animate={{ y: [0, -18, 0], opacity: [0.25, 0.8, 0.25], rotate: [0, 8, 0] }}
-            transition={{ duration: 3 + idx * 0.5, repeat: Infinity, delay: idx * 0.35 }}
-          >
-            <Icon size={16 + idx * 4} className={idx % 2 === 0 ? 'text-secondary' : 'text-orange-200'} style={{ filter: 'blur(0.4px)' }} />
-          </motion.div>
-        );
-      })}
+    <div className={`flex ${tall} overflow-hidden`} aria-hidden="true">
+      {Array.from({ length: 40 }, (_, i) => <span key={i} className={`shrink-0 w-7 ${i % 2 ? 'bg-[#FBF5EC]' : 'bg-primary'}`} />)}
     </div>
   );
 }
 
-/** Horizontal product carousel with arrows and a "1 / 8" counter. */
-function ProductRail({ eyebrow, title, items, viewAll }) {
-  const ref = useRef(null);
-  const [index, setIndex] = useState(0);
-  if (!items.length) return null;
-  const scroll = (dir) => {
-    const el = ref.current;
-    if (!el) return;
-    const card = el.querySelector('[data-rail-item]');
-    el.scrollBy({ left: dir * ((card?.offsetWidth || 280) + 24), behavior: 'smooth' });
-  };
-  const onScroll = () => {
-    const el = ref.current;
-    const card = el?.querySelector('[data-rail-item]');
-    if (card) setIndex(Math.round(el.scrollLeft / (card.offsetWidth + 24)));
-  };
+/** Photographs that slowly change, like light shifting in the room. */
+function Stage({ className = '' }) {
+  const reduce = useReducedMotion();
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (reduce) return undefined;
+    const t = setInterval(() => { if (document.visibilityState === 'visible') setI((n) => (n + 1) % STAGE.length); }, 5600);
+    return () => clearInterval(t);
+  }, [reduce]);
   return (
-    <section className="py-16 bg-bg">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <span className="text-primary font-bold text-sm uppercase tracking-widest">{eyebrow}</span>
-            <h2 className="font-display font-black text-3xl sm:text-4xl text-dark mt-1">{title}</h2>
-          </motion.div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-500 tabular-nums">{Math.min(index + 1, items.length)} / {items.length}</span>
-            <button type="button" aria-label="Previous" onClick={() => scroll(-1)} className="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-primary hover:text-primary flex items-center justify-center transition-colors"><FiChevronLeft /></button>
-            <button type="button" aria-label="Next" onClick={() => scroll(1)} className="w-10 h-10 rounded-full border border-gray-200 bg-white hover:border-primary hover:text-primary flex items-center justify-center transition-colors"><FiChevronRight /></button>
-            {viewAll && <Link to={viewAll} className="hidden sm:inline-flex items-center gap-1.5 text-primary font-semibold hover:underline ml-2">View all <FiArrowRight /></Link>}
-          </div>
-        </div>
-        <div ref={ref} onScroll={onScroll} className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 scrollbar-none">
-          {items.map((product, i) => (
-            <motion.div
-              key={product.id ?? product.code}
-              data-rail-item
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: Math.min(i, 4) * 0.06 }}
-              className="snap-start shrink-0 w-[75%] sm:w-[45%] lg:w-[23%]"
-            >
-              <ProductCard product={product} />
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <div className={`relative overflow-hidden bg-dark ${className}`}>
+      <AnimatePresence initial={false}>
+        <motion.img
+          key={STAGE[i].src}
+          src={STAGE[i].src}
+          alt={STAGE[i].alt}
+          width="1600"
+          height="1200"
+          className="absolute inset-0 w-full h-full object-cover"
+          initial={{ opacity: 0, scale: 1.06 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ opacity: { duration: 1.6 }, scale: { duration: 7, ease: 'linear' } }}
+        />
+      </AnimatePresence>
+    </div>
   );
 }
-
-const TRADITIONS = [
-  { name: 'Hindu Wedding Cards', note: 'Ganesha, kalash & kolam' },
-  { name: 'Muslim Wedding Cards', note: 'Nikah & walima' },
-  { name: 'Christian Wedding Cards', note: 'Church weddings' },
-  { name: 'Scroll Invitations', note: 'Royal scrolls' },
-  { name: 'Acrylic Invitations', note: 'Clear & modern' },
-  { name: 'Foil & Metallic Cards', note: 'Gold that shines' },
-  { name: 'Premium Box Invitations', note: 'Keepsake boxes' },
-  { name: 'Budget Wedding Cards', note: 'Big guest lists' },
-];
-
-const BENEFITS = ['Free digital proof on WhatsApp', 'Tamil, English or both', 'Foil, emboss & laser-cut finishes', 'Courier across India', 'Printed in Sivakasi', 'Bulk prices from 100 cards'];
 
 export default function HomePage() {
   const { settings } = useShopSettings();
   const [catalogProducts, setCatalogProducts] = useState(() => getCatalogProducts());
+  // The live card: what the visitor types appears on the invitation as they type.
+  const [card, setCard] = useState({ bride: '', groom: '', date: '', town: '' });
+  const [tab, setTab] = useState('Wedding');
 
   useEffect(() => {
-    const syncProducts = () => setCatalogProducts(getCatalogProducts());
-    syncProducts();
-    window.addEventListener('digitz-catalog-updated', syncProducts);
-    return () => window.removeEventListener('digitz-catalog-updated', syncProducts);
+    const sync = () => setCatalogProducts(getCatalogProducts());
+    sync();
+    window.addEventListener('digitz-catalog-updated', sync);
+    return () => window.removeEventListener('digitz-catalog-updated', sync);
   }, []);
 
   const priced = useMemo(() => catalogProducts.filter((p) => p.price != null), [catalogProducts]);
-  // Favourites: newest designs first (highest sort order / id), up to 10.
-  const favourites = useMemo(() => [...priced].sort((a, b) => (b.sortOrder ?? b.id ?? 0) - (a.sortOrder ?? a.id ?? 0)).slice(0, 10), [priced]);
-  // Budget picks: the lowest per-card prices among wedding and function cards.
-  const budget = useMemo(() => priced.filter((p) => /card|invitation/i.test(p.category)).sort((a, b) => a.price - b.price).slice(0, 10), [priced]);
+  const groups = useMemo(() => {
+    const by = new Map();
+    priced.forEach((p) => { if (!by.has(p.category)) by.set(p.category, []); by.get(p.category).push(p); });
+    return [...by.entries()].map(([name, items]) => ({ name, items: items.sort((a, b) => a.price - b.price) }));
+  }, [priced]);
+  const tiles = useMemo(() => [...priced].sort((a, b) => (b.sortOrder ?? b.id ?? 0) - (a.sortOrder ?? a.id ?? 0)).slice(0, 8), [priced]);
 
-  const whyUs = [
-    { icon: LuPalette, title: 'Personalised for you', desc: 'Names, dates, venue, photos and family details set exactly the way you want.' },
-    { icon: LuFileCheck2, title: 'Proof before print', desc: 'We send a digital proof on WhatsApp. Nothing is printed until you approve it.' },
-    { icon: LuStamp, title: 'Rich finishes', desc: 'Gold and silver foil, embossing, laser cuts, ribbons and premium boards.' },
-    { icon: LuLanguages, title: 'Any language', desc: 'Tamil, English or both, and other languages on request.' },
-    { icon: LuBadgeIndianRupee, title: 'Clear bulk prices', desc: 'The price per card is shown on every design, and it drops as the quantity grows.' },
-    { icon: LuTruck, title: 'Delivered to you', desc: 'Courier across India, or collect from our shop in Sivakasi.' },
-  ];
+  const bride = card.bride.trim() || 'Priya';
+  const groom = card.groom.trim() || 'Arjun';
+  const when = fmtDate(card.date) || 'Sunday, 24 January 2027';
+  const town = card.town.trim() || 'Sivakasi';
+  const proofHref = shopWhatsAppLink(`Hi Zaro Digitz! Please send me a proof for our wedding card.\nNames: ${bride} & ${groom}\nDate: ${when}\nPlace: ${town}`, settings.whatsappNumber);
 
-  const steps = [
-    { icon: LuHeart, title: 'Choose a design', desc: 'Pick a card and the number of cards, and place your order online.' },
-    { icon: LuMessageCircle, title: 'Share your details', desc: 'We message you on WhatsApp for the names, dates, venue and wording, and send a proof.' },
-    { icon: LuPrinter, title: 'Approve & we print', desc: 'Ask for changes until it is right. Once you approve, we print, pack and dispatch.' },
-  ];
+  const showcase = {
+    Wedding: { title: 'Wedding cards', text: 'Hindu, Muslim and Christian invitations, from a simple single card to scrolls, acrylic and keepsake boxes, in Tamil, English or both.', to: '/cards', cat: 'Hindu Wedding Cards' },
+    Functions: { title: 'Function cards', text: 'Birthdays, house warmings, ear piercing, valaikappu and puberty ceremonies, each printed with your family names and the venue.', to: categoryPath('House Warming Invitations'), cat: 'Birthday Invitations' },
+    Printing: { title: 'Printing', text: 'Calendars, diaries, return gifts, visiting cards and bill books, printed on the same presses as our invitations.', to: categoryPath('Diaries & Calendars'), cat: 'Diaries & Calendars' },
+  }[tab];
+
+  const field = 'w-full bg-white/10 text-white placeholder-white/60 px-4 py-3 text-base focus:outline-none focus:bg-white/15 focus-visible:ring-2 focus-visible:ring-secondary';
 
   return (
-    <div>
+    <div className="bg-bg text-dark">
       <Seo path="/" jsonLd={faqSchema(getFaqs(settings))} />
 
-      {/* HERO */}
-      <section className="hero-bg min-h-[80vh] flex items-center relative overflow-hidden">
-        <FloatingPetals />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-orange-300/10 rounded-full blur-3xl" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 relative z-10 xl:grid xl:grid-cols-[minmax(0,1fr)_460px] xl:gap-10 xl:items-center">
-          <div className="max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 text-secondary text-sm px-4 py-2 rounded-full mb-6"
-            >
-              <LuSparkles />
-              <span>Zaro Digitz · Wedding Cards &amp; Printing · Sivakasi</span>
-            </motion.div>
-
-            <motion.h1 initial={false} className="font-display text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-tight mb-6 text-shadow">
-              Invitations as{' '}
-              <span className="gradient-text">Beautiful</span>
-              <br />as Your Day
+      {/* HERO: the invitation card, filled in by the visitor, beside the room */}
+      <section className="bg-[#5A1420] p-3 sm:p-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:min-h-[calc(100svh-104px)]">
+        <div className="bg-[#FBF5EC] flex flex-col overflow-hidden">
+          <Stripe />
+          <div className="flex-1 flex flex-col items-center text-center px-6 sm:px-12 py-10 lg:py-12">
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} className="text-primary text-3xl leading-none" lang="ta" aria-hidden="true">உ</motion.p>
+            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="font-display font-bold tracking-tight text-primary text-[clamp(40px,4.6vw,64px)] leading-[1.02] mt-5 max-w-[14ch]">
+              Your names, printed in Sivakasi
             </motion.h1>
-
-            <motion.p initial={false} className="text-orange-50/90 text-lg sm:text-xl leading-relaxed mb-10 max-w-2xl">
-              Wedding and function cards designed with your names and wording, approved by you on WhatsApp, and printed with care in Sivakasi.
+            <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-lg text-dark mt-6 max-w-[40ch]">
+              Wedding and function invitations from Zaro Digitz. Choose a design, approve a proof on WhatsApp, and we print it.
             </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="flex flex-wrap gap-4"
-            >
-              <Link to="/cards" className="on-light inline-flex items-center gap-2 bg-secondary hover:bg-amber-400 text-dark font-bold px-8 py-4 rounded-2xl text-lg transition-all hover:shadow-2xl hover:shadow-amber-500/30 hover:scale-105">
-                Browse Designs <FiArrowRight />
-              </Link>
-              <a href={shopWhatsAppLink('Hi Zaro Digitz! I am looking for wedding cards. Can you help me choose a design?', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/30 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-all">
-                <FaWhatsapp /> Talk to Us
-              </a>
+            {/* The card itself, updating as the visitor types */}
+            <motion.div initial={{ opacity: 0, y: 24, rotate: -1.5 }} animate={{ opacity: 1, y: 0, rotate: -1.5 }} transition={{ duration: 0.8, delay: 0.3 }} whileHover={{ rotate: 0, y: -4 }} className="mt-10 w-full max-w-[340px] aspect-[5/7] bg-primary text-[#F3DFA2] p-3" aria-live="polite" aria-label="Your invitation preview">
+              <div className="h-full ring-2 ring-[#C9A032] ring-inset flex flex-col items-center justify-between py-8 px-5">
+                <div>
+                  <p className="text-xl" lang="ta" aria-hidden="true">உ</p>
+                  <p className="text-sm mt-2" lang="ta">திருமண அழைப்பிதழ்</p>
+                  <p className="text-sm text-[#EAC96E]">Wedding invitation</p>
+                </div>
+                <div className="w-full">
+                  <AnimatePresence mode="wait">
+                    <motion.p key={bride} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="font-display font-bold text-3xl text-white break-words">{bride}</motion.p>
+                  </AnimatePresence>
+                  <p className="text-[#C9A032] text-lg my-1">&amp;</p>
+                  <AnimatePresence mode="wait">
+                    <motion.p key={groom} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="font-display font-bold text-3xl text-white break-words">{groom}</motion.p>
+                  </AnimatePresence>
+                </div>
+                <div className="text-sm">
+                  <p className="text-white">{when}</p>
+                  <p>{town}</p>
+                </div>
+              </div>
             </motion.div>
           </div>
-          <div className="hidden xl:block">
-            <HeroShowcase products={catalogProducts} />
-          </div>
         </div>
-      </section>
 
-      {/* BENEFITS MARQUEE */}
-      <section className="bg-dark text-secondary py-3 overflow-hidden" aria-label="Why order from us">
-        <div className="marquee-wrapper">
-          <span className="marquee-text text-sm font-medium tracking-wide">
-            {[...BENEFITS, ...BENEFITS].map((b, i) => (
-              <span key={i} className="inline-flex items-center gap-2 mx-6"><LuBadgeCheck aria-hidden="true" /> {b}</span>
-            ))}
-          </span>
-        </div>
-      </section>
-
-      <ProductRail eyebrow="Customer favourites" title="Designs people love" items={favourites} viewAll="/cards" />
-
-      {/* BROWSE BY TRADITION */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-10">
-            <span className="text-primary font-bold text-sm uppercase tracking-widest">Browse</span>
-            <h2 className="font-display font-black text-4xl sm:text-5xl text-dark mt-2">
-              By Tradition &amp; <span className="gradient-text">Style</span>
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {TRADITIONS.map((t, i) => (
-              <motion.div key={t.name} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} whileHover={{ y: -6 }}>
-                <Link to={categoryPath(t.name)} className="block h-full rounded-2xl p-5 bg-gradient-to-br from-orange-50 to-amber-50 border border-amber-100 hover:border-primary/30 hover:shadow-xl transition-all group">
-                  <div className="w-10 h-10 rounded-full bg-primary text-secondary flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"><LuHeart aria-hidden="true" /></div>
-                  <div className="font-display font-bold text-dark leading-tight">{t.name}</div>
-                  <div className="text-xs text-gray-500 mt-1">{t.note}</div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section className="py-16 bg-gradient-to-br from-dark to-orange-950">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {[
-              { num: catalogProducts.length, suffix: '+', label: 'Card designs', icon: LuPalette },
-              { num: 18, suffix: '', label: 'Occasions & categories', icon: LuSparkles },
-              { num: 100, suffix: '', label: 'Cards minimum order', icon: LuBadgeIndianRupee },
-              { num: 7, suffix: ' days', label: 'Typical printing time', icon: LuPrinter },
-            ].map((stat, i) => (
-              <motion.div key={stat.label} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                <stat.icon size={30} className="mx-auto mb-3 text-secondary" aria-hidden="true" />
-                <div className="font-display font-black text-4xl sm:text-5xl gradient-text">
-                  <Counter target={stat.num} suffix={stat.suffix} />
-                </div>
-                <div className="text-orange-100/70 mt-2">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* WHY US */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <span className="text-primary font-bold text-sm uppercase tracking-widest">Why Zaro Digitz</span>
-            <h2 className="font-display font-black text-4xl sm:text-5xl text-dark mt-2">
-              Made with <span className="gradient-text">Care</span>
-            </h2>
-          </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {whyUs.map((item, i) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                whileHover={{ y: -5 }}
-                className="p-6 rounded-2xl border-2 border-transparent hover:border-primary/20 bg-bg hover:bg-white hover:shadow-xl transition-all duration-300 group"
-              >
-                <div className="w-12 h-12 mb-4 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-secondary transition-colors"><item.icon size={24} aria-hidden="true" /></div>
-                <h3 className="font-display font-bold text-xl text-dark mb-2">{item.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <ProductRail eyebrow="Budget friendly" title="Beautiful cards, gentle prices" items={budget} viewAll={categoryPath('Budget Wedding Cards')} />
-
-      {/* HOW IT WORKS */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <span className="text-primary font-bold text-sm uppercase tracking-widest">How it works</span>
-            <h2 className="font-display font-black text-4xl sm:text-5xl text-dark mt-2">How Your Card <span className="gradient-text">Comes to Life</span></h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6 relative">
-            {steps.map((s, i) => (
-              <motion.div key={s.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12 }} className="relative text-center p-8 rounded-3xl bg-bg">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-secondary text-dark font-black flex items-center justify-center shadow">{i + 1}</div>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-secondary flex items-center justify-center"><s.icon size={30} aria-hidden="true" /></div>
-                <h3 className="font-display font-bold text-xl text-dark mb-2">{s.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{s.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ALL CATEGORIES */}
-      <section className="py-20 bg-bg">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <span className="text-primary font-bold text-sm uppercase tracking-widest">Every occasion</span>
-            <h2 className="font-display font-black text-4xl sm:text-5xl text-dark mt-2">
-              Cards &amp; Printing for <span className="gradient-text">Every Function</span>
-            </h2>
-            <p className="text-gray-500 mt-4 max-w-xl mx-auto">Weddings, birthdays, house warmings, baby showers and more, plus calendars, return gifts and business printing.</p>
-          </div>
-          <CategoryGrid products={catalogProducts} />
-        </div>
-      </section>
-
-      <FaqSection />
-
-      {/* CTA BANNER */}
-      <section className="py-16 bg-gradient-to-r from-primary via-orange-600 to-amber-600">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <h2 className="font-display font-black text-4xl sm:text-5xl text-white mb-4 text-shadow">Let&apos;s Make Your Invitation Together</h2>
-            <p className="text-white/90 text-lg mb-8">Tell us your event date and the style you like. We will suggest designs and share prices on WhatsApp.</p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link to="/cards" className="inline-flex items-center gap-2 bg-white text-primary font-black px-8 py-4 rounded-2xl text-lg hover:scale-105 transition-transform shadow-xl">
-                Browse Designs <FiArrowRight />
-              </Link>
-              <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like to order invitation cards. My event date is:', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors">
-                <FaWhatsapp /> WhatsApp Us
-              </a>
-              <a href="tel:+917010935230" className="inline-flex items-center gap-2 bg-dark hover:bg-black text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors">
-                <FiPhone /> Call Now
-              </a>
+        <div className="mt-3 lg:mt-0 flex flex-col gap-3">
+          <Stage className="h-[48svh] lg:h-auto lg:flex-1" />
+          {/* The live thing: write your own card */}
+          <form className="bg-[#2C0A10] text-white p-6 sm:p-8" onSubmit={(e) => { e.preventDefault(); window.open(proofHref, '_blank', 'noopener'); }}>
+            <h2 className="font-display font-bold text-2xl">Try your names on the card</h2>
+            <div className="grid grid-cols-2 gap-3 mt-5">
+              <label className="block"><span className="sr-only">Bride&apos;s name</span><input className={field} maxLength={24} placeholder="Bride's name" value={card.bride} onChange={(e) => setCard({ ...card, bride: e.target.value })} /></label>
+              <label className="block"><span className="sr-only">Groom&apos;s name</span><input className={field} maxLength={24} placeholder="Groom's name" value={card.groom} onChange={(e) => setCard({ ...card, groom: e.target.value })} /></label>
+              <label className="block"><span className="sr-only">Wedding date</span><input type="date" className={field} value={card.date} onChange={(e) => setCard({ ...card, date: e.target.value })} /></label>
+              <label className="block"><span className="sr-only">Town</span><input className={field} maxLength={30} placeholder="Town" value={card.town} onChange={(e) => setCard({ ...card, town: e.target.value })} /></label>
             </div>
-          </motion.div>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <Link to="/cards" className="on-light inline-flex items-center h-14 px-7 bg-secondary text-dark font-bold transition-transform hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">Choose a design</Link>
+              <button type="submit" className="inline-flex items-center gap-2 h-14 px-6 bg-white/10 hover:bg-white/20 font-semibold transition-colors"><FaWhatsapp /> Get this as a proof</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      {/* SHOWCASE: what we print, one plate at a time */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-40 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <Rise className="relative aspect-square overflow-hidden bg-dark">
+          <motion.img src="/world/letterpress.jpg" alt="A letterpress print on paper" width="1600" height="1600" loading="lazy" className="w-full h-full object-cover" whileHover={{ scale: 1.04 }} transition={{ duration: 0.8 }} />
+        </Rise>
+        <div className="flex flex-col gap-10 lg:min-h-[520px] justify-between">
+          <Rise i={1} as="div">
+            <div role="tablist" aria-label="What we print" className="flex gap-6 text-lg">
+              {['Wedding', 'Functions', 'Printing'].map((t) => (
+                <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={`pb-1 font-semibold transition-colors ${tab === t ? 'text-primary border-b-4 border-secondary' : 'text-dark/70 hover:text-dark'}`}>{t}</button>
+              ))}
+            </div>
+          </Rise>
+          <AnimatePresence mode="wait">
+            <motion.div key={tab} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}>
+              <h2 className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">{showcase.title}</h2>
+              <p className="text-lg mt-6 max-w-[38ch]">{showcase.text}</p>
+            </motion.div>
+          </AnimatePresence>
+          <Rise i={2} className="grid grid-cols-2">
+            <Link to={showcase.to} className="h-[72px] px-5 flex items-center bg-primary text-white font-semibold hover:bg-[#5A1420] transition-colors">See the designs</Link>
+            <Link to={categoryPath(showcase.cat)} className="h-[72px] px-5 flex items-center bg-[#F1E3CF] text-dark font-semibold hover:bg-[#EAD6BC] transition-colors">{showcase.cat}</Link>
+          </Rise>
+        </div>
+      </section>
+
+      {/* PRICES: one giant word, then every category as a bar that opens */}
+      <section className="bg-[#F1E3CF] py-24 lg:py-40">
+        <div className="max-w-[640px] mx-auto px-4 [container-type:inline-size]">
+          <Rise as="h2" className="font-display font-bold uppercase text-primary leading-[0.8] tracking-tight text-[25cqw]">Prices</Rise>
+          <Rise i={1} as="p" className="text-lg mt-6">Price per card, printing of your names and wording included. Bigger orders cost less per card; each design shows its bulk price.</Rise>
+          <div className="mt-8 flex flex-col gap-1.5">
+            {groups.map((g, gi) => (
+              <Rise key={g.name} i={Math.min(gi, 6)}>
+                <details open={gi === 0} className="group bg-[#FBF5EC]">
+                  <summary className="h-14 px-5 flex items-center justify-between cursor-pointer list-none font-semibold hover:bg-white transition-colors">
+                    <span>{g.name}</span>
+                    <span className="text-primary text-2xl leading-none transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                  </summary>
+                  <ul className="px-5 pb-5 pt-1 space-y-3.5">
+                    {g.items.map((p) => (
+                      <li key={p.code}>
+                        <Link to={productPath(p)} className="flex justify-between gap-4 hover:text-primary transition-colors">
+                          <span>{p.name}</span>
+                          <span className="tabular-nums font-semibold whitespace-nowrap">{money(p.price)} <span className="font-normal text-dark/70">/ {String(p.per || 'card').replace(/^1\s+/, '')}</span></span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </Rise>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS: printed as a receipt slip */}
+      <section className="bg-primary text-white py-24 lg:py-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-12 gap-12">
+          <div className="lg:col-span-5">
+            <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(40px,4.4vw,68px)] leading-[1.02]">From your phone to the press</Rise>
+            <Rise i={1} as="p" className="text-lg mt-6 max-w-[30ch] text-white/90">Nothing is printed until you have seen your own card, with your own names, and said yes.</Rise>
+          </div>
+          <Rise i={2} className="lg:col-start-7 lg:col-span-5 w-full max-w-[480px] bg-[#FBF5EC] text-dark p-7 pb-16 [clip-path:polygon(0_0,100%_0,100%_calc(100%-14px),95%_100%,90%_calc(100%-14px),85%_100%,80%_calc(100%-14px),75%_100%,70%_calc(100%-14px),65%_100%,60%_calc(100%-14px),55%_100%,50%_calc(100%-14px),45%_100%,40%_calc(100%-14px),35%_100%,30%_calc(100%-14px),25%_100%,20%_calc(100%-14px),15%_100%,10%_calc(100%-14px),5%_100%,0_calc(100%-14px))]">
+            <h3 className="font-display font-bold text-2xl">Zaro Digitz, Sivakasi</h3>
+            {[
+              ['Today', [['Choose a design and quantity', '5 min'], ['Place the order online', '2 min']]],
+              ['Within a day', [['We message you on WhatsApp', 'names, date, venue'], ['Your digital proof arrives', 'free changes']]],
+              ['The week after', [['Printed on our Sivakasi presses', '5–7 days'], ['Packed flat and couriered', 'across India']]],
+            ].map(([head, rows]) => (
+              <div key={head} className="mt-7">
+                <p className="font-bold">{head}</p>
+                {rows.map(([a, b]) => (
+                  <div key={a} className="flex items-baseline gap-2 mt-2.5 tabular-nums">
+                    <span>{a}</span>
+                    <span className="flex-1 border-b-[3px] border-dotted border-dark/40 translate-y-[-4px]" aria-hidden="true" />
+                    <span className="text-right">{b}</span>
+                  </div>
+                ))}
+              </div>
+            ))}
+            <div className="mt-8 -mx-7 h-11 px-7 bg-dark text-[#FBF5EC] flex items-center justify-between font-semibold">
+              <span>Your cards, in your hands</span><span className="tabular-nums">about a week</span>
+            </div>
+          </Rise>
+        </div>
+      </section>
+
+      {/* DESIGNS: each one a print with its swing tag */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-40">
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
+          <Rise as="h2" className="font-display font-bold tracking-tight text-[32px] leading-tight">Designs to start from</Rise>
+          <Rise i={1}><Link to="/cards" className="text-lg font-semibold text-primary underline underline-offset-4 decoration-2 hover:decoration-secondary">All designs</Link></Rise>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-7">
+          {tiles.map((p, i) => {
+            const pair = [['bg-primary', 'text-white'], ['bg-[#C9A032]', 'text-dark'], ['bg-dark', 'text-[#F3DFA2]'], ['bg-[#F1E3CF]', 'text-dark']][i % 4];
+            return (
+              <Rise key={p.code} i={i % 4}>
+                <Link to={productPath(p)} className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+                  <div className="aspect-[4/5] overflow-hidden bg-[#F1E3CF]">
+                    <img src={p.image || PLACEHOLDER_IMAGE} alt={p.name} width="400" height="500" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }} />
+                  </div>
+                  <div className={`${pair[0]} ${pair[1]} p-3 min-h-[92px] text-[13px] tabular-nums flex flex-col justify-between`}>
+                    <div className="flex justify-between font-semibold text-sm"><span>{money(p.price)}</span><span>min {qtyRules(p).min}</span><span className="hidden sm:inline">{p.size || '—'}</span></div>
+                    <p className="font-semibold text-base leading-snug group-hover:underline">{p.name}</p>
+                    <div className="flex justify-between opacity-90"><span>{p.code}</span><span className="hidden sm:inline">{p.category.replace(/ (Cards|Invitations)$/, '')}</span></div>
+                  </div>
+                </Link>
+              </Rise>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* FAQ beside the photographs */}
+      <section id="faq" className="bg-[#2C0A10] text-white py-24 lg:pt-0 lg:pb-40 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-12 gap-12">
+          <div className="lg:col-span-5 lg:pt-40">
+            <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(30px,3vw,44px)] leading-tight">Before you order</Rise>
+            <Rise i={1} className="mt-6 space-y-1 text-lg text-white/90">
+              <p>{BUSINESS.address.streetAddress}, Sivakasi {BUSINESS.address.postalCode}</p>
+              <p>Monday to Saturday, 9 am to 10 pm</p>
+              <p>Call or WhatsApp <a href="tel:+917010935230" className="underline underline-offset-4 hover:text-secondary">+91 70109 35230</a></p>
+            </Rise>
+            <div className="mt-10 space-y-7">
+              {getFaqs(settings).slice(0, 6).map((f, i) => (
+                <Rise key={f.q} i={Math.min(i, 5)}>
+                  <details className="group">
+                    <summary className="flex items-center justify-between gap-4 cursor-pointer list-none text-xl font-semibold min-h-[44px] hover:text-secondary transition-colors">
+                      {f.q}
+                      <span className="w-3 h-3 border-r-2 border-b-2 border-current rotate-45 group-open:-rotate-[135deg] transition-transform shrink-0" aria-hidden="true" />
+                    </summary>
+                    <p className="text-[17px] text-white/85 mt-3 max-w-[52ch]">{f.a}</p>
+                  </details>
+                </Rise>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-6 mt-12">
+              <a href={shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="on-light inline-flex items-center gap-2 h-14 px-7 bg-secondary text-dark font-bold transition-transform hover:-translate-y-0.5"><FaWhatsapp /> Ask us on WhatsApp</a>
+              <a href={googleBusinessLinks(settings).directions} target="_blank" rel="noopener noreferrer" className="text-lg font-semibold underline underline-offset-4 hover:text-secondary">Directions to the shop</a>
+            </div>
+          </div>
+          <div className="lg:col-start-7 lg:col-span-6 relative">
+            <Rise className="aspect-[3/4] overflow-hidden"><img src="/world/nadaswaram.jpg" alt="Nadaswaram players at a Tamil wedding" width="1200" height="1600" loading="lazy" className="w-full h-full object-cover" /></Rise>
+            <Rise i={2} className="absolute -bottom-10 -left-6 lg:-left-10 w-[38%] aspect-square overflow-hidden ring-[10px] ring-[#2C0A10]"><img src="/world/sivakasi.jpg" alt="Sivakasi railway station" width="600" height="600" loading="lazy" className="w-full h-full object-cover" /></Rise>
+          </div>
+        </div>
+      </section>
+
+      {/* CLOSE: the idea again, inverted */}
+      <section className="bg-dark text-[#FBF5EC] min-h-[80svh] lg:min-h-[90svh] flex flex-col justify-between px-4 sm:px-8 py-20">
+        <Rise as="p" className="font-display font-bold tracking-tight leading-[0.92] text-[15vw] lg:text-[10vw] max-w-[12ch]" aria-hidden="true">Your names, on paper</Rise>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mt-16">
+          <Rise i={1} as="p" className="text-xl max-w-[34ch]">Pick a design today and your proof can be on your phone tomorrow.</Rise>
+          <Rise i={2}><Link to="/cards" className="on-light w-full lg:w-auto inline-flex items-center justify-center h-14 px-10 bg-secondary text-dark font-bold text-lg transition-transform hover:-translate-y-0.5">Choose a design</Link></Rise>
         </div>
       </section>
     </div>

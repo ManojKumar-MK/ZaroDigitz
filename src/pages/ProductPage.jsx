@@ -23,15 +23,15 @@ const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDi
 function InfoSection({ title, children, open: startOpen = false }) {
   const [open, setOpen] = useState(startOpen);
   return (
-    <div className="border-b border-gray-100">
-      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="w-full flex items-center justify-between py-4 text-left font-display font-bold text-dark">
+    <div className="bg-[#F1E3CF] mb-1.5">
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="w-full flex items-center justify-between py-4 px-5 text-left font-display font-bold text-dark hover:bg-[#EAD6BC] transition-colors">
         {title}
         <FiChevronDown className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-            <div className="pb-4 text-sm text-gray-600 leading-relaxed space-y-2">{children}</div>
+            <div className="px-5 pb-5 text-base text-dark leading-relaxed space-y-2">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -165,7 +165,7 @@ export default function ProductPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-white rounded-3xl shadow-sm border border-gray-100 p-5 sm:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-[#FBF5EC] p-5 sm:p-8">
           {/* Gallery */}
           <div>
             <button type="button" onClick={() => setZoom(true)} aria-label="Open larger image" className="w-full rounded-2xl bg-orange-50/60 border border-gray-100 flex items-center justify-center p-4 min-h-[320px] cursor-zoom-in">
@@ -268,7 +268,7 @@ export default function ProductPage() {
               </dl>
             )}
 
-            <div className="mt-6 border-t border-gray-100">
+            <div className="mt-8">
               <InfoSection title="Description" open>
                 <p>{product.description || meta.longDescription}</p>
               </InfoSection>
@@ -318,9 +318,9 @@ export default function ProductPage() {
         )}
       </div>
 
-      {/* Sticky add-to-cart bar on phones */}
+      {/* Sticky add-to-cart bar on phones: it floats over the page, so it may cast a shadow. taste-skill-ignore */}
       {offer != null && (
-        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-gray-200 px-4 py-3 flex items-center gap-3">
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#FBF5EC] px-4 py-3 flex items-center gap-3 shadow-[0_-8px_24px_rgba(44,10,16,0.12)]">
           <div className="min-w-0 flex-1">
             <div className="text-xs text-gray-500 truncate">{product.name}</div>
             <div className="font-bold text-primary">{money(unitPrice)} <span className="text-xs text-gray-400 font-normal">× {quantity}</span></div>
