@@ -37,7 +37,7 @@ export default function Footer() {
               <img src="/zaro-logo-112.webp" width="52" height="52" loading="lazy" alt="" className="w-[52px] h-[52px] object-contain" />
               <span className="leading-tight">
                 <span className="block font-display font-bold text-xl text-[rgb(var(--accent-light-rgb))]">ZARO Digitz</span>
-                <span className="block text-sm text-[#FBF5EC]/75" lang="ta">ஷாரோ டிஜிட்ஸ்</span>
+                <span className="block text-sm text-[#FBF5EC]/75">Digital Color Prints</span>
               </span>
             </Link>
             <p className="mt-5 text-[15px] leading-relaxed text-[#FBF5EC]/85 max-w-[36ch]">Digital colour printing and wedding invitations from Sivakasi. Every order gets a proof on WhatsApp before we print.</p>

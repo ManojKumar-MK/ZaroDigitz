@@ -149,7 +149,7 @@ export default function Navbar() {
               <img src="/zaro-logo-112.webp" width="52" height="52" alt="" className="w-12 h-12 sm:w-[52px] sm:h-[52px] object-contain transition-transform duration-500 group-hover:scale-105" />
               <span className="leading-tight">
                 <span className="block font-display font-bold text-lg sm:text-xl text-brand whitespace-nowrap">ZARO Digitz</span>
-                <span className="hidden sm:block xl:hidden 2xl:block text-[13px] mt-0.5 whitespace-nowrap">Digital colour printing · Sivakasi</span>
+                <span className="hidden sm:block xl:hidden 2xl:block text-[13px] mt-0.5 whitespace-nowrap">Digital Color Prints</span>
               </span>
             </Link>
           </div>

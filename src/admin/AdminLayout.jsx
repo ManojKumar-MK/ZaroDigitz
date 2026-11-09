@@ -30,7 +30,7 @@ export default function AdminLayout({ user }) {
         <img src="/zaro-logo-112.webp" alt="" className="w-11 h-11 object-contain" />
         <div className="min-w-0">
           <div className="font-display font-bold text-lg leading-tight text-[rgb(var(--accent-light-rgb))]">ZARO Digitz</div>
-          <div className="text-[13px] text-[#FBF5EC]/70">Print studio</div>
+          <div className="text-[13px] text-[#FBF5EC]/70">Digital Color Prints</div>
         </div>
       </div>
 

@@ -127,7 +127,7 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
-  doc.text('Digital colour printing · Sivakasi', pageWidth - 40, 70, { align: 'right' });
+  doc.text('Digital Color Prints', pageWidth - 40, 70, { align: 'right' });
 
   doc.setTextColor(30, 30, 30);
 

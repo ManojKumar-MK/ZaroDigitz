@@ -18,13 +18,49 @@ import { PhoneProofSketch, PrinterSketch, NotebookSketch, InviteCardSketch, Enve
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
 
 /* The things we make, drawn: the hero's stage cycles through them. */
-const STAGE = [
-  { Sketch: CalendarSketch, caption: 'Desk and wall calendars with your name' },
-  { Sketch: NotebookSketch, caption: 'Diaries and notebooks with your logo' },
-  { Sketch: GiftBoxSketch, caption: 'New Year gift sets for your customers' },
-  { Sketch: InviteCardSketch, caption: 'Wedding cards, foiled in gold' },
-  { Sketch: PrinterSketch, caption: 'Printed in our studio, up to 13 × 19 in' },
-];
+const STAGES = {
+  calendar: [
+    { Sketch: CalendarSketch, caption: 'Desk calendars with your name on every month' },
+    { Sketch: CalendarSketch, caption: 'Wall calendars, 12 sheets or single page' },
+    { Sketch: GiftBoxSketch, caption: 'New Year gift sets for your customers' },
+    { Sketch: PrinterSketch, caption: 'Printed in our studio, up to 13 × 19 in' },
+  ],
+  diary: [
+    { Sketch: NotebookSketch, caption: 'Executive diaries with your name embossed' },
+    { Sketch: NotebookSketch, caption: 'Pocket diaries with your logo on the cover' },
+    { Sketch: GiftBoxSketch, caption: 'Diary, calendar and pen gift sets' },
+    { Sketch: PrinterSketch, caption: 'Printed and bound in Sivakasi' },
+  ],
+  wedding: [
+    { Sketch: InviteCardSketch, caption: 'Folded cards with a kalash, foiled in gold' },
+    { Sketch: EnvelopeSketch, caption: 'Envelopes closed with a wax seal' },
+    { Sketch: ScrollSketch, caption: 'Royal scrolls with a silk tassel' },
+    { Sketch: GiftBoxSketch, caption: 'Keepsake boxes tied with ribbon' },
+    { Sketch: AcrylicSketch, caption: 'Clear acrylic with a mandala' },
+  ],
+};
+
+/** What the hero says for each tab (Calendar, Diary, Wedding card). */
+const HERO = {
+  calendar: {
+    eyebrow: 'New Year 2027 · now taking orders',
+    title: '2027 calendars with your name',
+    text: 'Wall and desk calendars for shops, schools and companies, with your name and phone on every month. Printed in our Sivakasi studio.',
+    cta: ['See calendars', 'Diaries & Calendars'],
+  },
+  diary: {
+    eyebrow: 'New Year 2027 · corporate gifting',
+    title: 'Diaries your customers keep all year',
+    text: 'Executive and pocket diaries with your company name or logo on the cover, dated for 2027, and gift sets with a calendar and pen.',
+    cta: ['See diaries', 'Diaries & Calendars'],
+  },
+  wedding: {
+    eyebrow: 'Wedding and function cards',
+    title: 'Invitations as beautiful as your day',
+    text: 'Hindu, Muslim and Christian wedding cards in Tamil, English or both. See your names on the card now; approve a proof before we print.',
+    cta: ['Choose a design', null],
+  },
+};
 
 const rise = {
   hidden: { opacity: 0, y: 24 },
@@ -46,21 +82,22 @@ function Stripe({ tall = 'h-12' }) {
 }
 
 /** The stage beside the card: one of our pieces draws itself, holds, then gives way to the next. */
-function Stage({ className = '' }) {
+function Stage({ mode = 'calendar', className = '' }) {
+  const STAGE = STAGES[mode] || STAGES.calendar;
   const reduce = useReducedMotion();
   const [i, setI] = useState(0);
   useEffect(() => {
     if (reduce) return undefined;
     const t = setInterval(() => { if (document.visibilityState === 'visible') setI((n) => (n + 1) % STAGE.length); }, 5200);
     return () => clearInterval(t);
-  }, [reduce]);
-  const { Sketch, caption } = STAGE[i];
+  }, [reduce, STAGE.length]);
+  const { Sketch, caption } = STAGE[i % STAGE.length];
   return (
     <div className={`relative overflow-hidden bg-paper2 text-brand flex flex-col ${className}`}>
       <ThoranamSketch className="w-full h-auto shrink-0" count={10} />
       <div className="relative flex-1 min-h-[260px]">
         <AnimatePresence mode="wait">
-          <motion.div key={i} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.02 }} transition={{ duration: 0.6 }} className="absolute inset-0 flex flex-col items-center justify-center p-6">
+          <motion.div key={`${mode}-${i}`} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.02 }} transition={{ duration: 0.6 }} className="absolute inset-0 flex flex-col items-center justify-center p-6">
             <Sketch className="w-full max-w-[340px] h-auto flex-1 min-h-0" />
             <p className="text-ink text-lg font-medium mt-3 text-center">{caption}</p>
           </motion.div>
@@ -68,7 +105,7 @@ function Stage({ className = '' }) {
       </div>
       <div className="flex justify-center gap-2 pb-5" role="tablist" aria-label="Pieces we make">
         {STAGE.map((st, n) => (
-          <button key={st.caption} type="button" role="tab" aria-selected={n === i} aria-label={st.caption} onClick={() => setI(n)} className={`h-2.5 transition-[width,background-color] ${n === i ? 'w-8 bg-primary' : 'w-2.5 bg-ink/30 hover:bg-ink/50'}`} />
+          <button key={`${st.caption}-${n}`} type="button" role="tab" aria-selected={n === i % STAGE.length} aria-label={st.caption} onClick={() => setI(n)} className={`h-2.5 transition-[width,background-color] ${n === i % STAGE.length ? 'w-8 bg-primary' : 'w-2.5 bg-ink/30 hover:bg-ink/50'}`} />
         ))}
       </div>
     </div>
@@ -273,13 +310,13 @@ export default function HomePage() {
         <div className="bg-paper flex flex-col overflow-hidden">
           <Stripe />
           <div className="flex-1 flex flex-col items-center text-center px-6 sm:px-12 py-10 lg:py-12">
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} className="text-brand font-semibold">New Year 2027 · now taking orders</motion.p>
-            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="font-display font-bold tracking-tight text-brand text-[clamp(38px,4.4vw,62px)] leading-[1.04] mt-4 max-w-[15ch]">
-              2027 calendars and diaries, with your name
-            </motion.h1>
-            <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-lg text-ink mt-5 max-w-[42ch]">
-              Wall and desk calendars, executive diaries and gift sets for shops, schools and companies, printed in our Sivakasi studio.
-            </motion.p>
+            <AnimatePresence mode="wait">
+              <motion.div key={mode} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }} className="flex flex-col items-center">
+                <p className="text-brand font-semibold">{HERO[mode].eyebrow}</p>
+                <h1 className="font-display font-bold tracking-tight text-brand text-[clamp(38px,4.4vw,62px)] leading-[1.04] mt-4 max-w-[15ch]">{HERO[mode].title}</h1>
+                <p className="text-lg text-ink mt-5 max-w-[42ch]">{HERO[mode].text}</p>
+              </motion.div>
+            </AnimatePresence>
             <div className="mt-8 w-full flex justify-center">
               <LiveCard mode={mode} values={live} />
             </div>
@@ -287,7 +324,7 @@ export default function HomePage() {
         </div>
 
         <div className="mt-3 lg:mt-0 flex flex-col gap-3">
-          <Stage className="h-[48svh] lg:h-auto lg:flex-1" />
+          <Stage key={mode} mode={mode} className="h-[48svh] lg:h-auto lg:flex-1" />
           {/* The live thing: put your own name on it */}
           <form className="bg-night text-white p-6 sm:p-8" onSubmit={(e) => { e.preventDefault(); window.open(proofHref, '_blank', 'noopener'); }}>
             <div role="tablist" aria-label="Choose what to preview" className="flex flex-wrap gap-2">
@@ -305,7 +342,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="flex flex-wrap gap-3 mt-5">
-              <Link to={mode === 'wedding' ? '/cards' : categoryPath('Diaries & Calendars')} className="on-light inline-flex items-center h-14 px-7 bg-secondary text-[#211114] font-bold transition-transform hover:-translate-y-0.5">{mode === 'wedding' ? 'Choose a design' : 'See calendars & diaries'}</Link>
+              <Link to={HERO[mode].cta[1] ? categoryPath(HERO[mode].cta[1]) : '/cards'} className="on-light inline-flex items-center h-14 px-7 bg-secondary text-[#211114] font-bold transition-transform hover:-translate-y-0.5">{HERO[mode].cta[0]}</Link>
               <button type="submit" className="inline-flex items-center gap-2 h-14 px-6 bg-white/10 hover:bg-white/20 font-semibold transition-colors"><FaWhatsapp /> Get this as a proof</button>
             </div>
           </form>

@@ -18,7 +18,7 @@ export function setDiscountPercent(value) {
 
 export const SHOP = {
   name: "Zaro Digitz",
-  tagline: "Digital Colour Printing",
+  tagline: "Digital Color Prints",
   address: "No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi - 626123",
   email: "zarodigitz@gmail.com",
   website: "digitz.zarocrackers.com",
