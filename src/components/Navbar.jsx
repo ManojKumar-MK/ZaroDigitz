@@ -130,9 +130,11 @@ export default function Navbar() {
   const show = openedOn === location.key ? panel : null;
   const openPanel = (p) => { setOpenedOn(location.key); setPanel(p); };
   const close = () => setPanel(null);
-  // An open dropdown closes as soon as the page scrolls, so it never sits over what is being read.
+  // An open dropdown closes as soon as the page scrolls; once scrolled, the bar casts a soft shadow
+  // so it reads as a bar over the page (its height never changes).
+  const [lifted, setLifted] = useState(false);
   useEffect(() => {
-    const onScroll = () => setOpen(null);
+    const onScroll = () => { setOpen(null); setLifted(window.scrollY > 8); };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -140,12 +142,12 @@ export default function Navbar() {
   return (
     <>
     <header className="sticky top-0 z-50">
-      <nav className="relative bg-paper dark:bg-paper2 text-ink" onMouseLeave={() => setOpen(null)} aria-label="Main">
+      <nav className={`relative bg-paper dark:bg-paper2 text-ink transition-shadow duration-300 ${lifted ? 'shadow-[0_6px_24px_rgba(20,8,10,0.14)] dark:shadow-[0_6px_24px_rgba(0,0,0,0.5)]' : ''}`} onMouseLeave={() => setOpen(null)} aria-label="Main">
         <div className="max-w-[1440px] mx-auto px-5 sm:px-8 xl:px-12 h-20 flex items-center justify-between gap-6">
           <div className="flex items-center gap-2">
             <button type="button" aria-label="Open menu" className="xl:hidden w-11 h-11 -ml-2 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand" onClick={() => openPanel('menu')}><LuMenu size={22} /></button>
             <Link to="/" className="flex items-center gap-3 group">
-              <img src="/zaro-logo-112.webp" width="52" height="52" alt="" className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full object-cover transition-transform duration-500 group-hover:rotate-[20deg]" />
+              <img src="/zaro-logo-112.webp" width="52" height="52" alt="" className="w-12 h-12 sm:w-[52px] sm:h-[52px] object-contain transition-transform duration-500 group-hover:scale-105" />
               <span className="leading-tight">
                 <span className="block font-display font-bold text-lg sm:text-xl text-brand">ZARO Digitz</span>
                 <span className="hidden sm:block xl:hidden 2xl:block text-[13px] mt-0.5">Digital colour printing · Sivakasi</span>
