@@ -1,3 +1,4 @@
+import PersonalisationCard from '../PersonalisationCard';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { FiArrowLeft, FiEdit2, FiPrinter, FiDownload, FiExternalLink, FiPhone, FiXCircle, FiTrash2, FiCamera, FiCheck, FiTruck, FiUser, FiMapPin, FiChevronRight, FiStar } from 'react-icons/fi';
@@ -187,6 +188,7 @@ function OrderView({ order }) {
               <div className="flex justify-between pt-2 mt-1 border-t border-zinc-100 text-base font-semibold text-zinc-900"><dt>Total</dt><dd className="tabular-nums">{inr(order.grandTotal)}</dd></div>
             </dl>
           </Card>
+          <PersonalisationCard items={order.items} />
 
           <Card title="Shipment" action={<span className="text-xs text-zinc-500">Visible to the customer</span>}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

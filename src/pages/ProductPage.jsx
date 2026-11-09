@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
+import { LuWandSparkles } from 'react-icons/lu';
+import PersonaliseDialog from '../personalise/PersonaliseDialog';
+import { loadTemplate } from '../personalise/templates';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FiShoppingCart, FiArrowLeft, FiMinus, FiPlus, FiX, FiChevronDown } from 'react-icons/fi';
@@ -46,6 +49,8 @@ export default function ProductPage() {
   const [zoom, setZoom] = useState(false);
   const [qty, setQty] = useState(null);
   const [added, setAdded] = useState(false);
+  const [template, setTemplate] = useState(null); // personalisation layout, when the design has one
+  const [personalising, setPersonalising] = useState(false);
   const { addItem } = useCart();
   const { settings } = useShopSettings();
 
@@ -56,6 +61,12 @@ export default function ProductPage() {
   }, []);
 
   const product = useMemo(() => findProductBySlug(catalog, code), [catalog, code]);
+  useEffect(() => {
+    let gone = false;
+    if (product?.code) loadTemplate(product.code).then((t) => { if (!gone) setTemplate(t); });
+    return () => { gone = true; };
+  }, [product?.code]);
+
   const related = useMemo(
     () => (product ? catalog.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4) : []),
     [catalog, product]
@@ -116,6 +127,13 @@ export default function ProductPage() {
           },
         }
       : {}),
+  };
+
+  const addPersonalised = ({ token, summary, preview, quantity: qty }) => {
+    addItem({ ...product, id: `${product.id}-${token || summary.map((x) => x.value).join('|')}`, price: offer, basePrice: offer, quantity: qty, image: preview || product.image, personalisation: { token, summary } });
+    setPersonalising(false);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1800);
   };
 
   const handleAdd = (e) => {
@@ -243,6 +261,22 @@ export default function ProductPage() {
               </div>
             )}
 
+            {template && offer != null && (
+              <motion.button
+                type="button"
+                onClick={() => setPersonalising(true)}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="mt-6 w-full flex items-center justify-between gap-4 p-5 bg-secondary text-[#211114] text-left"
+              >
+                <span>
+                  <span className="block font-display font-bold text-xl">Personalise this design</span>
+                  <span className="block">Add your names, date and photos and see them on the card now.</span>
+                </span>
+                <LuWandSparkles size={30} aria-hidden="true" className="shrink-0" />
+              </motion.button>
+            )}
+
             <div className="mt-6 flex flex-wrap gap-3">
               <button
                 type="button"
@@ -331,6 +365,10 @@ export default function ProductPage() {
           </button>
         </div>
       )}
+
+      <AnimatePresence>
+        {personalising && template && <PersonaliseDialog product={product} template={template} quantity={quantity} onAdd={addPersonalised} onClose={() => setPersonalising(false)} />}
+      </AnimatePresence>
 
       {/* Lightbox */}
       <AnimatePresence>

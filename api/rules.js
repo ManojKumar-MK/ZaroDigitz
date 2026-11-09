@@ -28,6 +28,7 @@ export function canRead(collection, id, ctx, kind) {
     case 'settings':
       return true;
     case 'productImages':
+    case 'templates': // a design's personalisation layout (public, like the product itself)
     case 'tracking': // the id (order number + last 4 digits of the mobile) is the key
       return kind === 'get';
     case 'invoices': // unguessable token is the access control
@@ -56,6 +57,8 @@ export function canWrite(collection, id, op, { after, changed }, ctx) {
       return op === 'create' && isValidEnquiry(after);
     case 'tracking':
       return op === 'create' && isMap(after) && isStr(after.orderNumber) && after.status === 'new' && !('shipment' in after) && !('photos' in after);
+    case 'personalisations': // a customer's names and photos for a design: create only, id is an unguessable token
+      return op === 'create' && String(id).length >= 20 && isMap(after) && isMap(after.values) && JSON.stringify(after).length < 3_000_000;
     case 'invoices':
       return op === 'create' && String(id).length >= 20 && isMap(after?.snapshot) && Array.isArray(after.snapshot.cart) && after.snapshot.cart.length <= 300;
     default:

@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { FaWhatsapp } from 'react-icons/fa';
 import Seo from '../components/Seo';
 import { faqSchema, getFaqs, categoryPath } from '../seo/catalog';
@@ -82,12 +82,12 @@ function Rail({ items, id }) {
   const [at, setAt] = useState(0);
   const scroller = (el) => el && (el.onscroll = () => {
     const w = el.firstElementChild?.offsetWidth || 1;
-    setAt(Math.min(items.length - 1, Math.round(el.scrollLeft / (w + 16))));
+    setAt(Math.min(items.length - 1, Math.round(el.scrollLeft / (w + 20))));
   });
   const move = (dir) => {
     const el = document.getElementById(id);
     const w = el?.firstElementChild?.offsetWidth || 280;
-    el?.scrollBy({ left: dir * (w + 16), behavior: 'smooth' });
+    el?.scrollBy({ left: dir * (w + 20), behavior: 'smooth' });
   };
   return (
     <>
@@ -96,9 +96,9 @@ function Rail({ items, id }) {
         <button type="button" aria-label="Previous designs" onClick={() => move(-1)} className="w-12 h-12 bg-paper2 hover:bg-paper3 text-xl transition-colors">←</button>
         <button type="button" aria-label="Next designs" onClick={() => move(1)} className="w-12 h-12 bg-paper2 hover:bg-paper3 text-xl transition-colors">→</button>
       </div>
-      <div id={id} ref={scroller} className="col-span-full flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none mt-8 -mx-4 px-4 sm:-mx-8 sm:px-8">
+      <div id={id} ref={scroller} className="col-span-full flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-none mt-10 pb-2">
         {items.map((p) => (
-          <div key={p.code} className="snap-start shrink-0 w-[72%] sm:w-[42%] lg:w-[23%]"><ProductCard product={p} /></div>
+          <div key={p.code} className="snap-start shrink-0 w-[78%] sm:w-[calc((100%-20px)/2)] lg:w-[calc((100%-60px)/4)]"><ProductCard product={p} /></div>
         ))}
       </div>
     </>
@@ -130,6 +130,102 @@ const TRADITIONS = [
   { name: 'Diaries & Calendars', note: 'For shops and offices', Sketch: CalendarSketch },
   { name: 'House Warming Invitations', note: 'Griha pravesam', Sketch: KolamSketch },
 ];
+
+const STEPS = [
+  {
+    Sketch: InviteCardSketch, when: 'Today', title: 'Pick a design or send yours',
+    text: 'Choose a design on the site, or send your own artwork, logo or text on WhatsApp.',
+    need: 'Quantity, your event or delivery date, and your details', get: 'A clear price before anything starts',
+  },
+  {
+    Sketch: PhoneProofSketch, when: 'Within a day', title: 'Approve the proof on WhatsApp',
+    text: 'We set your names, wording and photos, and send a digital proof to your phone.',
+    need: 'A quick check of spelling, dates and colours', get: 'Free changes until it is exactly right',
+  },
+  {
+    Sketch: PrinterSketch, when: '1 to 7 days', title: 'Printed in our studio',
+    text: 'In-house digital colour printing on all media up to 13 × 19 in and 350 gsm, with offset for big runs.',
+    need: 'Nothing: printing starts after you approve', get: 'Foil, emboss, lamination and cutting as chosen',
+  },
+  {
+    Sketch: GiftBoxSketch, when: 'Same day pickup · 2 to 5 days by courier', title: 'Packed and delivered',
+    text: 'Packed flat and checked, then collected from our Sivakasi studio or couriered anywhere in India.',
+    need: 'Your delivery address, or a time to collect', get: 'Your order, counted and ready to use',
+  },
+];
+
+/** "From your phone to the press": a gold line fills as the reader scrolls; each step lights up as it is reached. */
+function Timeline() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 70%', 'end 60%'] });
+  const fill = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  return (
+    <section className="bg-primary dark:bg-[#3A0E16] text-white py-24 lg:py-32 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8">
+        <div className="max-w-3xl">
+          <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(36px,4.2vw,64px)] leading-[1.02]">From your phone to the press</Rise>
+          <Rise i={1} as="p" className="text-lg text-white/90 mt-5 max-w-[52ch]">Wedding cards, notebooks, flyers or ID cards, every order follows the same four steps. You always see a proof first.</Rise>
+        </div>
+
+        <ol ref={ref} className="relative mt-16 lg:mt-20">
+          {/* the track, and the gold line that fills it */}
+          <span className="absolute left-[27px] lg:left-1/2 top-0 bottom-0 w-[3px] -translate-x-1/2 bg-white/15" aria-hidden="true" />
+          <motion.span style={{ scaleY: fill }} className="absolute left-[27px] lg:left-1/2 top-0 bottom-0 w-[3px] -translate-x-1/2 bg-secondary origin-top" aria-hidden="true" />
+
+          {STEPS.map(({ Sketch, when, title, text, need, get }, n) => {
+            const right = n % 2 === 1;
+            return (
+              <li key={title} className="relative grid lg:grid-cols-2 gap-6 lg:gap-16 pl-20 lg:pl-0 pb-16 last:pb-0">
+                <Step n={n} progress={scrollYProgress} />
+                <motion.div
+                  initial={{ opacity: 0, x: right ? 40 : -40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-80px' }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className={`${right ? 'lg:col-start-2' : 'lg:text-right'}`}
+                >
+                  <p className="text-secondary font-semibold">{when}</p>
+                  <h3 className="font-display font-bold text-2xl sm:text-3xl mt-1">{title}</h3>
+                  <p className="text-lg text-white/90 mt-3">{text}</p>
+                  <dl className={`mt-5 grid gap-3 text-[15px] ${right ? '' : 'lg:justify-items-end'}`}>
+                    <div className="bg-white/10 px-4 py-3 max-w-md"><dt className="font-semibold">We need</dt><dd className="text-white/85">{need}</dd></div>
+                    <div className="bg-white/10 px-4 py-3 max-w-md"><dt className="font-semibold">You get</dt><dd className="text-white/85">{get}</dd></div>
+                  </dl>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: '-80px' }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className={`hidden lg:flex items-start ${right ? 'lg:col-start-1 lg:row-start-1 justify-end' : 'justify-start'}`}
+                >
+                  <div className="w-48 h-48 bg-paper text-brand p-8"><Sketch className="w-full h-full" /></div>
+                </motion.div>
+              </li>
+            );
+          })}
+        </ol>
+
+        <Rise className="mt-16 bg-secondary text-[#211114] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+          <p className="text-lg font-semibold max-w-[52ch]">In a hurry? Small digital runs can often be printed the same day. Message us with what you need.</p>
+          <a href={shopWhatsAppLink('Hi Zaro Digitz! I have an urgent printing order:')} target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 h-14 px-7 bg-[#211114] text-[#FBF5EC] font-bold transition-transform hover:-translate-y-0.5"><FaWhatsapp size={20} aria-hidden="true" /> Ask on WhatsApp</a>
+        </Rise>
+      </div>
+    </section>
+  );
+}
+
+/** A step's dot on the line: fills gold once the scroll reaches it. */
+function Step({ n, progress }) {
+  const at = n / (STEPS.length - 1 || 1);
+  const on = useTransform(progress, [Math.max(0, at - 0.08), at], [0, 1]);
+  return (
+    <span className="absolute left-[27px] lg:left-1/2 top-0 -translate-x-1/2 w-14 h-14 rounded-full bg-[#5A1420] flex items-center justify-center z-10" aria-hidden="true">
+      <motion.span style={{ scale: on, opacity: on }} className="absolute inset-0 rounded-full bg-secondary" />
+      <span className="relative font-display font-bold text-xl">{n + 1}</span>
+    </span>
+  );
+}
 
 /** "Open now" from the shop hours, in India time: Mon–Sat 9–22, Sun 10–20. */
 function OpenNow() {
@@ -344,36 +440,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS: four steps joined by a line that draws itself */}
-      <section className="bg-primary dark:bg-[#3A0E16] text-white py-24 lg:py-32 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="grid lg:grid-cols-12 gap-6 items-end">
-            <Rise as="h2" className="lg:col-span-7 font-display font-bold tracking-tight text-[clamp(36px,4.2vw,64px)] leading-[1.02]">From your phone to the press</Rise>
-            <Rise i={1} as="p" className="lg:col-span-5 text-lg text-white/90 max-w-[42ch]">Wedding cards, notebooks, flyers or ID cards, it works the same way: you see a proof first, and nothing is printed until you say yes.</Rise>
-          </div>
-          <div className="relative mt-16">
-            <svg className="hidden lg:block absolute left-[12%] right-[12%] top-[88px] w-[76%] h-6 text-secondary" viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true">
-              <motion.path d="M0 12 C 160 -4, 340 28, 500 12 S 840 -4, 1000 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeDasharray="2 10" strokeLinecap="round" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 1.8, ease: 'easeInOut' }} />
-            </svg>
-            <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-6">
-              {[
-                { Sketch: InviteCardSketch, title: 'Pick a design or send yours', text: 'Choose from our designs, or share your own artwork, logo or text on WhatsApp.' },
-                { Sketch: PhoneProofSketch, title: 'Approve the proof', text: 'Within a day you get a digital proof with your names and details. Changes are free.' },
-                { Sketch: PrinterSketch, title: 'We print it here', text: 'In-house digital colour printing on all media, 13 × 19 in, up to 350 gsm, plus offset for big runs.' },
-                { Sketch: GiftBoxSketch, title: 'Packed and delivered', text: 'Collect from our Sivakasi studio or get it couriered anywhere in India.' },
-              ].map(({ Sketch, title, text }, n) => (
-                <Rise as="li" key={title} i={n} className="relative">
-                  <div className="w-44 h-44 mx-auto lg:mx-0 bg-paper text-brand rounded-full p-7 relative z-10">
-                    <Sketch className="w-full h-full" />
-                  </div>
-                  <p className="font-display font-bold text-xl mt-6 text-center lg:text-left">{title}</p>
-                  <p className="text-white/85 mt-2 text-center lg:text-left max-w-[34ch] mx-auto lg:mx-0">{text}</p>
-                </Rise>
-              ))}
-            </ol>
-          </div>
-        </div>
-      </section>
+      {/* HOW IT WORKS: a timeline that fills as you scroll */}
+      <Timeline />
 
       {/* BUDGET: lovely cards at gentle prices */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32 grid grid-cols-[1fr_auto] items-end gap-y-2">

@@ -25,7 +25,10 @@ function buildOrderMessage(order) {
     ...(form.eventNotes ? [`Notes: ${escapeHtml(form.eventNotes)}`] : []),
     '',
     'Items:',
-    ...cart.map((item) => `• ${item.name} x${item.quantity} — ${formatCurrency(item.price * item.quantity)}`),
+    ...cart.flatMap((item) => [
+      `• ${item.name} x${item.quantity} — ${formatCurrency(item.price * item.quantity)}`,
+      ...((item.personalisation?.summary || []).map((s) => `   ${escapeHtml(s.label)}: ${escapeHtml(s.value)}`)),
+    ]),
     '',
     `Subtotal: ${formatCurrency(totalAmount)}`,
     ...(order.charges || []).map((line) => `${line.label}: ${formatCurrency(line.amount)}`),

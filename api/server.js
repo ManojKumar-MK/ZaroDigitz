@@ -10,7 +10,7 @@ import { nextInvoiceNumber, renumberPreview, renumberApply, renumberUndo } from 
 
 const app = express();
 const port = Number(process.env.PORT || 3000);
-const VERSION = '0.7.0';
+const VERSION = '0.8.0';
 const ALLOWED_ORIGINS = String(process.env.ALLOWED_ORIGINS || 'https://digitz.zarocrackers.com,http://localhost:5173,http://127.0.0.1:5173,http://127.0.0.1:3009,http://localhost:3009,http://127.0.0.1:4199')
   .split(',').map((s) => s.trim()).filter(Boolean);
 
@@ -186,6 +186,13 @@ async function transliterateWord(word) {
 app.get('/v1/admin/translit', wrap(async (req, res) => {
   requireAdmin(req);
   const words = String(req.query.words || '').split(',').map((w) => w.trim()).filter((w) => /^[a-z]{1,30}$/i.test(w)).slice(0, 20);
+  const pairs = await Promise.all(words.map(async (w) => [w, await transliterateWord(w).catch(() => null)]));
+  res.json({ ok: true, words: Object.fromEntries(pairs.filter(([, t]) => t)) });
+}));
+
+// Public: Tamil spelling suggestions for the personalisation editor (rate limited like writes).
+app.get('/v1/translit', limitAnonymousWrites, wrap(async (req, res) => {
+  const words = String(req.query.words || '').split(',').map((w) => w.trim()).filter((w) => /^[a-z]{1,30}$/i.test(w)).slice(0, 12);
   const pairs = await Promise.all(words.map(async (w) => [w, await transliterateWord(w).catch(() => null)]));
   res.json({ ok: true, words: Object.fromEntries(pairs.filter(([, t]) => t)) });
 }));

@@ -1,3 +1,4 @@
+import TemplateEditor from '../TemplateEditor';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { FiArrowLeft, FiSave, FiExternalLink, FiRotateCcw, FiTrash2, FiCopy, FiShoppingBag } from 'react-icons/fi';
@@ -141,6 +142,7 @@ function ProductEditor({ product, all }) {
               <div><div className="text-xs font-medium text-zinc-500 mb-1.5">In Google</div><GooglePreview path={productPath({ code: f.code || 'new', name: f.name })} title={fullTitle(String(f.seoTitle || '').trim() || autoMeta.title)} description={String(f.seoDescription || '').trim() || autoMeta.description} /></div>
             </div>
           </Card>
+          {!isNew && <div className="mt-6"><TemplateEditor code={product.code} /></div>}
         </div>
 
         <div className="space-y-6 lg:sticky lg:top-28">
