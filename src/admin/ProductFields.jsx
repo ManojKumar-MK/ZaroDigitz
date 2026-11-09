@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FiUpload, FiTrash2, FiLink } from 'react-icons/fi';
 import { compressImage } from '../utils/image';
+import { applyWatermark, DEFAULT_WATERMARK } from '../utils/watermark';
 import { rawProducts, categories, categoryTamil, DISCOUNT_PERCENT } from '../data/products';
 import { useAdminData } from './AdminData';
 import { Button, Field, Toggle, inputClass } from './ui';
@@ -68,12 +69,16 @@ export default function ProductFields({ f, setF, codeEditable = true, showCatalo
   }, [f.name, f.category, f.per, f.brand]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // The chosen photo stays in the form as `_imageData` until the product is saved.
+  // Watermark: on by default (Admin → Settings → Photo watermark); can be skipped per photo.
+  const wmSettings = { ...DEFAULT_WATERMARK, ...(settings?.watermark || {}) };
+  const [watermark, setWatermark] = useState(wmSettings.enabled !== false);
   const onFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setImgBusy('Compressing…');
     try {
-      const dataUrl = await compressImage(file, { maxDimension: 1200, quality: 0.8, maxBytes: 280 * 1024, format: 'image/webp' });
+      let dataUrl = await compressImage(file, { maxDimension: 1200, quality: 0.8, maxBytes: 280 * 1024, format: 'image/webp' });
+      if (watermark) dataUrl = await applyWatermark(dataUrl, wmSettings);
       setF({ ...f, _imageData: dataUrl });
       setImgBusy(`Ready · ${Math.round((dataUrl.length * 0.75) / 1024)} KB · saved with the product`);
     } catch (err) {
@@ -199,6 +204,7 @@ export default function ProductFields({ f, setF, codeEditable = true, showCatalo
               <Button variant="ghost" icon={FiLink} onClick={() => setShowLink((v) => !v)}>{showLink ? 'Hide link' : 'Use a link'}</Button>
             </div>
             <p className="text-xs text-zinc-500">{imgBusy || 'JPG, PNG or a phone photo. It is resized and compressed automatically. Leave empty to show a placeholder card.'}</p>
+            <label className="flex items-center gap-2 text-xs text-zinc-600 dark:text-zinc-300"><input type="checkbox" checked={watermark} onChange={(e) => setWatermark(e.target.checked)} /> Add the Zaro Digitz watermark to this photo</label>
             {showLink && <input className={inputClass} value={f._imageData ? '' : f.image || ''} disabled={Boolean(f._imageData)} onChange={set('image')} placeholder="https://… (optional)" />}
           </div>
         </div>

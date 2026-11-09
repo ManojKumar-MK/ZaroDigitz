@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250">
+  <!-- Original Zaro Digitz product picture: executive diary with a gold-embossed name. -->
+  <rect width="1000" height="1250" fill="#E8E0D4"/>
+  <ellipse cx="500" cy="1060" rx="330" ry="40" fill="#000" opacity=".22"/>
+  <rect x="210" y="170" width="580" height="880" rx="14" fill="#F4ECDF"/>
+  <rect x="190" y="150" width="590" height="890" rx="14" fill="#211114"/>
+  <rect x="720" y="150" width="34" height="890" fill="#7A1F2B"/>
+  <g fill="none" stroke="#C9A032" stroke-width="4">
+    <path d="M230 190 L320 190 M230 190 L230 280"/><path d="M690 190 L600 190 M690 190 L690 280"/>
+    <path d="M230 1000 L320 1000 M230 1000 L230 910"/><path d="M690 1000 L600 1000 M690 1000 L690 910"/>
+  </g>
+  <text x="460" y="470" text-anchor="middle" font-family="Georgia, serif" font-size="120" font-weight="700" fill="#E9C766">2027</text>
+  <path d="M370 520 L550 520" stroke="#C9A032" stroke-width="3"/>
+  <text x="460" y="600" text-anchor="middle" font-family="Georgia, serif" font-size="38" fill="#E9C766">SRI MURUGAN TRADERS</text>
+  <text x="460" y="660" text-anchor="middle" font-family="Georgia, serif" font-size="30" font-style="italic" fill="#F3DFA2">R. Karthik</text>
+  <!-- ribbon marker -->
+  <path d="M600 1040 L600 1130 L620 1110 L640 1130 L640 1040 Z" fill="#C9A032"/>
+  <rect x="800" y="930" width="160" height="16" rx="8" fill="#7A1F2B" transform="rotate(-20 880 938)"/>
+  <text x="960" y="1220" text-anchor="end" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#211114" opacity=".4">ZARO Digitz</text>
+</svg>
