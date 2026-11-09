@@ -27,7 +27,7 @@ export default class ErrorBoundary extends Component {
           <p className="text-gray-500 text-sm mb-6">
             {isChunk ? 'Please reload to get the latest version. Your cart is kept.' : 'Please reload the page. If this keeps happening, WhatsApp us at +91 9787702336.'}
           </p>
-          <button type="button" onClick={() => window.location.reload()} className="bg-primary hover:bg-[#5A1420] text-white font-bold px-6 py-3 ">
+          <button type="button" onClick={() => window.location.reload()} className="bg-primary hover:bg-primary-dark text-white font-bold px-6 py-3 ">
             Reload page
           </button>
         </div>

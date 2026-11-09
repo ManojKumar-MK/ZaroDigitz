@@ -42,7 +42,7 @@ export default function Templates() {
         </label>
         <div className="inline-flex rounded-lg bg-white dark:bg-zinc-900 ring-1 ring-zinc-200 dark:ring-zinc-700 p-1 text-sm">
           {[['all', 'All'], ['ready', 'Ready'], ['todo', 'Not set up']].map(([v, l]) => (
-            <button key={v} type="button" onClick={() => setShow(v)} className={`px-3 h-8 rounded-md font-medium ${show === v ? 'bg-[#2C0A10] text-[#F3DFA2]' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900'}`}>{l}</button>
+            <button key={v} type="button" onClick={() => setShow(v)} className={`px-3 h-8 rounded-md font-medium ${show === v ? 'bg-night text-[rgb(var(--accent-light-rgb))]' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900'}`}>{l}</button>
           ))}
         </div>
       </div>
@@ -51,14 +51,14 @@ export default function Templates() {
         {list.map((p) => {
           const t = templates[p.code];
           return (
-            <Link key={p.code} to={`/admin/products/${encodeURIComponent(p.code)}#personalise`} className="group bg-white dark:bg-zinc-900 rounded-xl ring-1 ring-zinc-200 dark:ring-zinc-800 overflow-hidden hover:ring-[#C9A032] transition">
-              <div className="aspect-[4/5] bg-[#F3E8D8] dark:bg-zinc-800 text-[#7A1F2B] dark:text-[#E9C766] flex items-center justify-center overflow-hidden">
+            <Link key={p.code} to={`/admin/products/${encodeURIComponent(p.code)}#personalise`} className="group bg-white dark:bg-zinc-900 rounded-xl ring-1 ring-zinc-200 dark:ring-zinc-800 overflow-hidden hover:ring-secondary transition">
+              <div className="aspect-[4/5] bg-[#F3E8D8] dark:bg-zinc-800 text-primary dark:text-[rgb(var(--accent-light-rgb))] flex items-center justify-center overflow-hidden">
                 {t?.image ? <img src={t.image} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" /> : <CategorySketch category={p.category} className="w-2/3 h-2/3 opacity-70" />}
               </div>
               <div className="p-3">
                 <p className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 line-clamp-2 min-h-[2.5em]">{p.name}</p>
                 <p className="text-xs text-zinc-500 mt-0.5">{p.code} · {p.category}</p>
-                <p className={`mt-2 inline-flex items-center gap-1.5 text-xs font-semibold ${t ? 'text-emerald-700 dark:text-emerald-400' : 'text-[#7A1F2B] dark:text-[#E9C766]'}`}>
+                <p className={`mt-2 inline-flex items-center gap-1.5 text-xs font-semibold ${t ? 'text-emerald-700 dark:text-emerald-400' : 'text-primary dark:text-[rgb(var(--accent-light-rgb))]'}`}>
                   {t ? <><LuCheck size={14} /> {t.fields.length} boxes · ready</> : <><LuLayers size={14} /> Set up personalisation</>}
                 </p>
               </div>

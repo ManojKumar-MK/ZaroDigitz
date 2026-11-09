@@ -13,8 +13,10 @@ export default {
       // yellow utility classes for accents, so those scales are redefined here: orange is
       // maroon and amber/yellow are gold. Change the palette in this one place.
       colors: {
-        primary: '#7A1F2B',
-        secondary: '#D4AF37',
+        // Brand colours come from Admin → Settings → Brand colours (src/theme/brand.js).
+        primary: 'rgb(var(--primary-rgb) / <alpha-value>)',
+        'primary-dark': 'rgb(var(--primary-dark-rgb) / <alpha-value>)',
+        secondary: 'rgb(var(--accent-rgb) / <alpha-value>)',
         dark: '#1A0E10',
         bg: '#FBF5EC',
         orange: { 50: '#FBF3F4', 100: '#F6E3E5', 200: '#EBC3C8', 300: '#DA97A0', 400: '#C2626F', 500: '#A23A48', 600: '#8A2A37', 700: '#7A1F2B', 800: '#5F1822', 900: '#4A131B', 950: '#2C0A10' },

@@ -160,7 +160,7 @@ function Timeline() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 70%', 'end 60%'] });
   const fill = useTransform(scrollYProgress, [0, 1], [0, 1]);
   return (
-    <section className="bg-primary dark:bg-[#3A0E16] text-white py-24 lg:py-32 overflow-hidden">
+    <section className="bg-primary dark:bg-primary-dark text-white py-24 lg:py-32 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-8">
         <div className="max-w-3xl">
           <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(36px,4.2vw,64px)] leading-[1.02]">From your phone to the press</Rise>
@@ -216,7 +216,7 @@ function Step({ n, progress }) {
   const at = n / (STEPS.length - 1 || 1);
   const on = useTransform(progress, [Math.max(0, at - 0.08), at], [0, 1]);
   return (
-    <span className="absolute left-[27px] lg:left-1/2 top-0 -translate-x-1/2 w-14 h-14 rounded-full bg-[#5A1420] flex items-center justify-center z-10" aria-hidden="true">
+    <span className="absolute left-[27px] lg:left-1/2 top-0 -translate-x-1/2 w-14 h-14 rounded-full bg-primary-dark flex items-center justify-center z-10" aria-hidden="true">
       <motion.span style={{ scale: on, opacity: on }} className="absolute inset-0 rounded-full bg-secondary" />
       <span className="relative font-display font-bold text-xl">{n + 1}</span>
     </span>
@@ -272,7 +272,7 @@ export default function HomePage() {
       <Seo path="/" jsonLd={faqSchema(getFaqs(settings))} />
 
       {/* HERO: the invitation card, filled in by the visitor, beside the room */}
-      <section className="bg-[#5A1420] dark:bg-night p-3 sm:p-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:min-h-[calc(100svh-80px)]">
+      <section className="bg-primary-dark dark:bg-night p-3 sm:p-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:min-h-[calc(100svh-80px)]">
         <div className="bg-paper flex flex-col overflow-hidden">
           <Stripe />
           <div className="flex-1 flex flex-col items-center text-center px-6 sm:px-12 py-10 lg:py-12">
@@ -285,18 +285,18 @@ export default function HomePage() {
             </motion.p>
 
             {/* The card itself, updating as the visitor types */}
-            <motion.div initial={{ opacity: 0, y: 24, rotate: -1.5 }} animate={{ opacity: 1, y: 0, rotate: -1.5 }} transition={{ duration: 0.8, delay: 0.3 }} whileHover={{ rotate: 0, y: -4 }} className="mt-10 w-full max-w-[340px] aspect-[5/7] bg-primary text-[#F3DFA2] p-3" aria-live="polite" aria-label="Your invitation preview">
-              <div className="h-full ring-2 ring-[#C9A032] ring-inset flex flex-col items-center justify-between py-8 px-5">
+            <motion.div initial={{ opacity: 0, y: 24, rotate: -1.5 }} animate={{ opacity: 1, y: 0, rotate: -1.5 }} transition={{ duration: 0.8, delay: 0.3 }} whileHover={{ rotate: 0, y: -4 }} className="mt-10 w-full max-w-[340px] aspect-[5/7] bg-primary text-[rgb(var(--accent-light-rgb))] p-3" aria-live="polite" aria-label="Your invitation preview">
+              <div className="h-full ring-2 ring-secondary ring-inset flex flex-col items-center justify-between py-8 px-5">
                 <div>
                   <p className="text-xl" lang="ta" aria-hidden="true">உ</p>
                   <p className="text-sm mt-2" lang="ta">திருமண அழைப்பிதழ்</p>
-                  <p className="text-sm text-[#EAC96E]">Wedding invitation</p>
+                  <p className="text-sm text-[rgb(var(--accent-light-rgb))]">Wedding invitation</p>
                 </div>
                 <div className="w-full">
                   <AnimatePresence mode="wait">
                     <motion.p key={bride} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="font-display font-bold text-3xl text-white break-words">{bride}</motion.p>
                   </AnimatePresence>
-                  <p className="text-[#C9A032] text-lg my-1">&amp;</p>
+                  <p className="text-secondary text-lg my-1">&amp;</p>
                   <AnimatePresence mode="wait">
                     <motion.p key={groom} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="font-display font-bold text-3xl text-white break-words">{groom}</motion.p>
                   </AnimatePresence>

@@ -28,7 +28,7 @@ export default function CartPage() {
           <div className="mx-auto w-24 h-24 mb-6 rounded-full bg-primary/10 text-primary flex items-center justify-center"><LuShoppingCart size={36} /></div>
           <h2 className="font-display font-black text-3xl text-dark mb-3">Your Cart is Empty</h2>
           <p className="text-gray-500 mb-8">Pick a card design to get started.</p>
-          <Link to="/cards" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 hover:bg-[#5A1420] transition-colors">
+          <Link to="/cards" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 hover:bg-primary-dark transition-colors">
             Browse Products <FiArrowRight />
           </Link>
         </motion.div>

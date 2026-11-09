@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { currentBrandRgb } from '../theme/brand';
 
 /* ------------------------------------------------------------------ *
  *  EDIT THESE to match your business — pulled out so you don't have
@@ -24,7 +25,8 @@ const BANK_INFO = {
   upiIds: ['yourupi@bank'],
 };
 
-const BRAND_COLOR = [122, 31, 43]; // Zaro Digitz maroon
+// The brand colours chosen in Admin → Settings (maroon and gold by default), read when printing.
+const brand = () => currentBrandRgb();
 const LOGO_COLORS = {
   cyan: [28, 188, 232],
   pink: [236, 0, 152],
@@ -99,9 +101,10 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   }
 
   // ---- Header: maroon band with a foil-gold rule under it ----
+  const { primary: BRAND_COLOR, accent: ACCENT } = brand();
   doc.setFillColor(...BRAND_COLOR);
   doc.rect(0, 0, pageWidth, 120, 'F');
-  doc.setFillColor(201, 160, 50);
+  doc.setFillColor(...ACCENT);
   doc.rect(0, 120, pageWidth, 4, 'F');
 
   if (logoImage) {
@@ -122,7 +125,7 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   );
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
-  doc.setTextColor(233, 199, 102);
+  doc.setTextColor(...ACCENT);
   doc.text('INVOICE', pageWidth - 40, 40, { align: 'right' });
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);

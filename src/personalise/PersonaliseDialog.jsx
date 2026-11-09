@@ -127,7 +127,7 @@ export default function PersonaliseDialog({ product, template, quantity, onAdd, 
               return (
                 <div key={f.id} className="bg-paper2 p-4">
                   <p className="font-semibold mb-3">{f.label || 'Photo'}</p>
-                  <label className="inline-flex items-center gap-2 h-12 px-5 bg-primary text-white font-semibold cursor-pointer hover:bg-[#5A1420] transition-colors">
+                  <label className="inline-flex items-center gap-2 h-12 px-5 bg-primary text-white font-semibold cursor-pointer hover:bg-primary-dark transition-colors">
                     <LuImagePlus size={18} aria-hidden="true" /> {p?.src ? 'Change photo' : 'Add a photo'}
                     <input type="file" accept="image/*" className="sr-only" onChange={(e) => { onPhoto(f.id, e.target.files?.[0]); e.target.value = ''; }} />
                   </label>
@@ -150,7 +150,7 @@ export default function PersonaliseDialog({ product, template, quantity, onAdd, 
         <div className="shrink-0 px-5 sm:px-8 py-4 bg-paper2 flex flex-wrap items-center justify-end gap-3">
           {busy && <span className="mr-auto text-sm" aria-live="polite">{busy}</span>}
           <button type="button" onClick={share} disabled={Boolean(busy)} className="inline-flex items-center gap-2 h-12 px-5 bg-paper3 font-semibold disabled:opacity-60"><LuShare2 size={18} aria-hidden="true" /> Share preview</button>
-          <button type="button" onClick={add} disabled={Boolean(busy)} className="inline-flex items-center gap-2 h-12 px-6 bg-primary text-white font-bold hover:bg-[#5A1420] transition-colors disabled:opacity-60"><LuShoppingBag size={18} aria-hidden="true" /> Add {quantity} to cart</button>
+          <button type="button" onClick={add} disabled={Boolean(busy)} className="inline-flex items-center gap-2 h-12 px-6 bg-primary text-white font-bold hover:bg-primary-dark transition-colors disabled:opacity-60"><LuShoppingBag size={18} aria-hidden="true" /> Add {quantity} to cart</button>
         </div>
       </motion.div>
     </motion.div>

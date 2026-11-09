@@ -31,7 +31,7 @@ export const BUSINESS = {
   // map links use these coordinates.
   geo: { latitude: 9.45367, longitude: 77.79937 },
   googlePlaceId: '',
-  googleCid: '',
+  googleCid: '2617162767219858473', // the Zaro Digitz listing on Google Maps
   gstin: '33AAEFZ1822D1ZK',
   openingHours: [
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '09:00', closes: '22:00' },
@@ -54,7 +54,8 @@ export function googleBusinessLinks(settings = {}) {
     // Review links need the profile's place id; until it is set they open the map pin.
     review: placeId ? `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}` : maps,
     reviews: placeId ? `https://search.google.com/local/reviews?placeid=${encodeURIComponent(placeId)}` : maps,
-    directions: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(ll)}${placeId ? `&destination_place_id=${encodeURIComponent(placeId)}` : ''}`,
+    // Directions go to the shop by name and street (Google resolves it to the listing).
+    directions: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${SITE_NAME}, ${BUSINESS.address.streetAddress}, Sivakasi ${BUSINESS.address.postalCode}`)}${placeId ? `&destination_place_id=${encodeURIComponent(placeId)}` : ''}`,
     embed: cid ? `https://maps.google.com/maps?hl=en&z=16&output=embed&cid=${cid}` : `https://maps.google.com/maps?hl=en&z=16&output=embed&q=${ll}`,
   };
 }

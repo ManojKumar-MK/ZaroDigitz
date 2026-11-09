@@ -75,7 +75,7 @@ export default function QuickEnquiry({ subject, title = 'Tell us what you have i
               </label>
               {error && <p className="sm:col-span-2 text-red-700 dark:text-red-300 font-medium" role="alert">{error}</p>}
               <div className="sm:col-span-2 flex flex-wrap gap-3 mt-1">
-                <button type="submit" disabled={state === 'sending'} className="inline-flex items-center justify-center h-14 px-8 bg-primary text-white font-bold transition-colors hover:bg-[#5A1420] disabled:opacity-60">
+                <button type="submit" disabled={state === 'sending'} className="inline-flex items-center justify-center h-14 px-8 bg-primary text-white font-bold transition-colors hover:bg-primary-dark disabled:opacity-60">
                   {state === 'sending' ? 'Sending…' : 'Call me back'}
                 </button>
                 <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 h-14 px-8 bg-[#1F7A4D] text-white font-bold transition-transform hover:-translate-y-0.5">

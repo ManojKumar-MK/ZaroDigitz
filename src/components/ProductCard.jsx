@@ -47,7 +47,7 @@ export default function ProductCard({ product }) {
           type="button"
           whileTap={{ scale: 0.97 }}
           onClick={(e) => { addItem({ ...product, quantity: min }); flyToCart(e.currentTarget.closest('.group')?.querySelector('img, svg') || e.currentTarget); }}
-          className="mt-4 h-11 w-full inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold transition-colors hover:bg-[#5A1420] focus-visible:outline focus-visible:outline-2 focus-visible:outline-secondary"
+          className="mt-4 h-11 w-full inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold transition-colors hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-secondary"
         >
           <LuShoppingBag size={17} aria-hidden="true" /> Add {min > 1 ? min : ''} to cart
         </motion.button>

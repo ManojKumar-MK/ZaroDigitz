@@ -6,7 +6,7 @@ import { motion, useReducedMotion } from 'framer-motion';
  * when the sketch scrolls into view; with reduced motion the drawing is simply shown.
  */
 
-const GOLD = '#C9A032';
+const GOLD = 'rgb(var(--accent-rgb))'; // the brand accent (Admin → Settings → Brand colours)
 
 function useDraw(delay = 0) {
   const reduce = useReducedMotion();
@@ -22,7 +22,7 @@ function useDraw(delay = 0) {
 /** One stroke. `gold` paints it in foil; `d` is the path; `i` staggers it. */
 function S({ d, gold = false, i = 0, w = 2.4, fill, strokeDasharray }) {
   const draw = useDraw(i * 0.12);
-  return <motion.path d={d} fill={fill || 'none'} stroke={gold ? GOLD : 'currentColor'} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={strokeDasharray} {...draw} />;
+  return <motion.path d={d} fill={fill || 'none'} style={{ stroke: gold ? GOLD : 'currentColor' }} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={strokeDasharray} {...draw} />;
 }
 
 function Frame({ title, className = '', children, viewBox = '0 0 240 240' }) {

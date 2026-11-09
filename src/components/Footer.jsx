@@ -36,7 +36,7 @@ export default function Footer() {
             <Link to="/" className="inline-flex items-center gap-3">
               <img src="/zaro-logo-112.webp" width="52" height="52" loading="lazy" alt="" className="w-[52px] h-[52px] object-contain" />
               <span className="leading-tight">
-                <span className="block font-display font-bold text-xl text-[#F3DFA2]">ZARO Digitz</span>
+                <span className="block font-display font-bold text-xl text-[rgb(var(--accent-light-rgb))]">ZARO Digitz</span>
                 <span className="block text-sm text-[#FBF5EC]/75" lang="ta">ஷாரோ டிஜிட்ஸ்</span>
               </span>
             </Link>
@@ -51,7 +51,7 @@ export default function Footer() {
           <nav aria-label="Footer" className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-3 gap-8">
             {COLUMNS.map((col) => (
               <div key={col.title}>
-                <h2 className="font-display font-semibold text-[15px] text-[#F3DFA2]">{col.title}</h2>
+                <h2 className="font-display font-semibold text-[15px] text-[rgb(var(--accent-light-rgb))]">{col.title}</h2>
                 <ul className="mt-4 space-y-2.5 text-[15px]">
                   {col.links.map(([to, label]) => (
                     <li key={to}><Link to={to} className="text-[#FBF5EC]/80 hover:text-white transition-colors">{label}</Link></li>
@@ -63,12 +63,12 @@ export default function Footer() {
 
           {/* Visit */}
           <div className="lg:col-span-3">
-            <h2 className="font-display font-semibold text-[15px] text-[#F3DFA2]">Visit us</h2>
+            <h2 className="font-display font-semibold text-[15px] text-[rgb(var(--accent-light-rgb))]">Visit us</h2>
             <ul className="mt-4 space-y-4 text-[15px] text-[#FBF5EC]/85">
-              <li className="flex gap-3"><LuMapPin size={18} className="shrink-0 mt-0.5 text-[#C9A032]" aria-hidden="true" /><a href={googleBusinessLinks(settings).maps} target="_blank" rel="noopener noreferrer" className="hover:text-white">{a.streetAddress},<br />Sivakasi, Tamil Nadu {a.postalCode}</a></li>
-              <li className="flex gap-3"><LuPhone size={18} className="shrink-0 mt-0.5 text-[#C9A032]" aria-hidden="true" /><span className="grid">{PHONES.map((p) => <a key={p} href={`tel:${p.replace(/\s/g, '')}`} className="hover:text-white tabular-nums">{p}</a>)}</span></li>
-              <li className="flex gap-3"><LuMail size={18} className="shrink-0 mt-0.5 text-[#C9A032]" aria-hidden="true" /><a href={`mailto:${BUSINESS.email}`} className="hover:text-white break-all">{BUSINESS.email}</a></li>
-              <li className="flex gap-3"><LuClock size={18} className="shrink-0 mt-0.5 text-[#C9A032]" aria-hidden="true" /><span>Mon–Sat 9 am – 10 pm<br />Sunday 10 am – 8 pm</span></li>
+              <li className="flex gap-3"><LuMapPin size={18} className="shrink-0 mt-0.5 text-secondary" aria-hidden="true" /><a href={googleBusinessLinks(settings).maps} target="_blank" rel="noopener noreferrer" className="hover:text-white">{a.streetAddress},<br />Sivakasi, Tamil Nadu {a.postalCode}</a></li>
+              <li className="flex gap-3"><LuPhone size={18} className="shrink-0 mt-0.5 text-secondary" aria-hidden="true" /><span className="grid">{PHONES.map((p) => <a key={p} href={`tel:${p.replace(/\s/g, '')}`} className="hover:text-white tabular-nums">{p}</a>)}</span></li>
+              <li className="flex gap-3"><LuMail size={18} className="shrink-0 mt-0.5 text-secondary" aria-hidden="true" /><a href={`mailto:${BUSINESS.email}`} className="hover:text-white break-all">{BUSINESS.email}</a></li>
+              <li className="flex gap-3"><LuClock size={18} className="shrink-0 mt-0.5 text-secondary" aria-hidden="true" /><span>Mon–Sat 9 am – 10 pm<br />Sunday 10 am – 8 pm</span></li>
             </ul>
           </div>
         </div>

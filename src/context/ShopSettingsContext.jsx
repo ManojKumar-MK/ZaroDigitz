@@ -3,6 +3,7 @@ import { isFirebaseEnabled } from '../firebase/client';
 import { DEFAULT_SETTINGS } from '../firebase/catalog';
 import { initAnalytics } from '../utils/analytics';
 import { applyCustomCategories } from '../seo/catalog';
+import { applyBrand } from '../theme/brand';
 
 const ShopSettingsContext = createContext({ settings: DEFAULT_SETTINGS, live: false });
 
@@ -32,6 +33,9 @@ export function ShopSettingsProvider({ children }) {
       .catch((err) => { if (!cancelled) console.warn('Live catalog unavailable, using static price list.', err); });
     return () => { cancelled = true; stop(); };
   }, []);
+
+  // Brand colours from Admin → Settings recolour the whole site (and the admin) as soon as they load.
+  useEffect(() => { if (live) applyBrand(settings.theme || {}); }, [live, settings.theme]);
 
   return <ShopSettingsContext.Provider value={{ settings, live }}>{children}</ShopSettingsContext.Provider>;
 }

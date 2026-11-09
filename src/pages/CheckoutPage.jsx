@@ -322,7 +322,7 @@ export default function CheckoutPage() {
             </button>
           )}
 
-          <Link to="/" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 hover:bg-[#5A1420] transition-colors">
+          <Link to="/" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 hover:bg-primary-dark transition-colors">
             Back to Home
           </Link>
         </motion.div>
@@ -394,7 +394,7 @@ export default function CheckoutPage() {
             >
               Back to Cart
             </button>
-            <Link to="/cards" className="bg-primary text-white font-bold px-6 py-3 hover:bg-[#5A1420] transition-colors">
+            <Link to="/cards" className="bg-primary text-white font-bold px-6 py-3 hover:bg-primary-dark transition-colors">
               Add More Items
             </Link>
           </div>

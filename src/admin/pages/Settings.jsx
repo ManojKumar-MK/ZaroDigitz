@@ -7,6 +7,7 @@ import { parseAnyOrderFile, parseCustomersImport, ORDER_CSV_TEMPLATE, CUSTOMER_C
 import { ADMIN_EMAILS } from '../../firebase/client';
 import DataMigrationCard from '../DataMigrationCard';
 import InvoiceNumbersCard from '../InvoiceNumbersCard';
+import BrandColorsCard from '../BrandColorsCard';
 import { Button, Card, Field, inputClass, inr } from '../ui';
 import { computeCharges, DEFAULT_CHARGES, DEFAULT_CHARGES_NOTE } from '../../data/charges';
 import { BUSINESS, googleBusinessLinks } from '../../seo/site';
@@ -172,6 +173,7 @@ export default function Settings() {
         )}
       </Card>
 
+      <BrandColorsCard />
       <InvoiceNumbersCard />
 
       <DataMigrationCard />

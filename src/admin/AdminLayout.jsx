@@ -29,13 +29,13 @@ export default function AdminLayout({ user }) {
       <div className="px-5 pt-6 pb-5 flex items-center gap-3">
         <img src="/zaro-logo-112.webp" alt="" className="w-11 h-11 object-contain" />
         <div className="min-w-0">
-          <div className="font-display font-bold text-lg leading-tight text-[#F3DFA2]">ZARO Digitz</div>
+          <div className="font-display font-bold text-lg leading-tight text-[rgb(var(--accent-light-rgb))]">ZARO Digitz</div>
           <div className="text-[13px] text-[#FBF5EC]/70">Print studio</div>
         </div>
       </div>
 
       <div className="px-4">
-        <Link to="/admin/orders/new" onClick={() => setOpen(false)} className="flex items-center justify-center gap-2 h-11 bg-[#C9A032] hover:bg-[#DFB548] text-[#211114] text-sm font-bold transition-colors">
+        <Link to="/admin/orders/new" onClick={() => setOpen(false)} className="flex items-center justify-center gap-2 h-11 bg-secondary hover:bg-secondary/90 text-[#211114] text-sm font-bold transition-colors">
           <LuPlus size={18} /> New order
         </Link>
       </div>
@@ -56,12 +56,12 @@ export default function AdminLayout({ user }) {
                       onClick={() => setOpen(false)}
                       className={({ isActive }) => {
                         const active = forceActive ?? isActive;
-                        return `relative flex items-center gap-3 h-10 px-3 text-[14px] font-medium transition-colors ${active ? 'bg-white/10 text-white before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#C9A032]' : 'text-[#FBF5EC]/75 hover:bg-white/5 hover:text-white'}`;
+                        return `relative flex items-center gap-3 h-10 px-3 text-[14px] font-medium transition-colors ${active ? 'bg-white/10 text-white before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-secondary' : 'text-[#FBF5EC]/75 hover:bg-white/5 hover:text-white'}`;
                       }}
                     >
                       <Icon size={18} className="shrink-0" />
                       <span className="flex-1">{it.label}</span>
-                      {it.badge && counts[it.badge] > 0 && <span className="min-w-[22px] h-[22px] px-1.5 rounded-full bg-[#C9A032] text-[#211114] text-[12px] font-bold flex items-center justify-center tabular-nums">{counts[it.badge]}</span>}
+                      {it.badge && counts[it.badge] > 0 && <span className="min-w-[22px] h-[22px] px-1.5 rounded-full bg-secondary text-[#211114] text-[12px] font-bold flex items-center justify-center tabular-nums">{counts[it.badge]}</span>}
                     </NavLink>
                   </li>
                 );
@@ -82,17 +82,17 @@ export default function AdminLayout({ user }) {
 
   return (
     <div className="admin-root min-h-screen bg-[#F6F0E7] dark:bg-[#0f0b0c] flex font-body text-zinc-900">
-      <aside className={`fixed lg:sticky top-0 inset-y-0 left-0 z-50 w-64 h-screen bg-[#2C0A10] text-[#FBF5EC] transform transition-transform lg:transform-none ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      <aside className={`fixed lg:sticky top-0 inset-y-0 left-0 z-50 w-64 h-screen bg-night text-[#FBF5EC] transform transition-transform lg:transform-none ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <button type="button" onClick={() => setOpen(false)} aria-label="Close menu" className="lg:hidden absolute top-5 right-3 w-9 h-9 flex items-center justify-center text-[#FBF5EC]/70 hover:bg-white/10"><LuX /></button>
         {sidebar}
       </aside>
       {open && <div className="fixed inset-0 z-40 bg-black/40 lg:hidden" onClick={() => setOpen(false)} />}
 
       <div className="flex-1 min-w-0">
-        <header className="lg:hidden sticky top-0 z-30 bg-[#2C0A10] text-[#FBF5EC] h-14 px-4 flex items-center gap-3">
+        <header className="lg:hidden sticky top-0 z-30 bg-night text-[#FBF5EC] h-14 px-4 flex items-center gap-3">
           <button type="button" onClick={() => setOpen(true)} aria-label="Open menu" className="w-10 h-10 -ml-2 flex items-center justify-center hover:bg-white/10"><LuMenu size={20} /></button>
           <img src="/zaro-logo-112.webp" alt="" className="w-8 h-8 object-contain" />
-          <span className="font-display font-bold flex-1 text-[#F3DFA2]">ZARO Digitz</span>
+          <span className="font-display font-bold flex-1 text-[rgb(var(--accent-light-rgb))]">ZARO Digitz</span>
           <ThemeToggle size={18} className="w-10 h-10 -mr-2 flex items-center justify-center hover:bg-white/10" />
         </header>
         {error && <div className="mx-4 lg:mx-10 mt-4 rounded-lg bg-red-50 ring-1 ring-red-200 text-red-700 text-sm px-4 py-3">Couldn&apos;t load live data: {error}</div>}

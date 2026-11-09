@@ -58,7 +58,7 @@ export default function InvoicePage() {
                   {state.share.orderNumber ? `Order ${state.share.orderNumber} · ` : ''}{state.share.snapshot?.form?.fullName} · ₹{Number(state.share.snapshot?.grandTotal || 0).toLocaleString('en-IN')}
                 </p>
               </div>
-              <a href={state.url} download={filename} className="inline-flex items-center gap-2 bg-primary hover:bg-[#5A1420] text-white font-bold px-5 py-3 transition-colors">
+              <a href={state.url} download={filename} className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold px-5 py-3 transition-colors">
                 <FiDownload /> Download PDF
               </a>
             </div>

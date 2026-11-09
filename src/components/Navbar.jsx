@@ -110,7 +110,7 @@ function CartDrawer({ onClose }) {
           <div className="px-6 py-5 bg-paper2 space-y-3">
             <div className="flex justify-between text-lg"><span>Subtotal</span><span className="font-bold tabular-nums">{money(totalAmount)}</span></div>
             <p className="text-sm">Courier charges and your proof are confirmed on WhatsApp.</p>
-            <Link to="/checkout" onClick={onClose} className="flex items-center justify-center h-14 bg-primary text-white font-bold hover:bg-[#5A1420] transition-colors">Checkout</Link>
+            <Link to="/checkout" onClick={onClose} className="flex items-center justify-center h-14 bg-primary text-white font-bold hover:bg-primary-dark transition-colors">Checkout</Link>
             <Link to="/cart" onClick={onClose} className="block text-center font-semibold underline underline-offset-4">View cart</Link>
           </div>
         )}
@@ -172,7 +172,7 @@ export default function Navbar() {
           <div className="flex items-center gap-1 xl:pl-2">
             <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors"><LuSearch size={19} /></button>
             <ThemeToggle className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors" />
-            <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden xl:inline-flex items-center h-10 px-5 ml-3 order-last bg-primary text-white text-[15px] font-semibold transition-colors hover:bg-[#5A1420]">Get a quote</a>
+            <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden xl:inline-flex items-center h-10 px-5 ml-3 order-last bg-primary text-white text-[15px] font-semibold transition-colors hover:bg-primary-dark">Get a quote</a>
             <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors">
               <LuShoppingBag size={19} />
               {totalItems > 0 && <motion.span key={totalItems} initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-0.5 right-0.5 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center font-bold">{totalItems}</motion.span>}

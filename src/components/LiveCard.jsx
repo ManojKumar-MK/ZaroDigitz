@@ -28,16 +28,16 @@ export default function LiveCard({ mode = 'wedding', values = {}, className = ''
         aria-label={`${LIVE_MODES[mode].label} preview`}
       >
         {mode === 'wedding' && (
-          <div className="aspect-[5/7] bg-primary text-[#F3DFA2] p-3">
-            <div className="h-full ring-2 ring-[#C9A032] ring-inset flex flex-col items-center justify-between py-8 px-5 text-center">
+          <div className="aspect-[5/7] bg-primary text-[rgb(var(--accent-light-rgb))] p-3">
+            <div className="h-full ring-2 ring-secondary ring-inset flex flex-col items-center justify-between py-8 px-5 text-center">
               <div>
                 <p className="text-xl" lang="ta" aria-hidden="true">உ</p>
                 <p className="text-sm mt-2" lang="ta">திருமண அழைப்பிதழ்</p>
-                <p className="text-sm text-[#EAC96E]">Wedding invitation</p>
+                <p className="text-sm text-[rgb(var(--accent-light-rgb))]">Wedding invitation</p>
               </div>
               <div className="w-full">
                 <Swap k={v.a} className="font-display font-bold text-3xl text-white break-words">{v.a}</Swap>
-                <p className="text-[#C9A032] text-lg my-1">&amp;</p>
+                <p className="text-secondary text-lg my-1">&amp;</p>
                 <Swap k={v.b} className="font-display font-bold text-3xl text-white break-words">{v.b}</Swap>
               </div>
               <div className="text-sm">
@@ -59,18 +59,18 @@ export default function LiveCard({ mode = 'wedding', values = {}, className = ''
               <div className="grid grid-cols-1 gap-2 text-left text-sm" aria-hidden="true">
                 {['Name', 'Class', 'Subject'].map((l) => <p key={l} className="flex gap-2">{l}<span className="flex-1 border-b-2 border-dotted border-white/50" /></p>)}
               </div>
-              <Swap k={v.town} className="font-semibold text-[#EAC96E]">{v.town}</Swap>
+              <Swap k={v.town} className="font-semibold text-[rgb(var(--accent-light-rgb))]">{v.town}</Swap>
             </div>
           </div>
         )}
 
         {mode === 'diary' && (
-          <div className="aspect-[3/4] bg-[#211114] text-[#E9C766] relative flex flex-col items-center justify-center text-center p-8">
+          <div className="aspect-[3/4] bg-[#211114] text-[rgb(var(--accent-light-rgb))] relative flex flex-col items-center justify-center text-center p-8">
             <div className="absolute right-6 top-0 bottom-0 w-3 bg-primary" aria-hidden="true" />
             <Swap k={v.town} className="font-display font-bold text-5xl tracking-tight">{v.town}</Swap>
-            <p className="w-12 h-0.5 bg-[#C9A032] my-6" aria-hidden="true" />
+            <p className="w-12 h-0.5 bg-secondary my-6" aria-hidden="true" />
             <Swap k={v.a} className="font-display font-semibold text-xl break-words">{v.a}</Swap>
-            <Swap k={v.b} className="text-base mt-3 text-[#F3DFA2]">{v.b}</Swap>
+            <Swap k={v.b} className="text-base mt-3 text-[rgb(var(--accent-light-rgb))]">{v.b}</Swap>
           </div>
         )}
       </motion.div>
