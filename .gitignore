@@ -29,3 +29,4 @@ dist-ssr
 !.env.example
 # public Firebase web config, not a secret
 !.env.production
+.vercel
