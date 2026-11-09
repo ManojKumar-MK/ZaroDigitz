@@ -8,7 +8,7 @@ import autoTable from 'jspdf-autotable';
 const COMPANY = {
   name: 'ZARO Digitz',
   addressLines: ['No. 3U, Maruthu Pandiyar Mettu Street', 'Sivakasi, Tamil Nadu - 626123', 'GSTIN 33AAEFZ1822D1ZK'],
-  phone: '+91 97877 02336',
+  phone: '+91 97877 02336 / 63696 19148',
   email: 'zarodigitz@gmail.com',
 };
 
@@ -98,9 +98,11 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
     console.warn('Logo image could not be loaded for PDF export:', error);
   }
 
-  // ---- Header ribbon ----
-  doc.setFillColor(...LOGO_COLORS.cyan);
+  // ---- Header: maroon band with a foil-gold rule under it ----
+  doc.setFillColor(...BRAND_COLOR);
   doc.rect(0, 0, pageWidth, 120, 'F');
+  doc.setFillColor(201, 160, 50);
+  doc.rect(0, 120, pageWidth, 4, 'F');
 
   if (logoImage) {
     doc.addImage(logoImage, 'PNG', 30, 12, 60, 60);
@@ -120,7 +122,12 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   );
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
+  doc.setTextColor(233, 199, 102);
   doc.text('INVOICE', pageWidth - 40, 40, { align: 'right' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(255, 255, 255);
+  doc.text('Digital colour printing · Sivakasi', pageWidth - 40, 56, { align: 'right' });
 
   doc.setTextColor(30, 30, 30);
 
@@ -137,6 +144,20 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
     260
   );
   doc.text(addrLines, 40, y + 45);
+  // Card details the customer gave at checkout (names, date, wording)
+  const eventLines = [
+    form.eventFor && `Names: ${form.eventFor}`,
+    form.eventDate && `Event date: ${form.eventDate}`,
+    form.eventNotes && `Notes: ${form.eventNotes}`,
+  ].filter(Boolean).flatMap((l) => doc.splitTextToSize(l, 260));
+  let eventBottom = y + 45 + addrLines.length * 13;
+  if (eventLines.length) {
+    doc.setFont('helvetica', 'bold');
+    doc.text('Card details:', pageWidth - 300, y + 45);
+    doc.setFont('helvetica', 'normal');
+    doc.text(eventLines, pageWidth - 300, y + 60);
+    eventBottom = Math.max(eventBottom, y + 60 + eventLines.length * 13);
+  }
 
   doc.setFont('helvetica', 'bold');
   doc.text('Invoice No:', pageWidth - 200, y);
@@ -151,16 +172,18 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   const rows = cart.map((item, i) => {
     const mrp = item.mrp ?? item.price;
     const total = item.price * item.quantity;
-    return [i + 1, item.name, item.quantity, rupee(mrp), rupee(item.price), rupee(total)];
+    // Personalised items list what the customer filled in under the name.
+    const details = (item.personalisation?.summary || []).map((d) => `${d.label}: ${d.value}`).join('\n');
+    return [i + 1, details ? `${item.name}\n${details}` : item.name, item.quantity, rupee(mrp), rupee(item.price), rupee(total)];
   });
 
-  const tableStartY = Math.max(y + 70, y + 45 + addrLines.length * 13 + 18);
+  const tableStartY = Math.max(y + 70, eventBottom + 18);
 
   autoTable(doc, {
     startY: tableStartY,
     margin: { left: 40, right: 40 },
     tableWidth: 'wrap',
-    head: [['S.No', 'Product Name', 'Qty', 'MRP', 'Price', 'Total']],
+    head: [['S.No', 'Item', 'Qty', 'MRP', 'Price', 'Total']],
     body: rows,
     theme: 'grid',
     headStyles: {
