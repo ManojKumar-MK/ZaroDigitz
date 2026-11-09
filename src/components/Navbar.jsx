@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { LuCalendarDays, LuChevronDown, LuHeart, LuMapPin, LuMenu, LuPrinter, LuSearch, LuShoppingBag, LuX } from 'react-icons/lu';
 import { useShopSettings } from '../context/ShopSettingsContext';
-import { ThemeToggle } from '../theme/ThemeToggle';
 import { useCart } from '../context/CartContext';
 import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
 import { categoryPath, productPath } from '../seo/catalog';
@@ -171,7 +170,6 @@ export default function Navbar() {
 
           <div className="flex items-center justify-end gap-1 whitespace-nowrap">
             <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors"><LuSearch size={19} /></button>
-            <ThemeToggle className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors" />
             <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden 2xl:inline-flex items-center h-10 px-5 ml-3 order-last bg-primary text-white text-[15px] font-semibold transition-colors hover:bg-primary-dark">Get a quote</a>
             <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors">
               <LuShoppingBag size={19} />

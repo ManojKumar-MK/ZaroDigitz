@@ -11,7 +11,7 @@
     <meta name="theme-color" content="#5A1420" />
     <script>
       // Apply the saved light/dark theme before first paint (see src/theme/theme.js)
-      (function () { try { var p = localStorage.getItem("digitz-theme"); var d = p === "dark" || (p !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches); if (d) { document.documentElement.classList.add("dark"); document.documentElement.style.colorScheme = "dark"; } } catch (e) {} })();
+      (function () { try { var p = localStorage.getItem("digitz-theme"); var d = location.pathname.indexOf("/admin") === 0 && (p === "dark" || (p !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches)); if (d) { document.documentElement.classList.add("dark"); document.documentElement.style.colorScheme = "dark"; } } catch (e) {} })();
     </script>
 
     <!-- Local business signals -->

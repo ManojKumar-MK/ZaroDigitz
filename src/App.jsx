@@ -1,3 +1,4 @@
+import { applyTheme } from './theme/theme';
 import { BrowserRouter, Routes, Route, useLocation, useParams } from 'react-router-dom';
 import { useEffect, lazy, Suspense } from 'react';
 import { CartProvider } from './context/CartContext';
@@ -67,6 +68,8 @@ function ScrollToTop() {
 
 function AppLayout() {
   const { pathname } = useLocation();
+  // Moving between the admin and the storefront switches dark mode on or off (storefront is always light).
+  useEffect(() => { applyTheme(); }, [pathname]);
   if (pathname === '/admin' || pathname.startsWith('/admin/')) {
     return (
       <ErrorBoundary>

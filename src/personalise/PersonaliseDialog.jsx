@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { LuX, LuLanguages, LuShare2, LuShoppingBag, LuImagePlus } from 'react-icons/lu';
 import TemplateCanvas from './TemplateCanvas';
+import { SceneView, CameraView } from './TryOn';
+import { modeFor } from '../components/liveModes';
 import { WORDING, displayText, renderPreview, savePersonalisation, toTamil } from './templates';
 import { compressImage } from '../utils/image';
 
@@ -19,6 +21,16 @@ export default function PersonaliseDialog({ product, template, quantity, onAdd, 
   const [values, setValues] = useState(() => readDraft(product.code));
   const [photos, setPhotos] = useState({});
   const [busy, setBusy] = useState('');
+  // Design (live editor) | scene (in a room, tilts) | camera (over the customer's own space)
+  const [view, setView] = useState('design');
+  const [shot, setShot] = useState(null); // rendered preview for the scene and camera views
+  const kind = modeFor(product.category);
+  const show = async (v) => {
+    setView(v);
+    if (v === 'design') return;
+    setBusy('Making your preview…');
+    try { setShot(await renderPreview(template, values, photos, 900)); } finally { setBusy(''); }
+  };
   const [error, setError] = useState('');
 
   useEffect(() => { try { localStorage.setItem(DRAFT(product.code), JSON.stringify(values)); } catch { /* storage full or blocked */ } }, [values, product.code]);
@@ -94,8 +106,15 @@ export default function PersonaliseDialog({ product, template, quantity, onAdd, 
 
         <div className="flex-1 overflow-y-auto lg:overflow-hidden grid lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
           <div className="bg-paper3 p-5 sm:p-8 flex items-start lg:items-center justify-center lg:overflow-y-auto">
-            <motion.div initial={{ rotate: -2, y: 16, opacity: 0 }} animate={{ rotate: 0, y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="w-full max-w-[460px]">
-              <TemplateCanvas template={template} values={values} photos={photos} />
+            <motion.div initial={{ rotate: -2, y: 16, opacity: 0 }} animate={{ rotate: 0, y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="w-full max-w-[560px]">
+              <div role="tablist" aria-label="How to see it" className="flex flex-wrap gap-2 mb-4">
+                {[['design', 'Design'], ['scene', kind === 'calendar' || kind === 'diary' ? 'On your desk' : 'On the table'], ['camera', 'In your space']].map(([v, l]) => (
+                  <button key={v} type="button" role="tab" aria-selected={view === v} onClick={() => show(v)} className={`h-10 px-4 font-semibold transition-colors ${view === v ? 'bg-primary text-white' : 'bg-paper hover:bg-paper2'}`}>{l}</button>
+                ))}
+              </div>
+              {view === 'design' && <TemplateCanvas template={template} values={values} photos={photos} />}
+              {view === 'scene' && shot && <SceneView src={shot} kind={kind} />}
+              {view === 'camera' && shot && <CameraView src={shot} name={product.code} />}
             </motion.div>
           </div>
 

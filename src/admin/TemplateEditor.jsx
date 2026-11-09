@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FiUpload, FiTrash2, FiSave, FiAlignLeft, FiAlignCenter, FiAlignRight } from 'react-icons/fi';
 import { compressImage } from '../utils/image';
+import { psdToTemplate } from './psdImport';
 import TemplateCanvas from '../personalise/TemplateCanvas';
 import { FONTS, loadTemplate, saveTemplate, deleteTemplate, newField } from '../personalise/templates';
 import { useToast } from './Toast';
@@ -52,10 +53,17 @@ export default function TemplateEditor({ code }) {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) return;
-    setBusy('Preparing the design…');
+    setBusy(/\.psd$/i.test(file.name) ? 'Reading the Photoshop layers…' : 'Preparing the design…');
     try {
-      const image = await compressImage(file, { maxDimension: 1600, quality: 0.86, maxBytes: 900 * 1024, format: 'image/jpeg' });
-      update((t) => ({ image, fields: t?.fields || [] }));
+      if (/\.psd$/i.test(file.name)) {
+        // Text layers become boxes; everything else becomes the background.
+        const t = await psdToTemplate(file);
+        update(() => ({ image: t.image, fields: t.fields }));
+        toast(`Imported ${t.fields.length} boxes from the PSD.${t.notes.length ? ` ${t.notes[0]}` : ''}`);
+      } else {
+        const image = await compressImage(file, { maxDimension: 1600, quality: 0.86, maxBytes: 900 * 1024, format: 'image/jpeg' });
+        update((t) => ({ image, fields: t?.fields || [] }));
+      }
     } catch (err) {
       toast(err.message || 'Could not read that image', 'error');
     } finally {
@@ -116,10 +124,10 @@ export default function TemplateEditor({ code }) {
       {!template?.image ? (
         <div className="space-y-3">
           {step(1, 'Upload the design')}
-          <p className="text-sm text-zinc-600 dark:text-zinc-300">In Photoshop, hide the name, date and photo layers and export a JPG (about 1500 px wide).</p>
+          <p className="text-sm text-zinc-600 dark:text-zinc-300">Upload the <strong>PSD</strong>: text layers become boxes automatically (name a layer “photo” for a photo frame). Or upload a JPG, PNG or SVG with the name and date layers hidden.</p>
           <label className="inline-flex items-center gap-2 h-11 px-5 rounded-lg text-sm font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 cursor-pointer">
-            <FiUpload /> {busy || 'Upload design JPG'}
-            <input type="file" accept="image/*" className="hidden" onChange={onFile} />
+            <FiUpload /> {busy || 'Upload PSD, JPG, PNG or SVG'}
+            <input type="file" accept="image/*,.psd" className="hidden" onChange={onFile} />
           </label>
         </div>
       ) : (
@@ -137,7 +145,7 @@ export default function TemplateEditor({ code }) {
                 />
               )}
             </div>
-            <p className="text-sm text-zinc-500 mt-3">Drag a box to place it. Drag the green dot to resize. <label className="text-zinc-700 dark:text-zinc-300 underline cursor-pointer">Replace the JPG<input type="file" accept="image/*" className="hidden" onChange={onFile} /></label></p>
+            <p className="text-sm text-zinc-500 mt-3">Drag a box to place it. Drag the green dot to resize. <label className="text-zinc-700 dark:text-zinc-300 underline cursor-pointer">Replace the JPG<input type="file" accept="image/*,.psd" className="hidden" onChange={onFile} /></label></p>
           </div>
 
           <div className="space-y-6">

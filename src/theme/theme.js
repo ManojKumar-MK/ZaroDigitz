@@ -12,7 +12,8 @@ export function resolvedTheme(pref = getThemePreference()) {
 }
 export function applyTheme(pref = getThemePreference()) {
   if (typeof document === 'undefined') return;
-  const dark = resolvedTheme(pref) === 'dark';
+  // The storefront is always light; only the admin follows the light/dark choice.
+  const dark = resolvedTheme(pref) === 'dark' && window.location.pathname.startsWith('/admin');
   document.documentElement.classList.toggle('dark', dark);
   document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
   const meta = document.querySelector('meta[name="theme-color"]');
