@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiShoppingBag, FiMenu, FiX, FiSearch, FiChevronDown, FiMinus, FiPlus } from 'react-icons/fi';
+import { FiMinus, FiPlus } from 'react-icons/fi';
+import { LuChevronDown, LuHeart, LuMapPin, LuMenu, LuPartyPopper, LuPrinter, LuSearch, LuShoppingBag, LuX } from 'react-icons/lu';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import { useCart } from '../context/CartContext';
@@ -14,22 +15,25 @@ import { InviteCardSketch, ScrollSketch, NotebookSketch } from './Sketches';
 const MENUS = [
   {
     label: 'Wedding Cards',
+    icon: LuHeart,
     sketch: InviteCardSketch,
     items: ['Hindu Wedding Cards', 'Muslim Wedding Cards', 'Christian Wedding Cards', 'Budget Wedding Cards', 'Scroll Invitations', 'Acrylic Invitations', 'Foil & Metallic Cards', 'Premium Box Invitations'],
   },
   {
     label: 'Other Invitations',
+    icon: LuPartyPopper,
     sketch: ScrollSketch,
     items: ['Birthday Invitations', 'House Warming Invitations', 'Ear Piercing Invitations', 'Baby Shower Invitations', 'Puberty Ceremony Invitations', 'Holy Communion Invitations', 'Return Gifts'],
   },
   {
     label: 'Digital Printing',
+    icon: LuPrinter,
     sketch: NotebookSketch,
     items: ['Visiting Cards & Stationery', 'Labels & Stickers', 'Flyers & Brochures', 'Bill Books & Receipt Books', 'Letterheads & Envelopes', 'ID Cards', 'Certificates', 'Synthetic & Texture Board Prints', 'School & College Notebooks', 'Diaries & Calendars', 'Sweet & Cake Boxes', 'Branding & Signage', 'Custom Printing'],
   },
 ];
 // Single-page sections sit beside the menus.
-const LINKS = [{ to: '/contact', label: 'Visit Us' }];
+const LINKS = [{ to: '/contact', label: 'Visit Us', icon: LuMapPin }];
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
 function SearchPanel({ onClose }) {
@@ -43,9 +47,9 @@ function SearchPanel({ onClose }) {
       <motion.div initial={{ y: -24 }} animate={{ y: 0 }} exit={{ y: -24 }} className="bg-paper text-ink px-4 sm:px-8 py-6 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Search designs">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 bg-paper2 px-4">
-            <FiSearch className="shrink-0" />
+            <LuSearch className="shrink-0" size={20} />
             <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search designs, codes or occasions" aria-label="Search" className="flex-1 h-14 bg-transparent text-lg focus:outline-none placeholder:text-ink/50" />
-            <button type="button" onClick={onClose} aria-label="Close search" className="p-2 hover:text-brand"><FiX size={20} /></button>
+            <button type="button" onClick={onClose} aria-label="Close search" className="p-2 hover:text-brand"><LuX size={20} /></button>
           </div>
           {cats.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
@@ -77,7 +81,7 @@ function CartDrawer({ onClose }) {
       <motion.aside initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute right-0 top-0 h-full w-full max-w-md bg-paper text-ink flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Your cart">
         <div className="flex items-center justify-between px-6 h-16 bg-paper2">
           <h2 className="font-display font-bold text-xl">Your cart</h2>
-          <button type="button" onClick={onClose} aria-label="Close cart" className="p-2 hover:text-brand"><FiX size={22} /></button>
+          <button type="button" onClick={onClose} aria-label="Close cart" className="p-2 hover:text-brand"><LuX size={22} /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
           {!cart.length && <p className="py-10 text-center">Your cart is empty. Pick a design to start.</p>}
@@ -139,7 +143,7 @@ export default function Navbar() {
       <nav className="relative bg-paper dark:bg-paper2 text-ink" onMouseLeave={() => setOpen(null)} aria-label="Main">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-[72px] flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <button type="button" aria-label="Open menu" className="lg:hidden p-2 -ml-2 hover:text-brand" onClick={() => openPanel('menu')}><FiMenu size={22} /></button>
+            <button type="button" aria-label="Open menu" className="lg:hidden w-11 h-11 -ml-2 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand" onClick={() => openPanel('menu')}><LuMenu size={22} /></button>
             <Link to="/" className="flex items-center gap-3 group">
               <img src="/zaro-logo-112.webp" width="52" height="52" alt="" className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full object-cover transition-transform duration-500 group-hover:rotate-[20deg]" />
               <span className="leading-tight">
@@ -153,22 +157,22 @@ export default function Navbar() {
             {MENUS.map((m) => (
               <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
                 <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`relative h-[72px] px-3 xl:px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
-                  {m.label} <FiChevronDown className={`transition-transform ${open === m.label ? 'rotate-180' : ''}`} />
+                  <m.icon size={18} className="text-brand" aria-hidden="true" />{m.label}<LuChevronDown size={16} className={`opacity-70 transition-transform ${open === m.label ? 'rotate-180' : ''}`} aria-hidden="true" />
                   {open === m.label && <motion.span layoutId="nav-open" className="absolute left-3 right-3 xl:left-4 xl:right-4 bottom-0 h-[3px] bg-secondary" />}
                 </button>
               </li>
             ))}
             {LINKS.map((l) => (
-              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-[72px] px-3 xl:px-4 inline-flex items-center font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}>{l.label}</Link></li>
+              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-[72px] px-3 xl:px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}><l.icon size={18} className="text-brand" aria-hidden="true" />{l.label}</Link></li>
             ))}
           </ul>
 
           <div className="flex items-center gap-1">
-            <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="p-2.5 hover:text-brand transition-colors"><FiSearch size={21} /></button>
-            <ThemeToggle className="p-2.5 hover:text-brand transition-colors" />
+            <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors"><LuSearch size={21} /></button>
+            <ThemeToggle className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors" />
             <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden xl:inline-flex items-center h-11 px-5 ml-2 order-last bg-primary text-white font-semibold transition-colors hover:bg-[#5A1420]">Get a quote</a>
-            <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative p-2.5 hover:text-brand transition-colors">
-              <FiShoppingBag size={21} />
+            <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative w-11 h-11 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors">
+              <LuShoppingBag size={21} />
               {totalItems > 0 && <motion.span key={totalItems} initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-0.5 right-0.5 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center font-bold">{totalItems}</motion.span>}
             </button>
           </div>
@@ -180,6 +184,7 @@ export default function Navbar() {
             <motion.div key={open} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="hidden lg:block absolute inset-x-0 top-full bg-paper2 dark:bg-paper3 text-ink shadow-xl">
               {MENUS.filter((m) => m.label === open).map((m) => (
                 <div key={m.label} className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-8">
+                  <p className="col-span-12 -mb-3 inline-flex items-center gap-2 font-display font-bold text-xl text-brand"><m.icon size={22} aria-hidden="true" />{m.label}</p>
                   <ul className={`col-span-8 grid ${m.items.length > 8 ? 'grid-cols-3' : 'grid-cols-2'} gap-x-10 gap-y-3`}>
                     {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={() => setOpen(null)} className="text-lg hover:text-brand hover:translate-x-1 inline-block transition-transform">{c}</Link></li>)}
                     <li className="col-span-2 mt-3"><Link to="/cards" onClick={() => setOpen(null)} className="font-semibold text-brand underline underline-offset-4">See every design</Link></li>
@@ -200,13 +205,13 @@ export default function Navbar() {
             <motion.aside initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute left-0 top-0 h-full w-[86%] max-w-sm bg-paper text-ink overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Menu">
               <div className="flex items-center justify-between px-5 h-16 bg-paper2">
                 <span className="font-display font-bold text-lg text-brand">ZARO Digitz</span>
-                <button type="button" onClick={close} aria-label="Close menu" className="p-2"><FiX size={22} /></button>
+                <button type="button" onClick={close} aria-label="Close menu" className="p-2"><LuX size={22} /></button>
               </div>
               <div className="px-5 py-4">
                 {MENUS.map((m) => (
                   <details key={m.label} className="group">
-                    <summary className="flex items-center justify-between h-14 font-semibold text-lg cursor-pointer list-none">{m.label}<FiChevronDown className="group-open:rotate-180 transition-transform" /></summary>
-                    <ul className="pb-3 pl-3 space-y-2.5">
+                    <summary className="flex items-center justify-between h-14 font-semibold text-lg cursor-pointer list-none"><span className="inline-flex items-center gap-3"><m.icon size={20} className="text-brand" aria-hidden="true" />{m.label}</span><LuChevronDown className="group-open:rotate-180 transition-transform" /></summary>
+                    <ul className="pb-3 pl-8 space-y-2.5">
                       {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={close} className="block hover:text-brand">{c}</Link></li>)}
                     </ul>
                   </details>

@@ -218,6 +218,35 @@ export function SweetBoxSketch({ className }) {
   );
 }
 
+export function PhoneProofSketch({ className }) {
+  return (
+    <Frame title="Sketch of a phone showing a design proof in a chat" className={className}>
+      <S d="M84 26 L156 26 C164 26 168 30 168 38 L168 202 C168 210 164 214 156 214 L84 214 C76 214 72 210 72 202 L72 38 C72 30 76 26 84 26 Z" i={0} />
+      <S d="M110 36 L130 36 M114 204 L126 204" i={1} w={1.6} />
+      <S d="M84 52 L132 52 L132 70 L90 70 L84 76 Z" i={2} w={1.4} />
+      <S d="M96 84 L156 84 L156 156 L96 156 Z" gold i={3} />
+      <S d="M108 104 C116 100 124 108 132 104 C140 100 146 106 148 104 M112 120 L140 119 M112 132 L138 131" i={4} w={1.4} />
+      <S d="M108 172 L156 172 L156 190 L150 190 L156 196 L108 196 Z" i={5} w={1.4} />
+      <S d="M120 182 L128 188 L144 176" gold i={6} w={2.6} />
+    </Frame>
+  );
+}
+
+export function PrinterSketch({ className }) {
+  return (
+    <Frame title="Sketch of a digital colour printer with sheets coming out" className={className}>
+      <S d="M48 96 L192 96 L192 170 L48 170 Z" i={0} />
+      <S d="M70 96 L76 52 L164 52 L170 96" i={1} />
+      <S d="M64 170 L60 212 L180 212 L176 170" i={2} />
+      <S d="M78 184 L162 184 M76 198 L164 198" gold i={3} w={1.6} />
+      <S d="M64 116 L104 116" i={4} w={1.4} />
+      <S d="M160 118 m-6 0 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0" gold i={4} w={2} />
+      <S d="M140 118 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0" i={5} w={1.6} />
+      <S d="M64 146 C90 140 110 152 134 146" i={6} w={1.2} />
+    </Frame>
+  );
+}
+
 /** The sketch that fits a category, so designs without a photo still show the right kind of thing. */
 export function CategorySketch({ category = '', className }) {
   if (/notebook/i.test(category)) return <NotebookSketch className={className} />;

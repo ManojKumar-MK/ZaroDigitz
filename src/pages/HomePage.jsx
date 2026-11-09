@@ -10,7 +10,8 @@ import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
 import { qtyRules } from '../utils/pricing';
 import ProductCard from '../components/ProductCard';
 import { hasPhoto } from '../components/sketchFor';
-import { CategorySketch, InviteCardSketch, EnvelopeSketch, ScrollSketch, GiftBoxSketch, AcrylicSketch, CalendarSketch, ThoranamSketch, KolamSketch } from '../components/Sketches';
+import { LuClock, LuMapPin, LuNavigation, LuPhone } from 'react-icons/lu';
+import { CategorySketch, PhoneProofSketch, PrinterSketch, InviteCardSketch, EnvelopeSketch, ScrollSketch, GiftBoxSketch, AcrylicSketch, CalendarSketch, ThoranamSketch, KolamSketch } from '../components/Sketches';
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
 
 /* The things we make, drawn: the hero's stage cycles through them. */
@@ -116,6 +117,22 @@ const TRADITIONS = [
   { name: 'House Warming Invitations', note: 'Griha pravesam', Sketch: KolamSketch },
 ];
 
+/** "Open now" from the shop hours, in India time: Mon–Sat 9–22, Sun 10–20. */
+function OpenNow() {
+  const [now] = useState(() => new Date());
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'short', hour: 'numeric', hour12: false }).formatToParts(now).map((x) => [x.type, x.value]));
+  const sunday = parts.weekday === 'Sun';
+  const hour = Number(parts.hour) % 24;
+  const [from, to] = sunday ? [10, 20] : [9, 22];
+  const open = hour >= from && hour < to;
+  return (
+    <p className="inline-flex items-center gap-3 text-lg font-semibold">
+      <span className={`w-3 h-3 rounded-full ${open ? 'bg-emerald-400' : 'bg-red-400'}`} aria-hidden="true" />
+      {open ? `Open now · until ${to > 12 ? to - 12 : to} pm` : `Closed now · opens ${from} am`}
+    </p>
+  );
+}
+
 export default function HomePage() {
   const { settings } = useShopSettings();
   const [catalogProducts, setCatalogProducts] = useState(() => getCatalogProducts());
@@ -131,11 +148,6 @@ export default function HomePage() {
   }, []);
 
   const priced = useMemo(() => catalogProducts.filter((p) => p.price != null), [catalogProducts]);
-  const groups = useMemo(() => {
-    const by = new Map();
-    priced.forEach((p) => { if (!by.has(p.category)) by.set(p.category, []); by.get(p.category).push(p); });
-    return [...by.entries()].map(([name, items]) => ({ name, items: items.sort((a, b) => a.price - b.price) }));
-  }, [priced]);
   const favourites = useMemo(() => [...priced].sort((a, b) => a.price - b.price).slice(0, 10), [priced]);
   const tiles = useMemo(() => [...priced].sort((a, b) => (b.sortOrder ?? b.id ?? 0) - (a.sortOrder ?? a.id ?? 0)).slice(0, 8), [priced]);
 
@@ -278,36 +290,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* PRICES: one giant word, then every category as a bar that opens */}
-      <section className="bg-paper2 py-24 lg:py-32">
-        <div className="max-w-[640px] mx-auto px-4 [container-type:inline-size]">
-          <Rise as="h2" className="font-display font-bold uppercase text-brand leading-[0.8] tracking-tight text-[21cqw] whitespace-nowrap">Prices</Rise>
-          <Rise i={1} as="p" className="text-lg mt-6">Price per card, printing of your names and wording included. Bigger orders cost less per card; each design shows its bulk price.</Rise>
-          <div className="mt-8 flex flex-col gap-1.5">
-            {groups.map((g, gi) => (
-              <Rise key={g.name} i={Math.min(gi, 6)}>
-                <details open={gi === 0} className="group bg-paper">
-                  <summary className="h-14 px-5 flex items-center justify-between cursor-pointer list-none font-semibold hover:bg-paper3 transition-colors">
-                    <span>{g.name}</span>
-                    <span className="text-brand text-2xl leading-none transition-transform group-open:rotate-45" aria-hidden="true">+</span>
-                  </summary>
-                  <ul className="px-5 pb-5 pt-1 space-y-3.5">
-                    {g.items.map((p) => (
-                      <li key={p.code}>
-                        <Link to={productPath(p)} className="flex justify-between gap-4 hover:text-brand transition-colors">
-                          <span>{p.name}</span>
-                          <span className="tabular-nums font-semibold whitespace-nowrap">{money(p.price)} <span className="font-normal text-ink/70">/ {String(p.per || 'card').replace(/^1\s+/, '')}</span></span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              </Rise>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* NUMBERS: the facts of the order */}
       <section className="bg-secondary text-[#211114]">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-14 grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -320,35 +302,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS: printed as a receipt slip */}
-      <section className="bg-primary dark:bg-[#3A0E16] text-white py-24 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-12 gap-12">
-          <div className="lg:col-span-5">
-            <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(40px,4.4vw,68px)] leading-[1.02]">From your phone to the press</Rise>
-            <Rise i={1} as="p" className="text-lg mt-6 max-w-[30ch] text-white/90">Nothing is printed until you have seen your own card, with your own names, and said yes.</Rise>
+      {/* HOW IT WORKS: four steps joined by a line that draws itself */}
+      <section className="bg-primary dark:bg-[#3A0E16] text-white py-24 lg:py-32 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="grid lg:grid-cols-12 gap-6 items-end">
+            <Rise as="h2" className="lg:col-span-7 font-display font-bold tracking-tight text-[clamp(36px,4.2vw,64px)] leading-[1.02]">From your phone to the press</Rise>
+            <Rise i={1} as="p" className="lg:col-span-5 text-lg text-white/90 max-w-[42ch]">Wedding cards, notebooks, flyers or ID cards, it works the same way: you see a proof first, and nothing is printed until you say yes.</Rise>
           </div>
-          <Rise i={2} className="lg:col-start-7 lg:col-span-5 w-full max-w-[480px] bg-paper text-ink p-7 pb-16 [clip-path:polygon(0_0,100%_0,100%_calc(100%-14px),95%_100%,90%_calc(100%-14px),85%_100%,80%_calc(100%-14px),75%_100%,70%_calc(100%-14px),65%_100%,60%_calc(100%-14px),55%_100%,50%_calc(100%-14px),45%_100%,40%_calc(100%-14px),35%_100%,30%_calc(100%-14px),25%_100%,20%_calc(100%-14px),15%_100%,10%_calc(100%-14px),5%_100%,0_calc(100%-14px))]">
-            <h3 className="font-display font-bold text-2xl">Zaro Digitz, Sivakasi</h3>
-            {[
-              ['Today', [['Choose a design and quantity', '5 min'], ['Place the order online', '2 min']]],
-              ['Within a day', [['We message you on WhatsApp', 'names, date, venue'], ['Your digital proof arrives', 'free changes']]],
-              ['The week after', [['Printed on our Sivakasi presses', '5–7 days'], ['Packed flat and couriered', 'across India']]],
-            ].map(([head, rows]) => (
-              <div key={head} className="mt-7">
-                <p className="font-bold">{head}</p>
-                {rows.map(([a, b]) => (
-                  <div key={a} className="flex items-baseline gap-2 mt-2.5 tabular-nums">
-                    <span>{a}</span>
-                    <span className="flex-1 border-b-[3px] border-dotted border-ink/40 translate-y-[-4px]" aria-hidden="true" />
-                    <span className="text-right">{b}</span>
+          <div className="relative mt-16">
+            <svg className="hidden lg:block absolute left-[12%] right-[12%] top-[88px] w-[76%] h-6 text-secondary" viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true">
+              <motion.path d="M0 12 C 160 -4, 340 28, 500 12 S 840 -4, 1000 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeDasharray="2 10" strokeLinecap="round" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 1.8, ease: 'easeInOut' }} />
+            </svg>
+            <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-6">
+              {[
+                { Sketch: InviteCardSketch, title: 'Pick a design or send yours', text: 'Choose from our designs, or share your own artwork, logo or text on WhatsApp.' },
+                { Sketch: PhoneProofSketch, title: 'Approve the proof', text: 'Within a day you get a digital proof with your names and details. Changes are free.' },
+                { Sketch: PrinterSketch, title: 'We print it here', text: 'In-house digital colour printing on all media, 13 × 19 in, up to 350 gsm, plus offset for big runs.' },
+                { Sketch: GiftBoxSketch, title: 'Packed and delivered', text: 'Collect from our Sivakasi studio or get it couriered anywhere in India.' },
+              ].map(({ Sketch, title, text }, n) => (
+                <Rise as="li" key={title} i={n} className="relative">
+                  <div className="w-44 h-44 mx-auto lg:mx-0 bg-paper text-brand rounded-full p-7 relative z-10">
+                    <Sketch className="w-full h-full" />
                   </div>
-                ))}
-              </div>
-            ))}
-            <div className="mt-8 -mx-7 h-11 px-7 bg-ink text-paper flex items-center justify-between font-semibold">
-              <span>Your cards, in your hands</span><span className="tabular-nums">about a week</span>
-            </div>
-          </Rise>
+                  <p className="font-display font-bold text-xl mt-6 text-center lg:text-left">{title}</p>
+                  <p className="text-white/85 mt-2 text-center lg:text-left max-w-[34ch] mx-auto lg:mx-0">{text}</p>
+                </Rise>
+              ))}
+            </ol>
+          </div>
         </div>
       </section>
 
@@ -406,7 +387,6 @@ export default function HomePage() {
             </div>
             <div className="flex flex-wrap items-center gap-6 mt-12">
               <a href={shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="on-light inline-flex items-center gap-2 h-14 px-7 bg-secondary text-dark font-bold transition-transform hover:-translate-y-0.5"><FaWhatsapp /> Ask us on WhatsApp</a>
-              <a href={googleBusinessLinks(settings).directions} target="_blank" rel="noopener noreferrer" className="text-lg font-semibold underline underline-offset-4 hover:text-secondary">Directions to the shop</a>
             </div>
           </div>
           <div className="lg:col-start-7 lg:col-span-6 relative">
@@ -417,25 +397,38 @@ export default function HomePage() {
       </section>
 
       {/* VISIT: the studio on Maruthu Pandiyar Mettu Street */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32 grid lg:grid-cols-2 gap-10 items-stretch">
-        <div className="flex flex-col justify-between gap-8">
-          <div>
-            <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Visit our Sivakasi studio</Rise>
-            <Rise i={1} as="p" className="text-lg mt-5 max-w-[40ch]">See paper, foil and finishes in your hand, look through sample cards and sit with us to set your wording.</Rise>
-            <Rise i={2} className="mt-8 text-lg space-y-1">
-              <p className="font-semibold">{BUSINESS.address.streetAddress}</p>
-              <p>Sivakasi, Virudhunagar, Tamil Nadu {BUSINESS.address.postalCode}</p>
-              <p>Monday to Saturday 9 am – 10 pm · Sunday 10 am – 8 pm</p>
-            </Rise>
-          </div>
-          <Rise i={3} className="flex flex-wrap gap-3">
-            <a href={googleBusinessLinks(settings).directions} target="_blank" rel="noopener noreferrer" className="inline-flex items-center h-14 px-7 bg-primary text-white font-bold hover:bg-[#5A1420] transition-colors">Get directions</a>
-            <a href="tel:+919787702336" className="inline-flex items-center h-14 px-7 bg-paper2 hover:bg-paper3 font-semibold transition-colors">Call before you come</a>
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32">
+        <div className="grid lg:grid-cols-12 gap-6 items-end mb-10">
+          <Rise as="h2" className="lg:col-span-7 font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Visit our Sivakasi studio</Rise>
+          <Rise i={1} as="p" className="lg:col-span-5 text-lg">See paper, foil and finishes in your hand, look through samples, and sit with us to set your wording.</Rise>
+        </div>
+        <div className="grid lg:grid-cols-12 gap-3">
+          <Rise className="lg:col-span-5 bg-night text-[#FBF5EC] p-8 sm:p-10 flex flex-col gap-8">
+            <OpenNow />
+            <div className="flex gap-4">
+              <LuMapPin size={24} className="text-secondary shrink-0 mt-1" aria-hidden="true" />
+              <div className="text-lg">
+                <p className="font-semibold">{BUSINESS.address.streetAddress}</p>
+                <p>Sivakasi, Virudhunagar, Tamil Nadu {BUSINESS.address.postalCode}</p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <LuClock size={24} className="text-secondary shrink-0 mt-1" aria-hidden="true" />
+              <div className="text-lg">
+                <p>Monday to Saturday, 9 am – 10 pm</p>
+                <p>Sunday, 10 am – 8 pm</p>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-2 mt-auto">
+              <a href={googleBusinessLinks(settings).directions} target="_blank" rel="noopener noreferrer" className="on-light inline-flex items-center justify-center gap-2 h-14 bg-secondary text-[#211114] font-bold transition-transform hover:-translate-y-0.5"><LuNavigation size={18} aria-hidden="true" /> Directions</a>
+              <a href="tel:+919787702336" className="inline-flex items-center justify-center gap-2 h-14 bg-white/10 hover:bg-white/20 font-semibold transition-colors"><LuPhone size={18} aria-hidden="true" /> Call</a>
+              <a href={shopWhatsAppLink('Hi Zaro Digitz! Please share your shop location.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 h-14 bg-white/10 hover:bg-white/20 font-semibold transition-colors"><FaWhatsapp size={18} aria-hidden="true" /> Location</a>
+            </div>
+          </Rise>
+          <Rise i={1} className="lg:col-span-7 min-h-[380px] bg-paper2">
+            <iframe title="Map to Zaro Digitz, Sivakasi" src={googleBusinessLinks(settings).embed} className="w-full h-full min-h-[380px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           </Rise>
         </div>
-        <Rise i={1} className="min-h-[360px] bg-paper2">
-          <iframe title="Map to Zaro Digitz, Sivakasi" src={googleBusinessLinks(settings).embed} className="w-full h-full min-h-[360px] grayscale-[30%]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-        </Rise>
       </section>
 
       {/* WHATSAPP: talk to a person */}
