@@ -1,6 +1,6 @@
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { currentBrandRgb } from '../theme/brand';
+import { currentBrandRgb } from '../theme/brand.js';
 
 /* ------------------------------------------------------------------ *
  *  EDIT THESE to match your business — pulled out so you don't have
@@ -133,6 +133,7 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
 
   // ---- Bill To / meta ----
   let y = 150;
+  const metaX = pageWidth - 215; // right column: invoice no, date, card details
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
   doc.text('Bill To:', 40, y);
@@ -159,7 +160,6 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
     eventBottom = Math.max(eventBottom, y + 55 + eventLines.length * 13);
   }
 
-  const metaX = pageWidth - 215;
   doc.setFont('helvetica', 'bold');
   doc.text('Invoice No:', metaX, y);
   doc.setFont('helvetica', 'normal');
