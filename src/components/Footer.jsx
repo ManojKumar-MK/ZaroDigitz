@@ -4,6 +4,7 @@ import { SHOP_CATEGORIES, categoryPath } from '../seo/catalog';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
+import { EnvelopeSketch } from './Sketches';
 
 const menu = [
   ['/cards', 'All designs'],
@@ -15,9 +16,6 @@ const menu = [
 
 // Open-licence pictures used on the site (see docs/image-credits.json).
 const CREDITS = [
-  ['Mehndi hands', 'Sutha Kamal', 'CC BY-SA 2.0', 'https://commons.wikimedia.org/w/index.php?curid=174835915', 'https://creativecommons.org/licenses/by-sa/2.0/'],
-  ['Henna', 'Melissa Gupta', 'CC BY-SA 2.0', 'https://commons.wikimedia.org/w/index.php?curid=3408847', 'https://creativecommons.org/licenses/by-sa/2.0/'],
-  ['Unbroken wax seal folded letter', 'rawpixel', 'CC0', 'https://www.rawpixel.com/image/8717910/photo-image-vintage-public-domain-letter', 'https://creativecommons.org/publicdomain/zero/1.0/'],
   ['Merry Go Round Letterpress Print', 'AlanKitching', 'CC BY 4.0', 'https://commons.wikimedia.org/w/index.php?curid=140212191', 'https://creativecommons.org/licenses/by/4.0/'],
   ['Pipe organ Thaarai at a Tamil wedding', 'Magentic Manifestations', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/w/index.php?curid=144951948', 'https://creativecommons.org/licenses/by-sa/4.0/'],
   ['A shrine decorated with marigold garlands', 'Alina Kakshapati', 'CC0', 'https://wordpress.org/photos/photo/3646a211f6/', 'https://creativecommons.org/publicdomain/zero/1.0/'],
@@ -36,7 +34,7 @@ export default function Footer() {
 
       <div className="lg:grid lg:grid-cols-2 lg:min-h-[100svh]">
         <div className="relative h-[50svh] lg:h-auto overflow-hidden">
-          <img src="/world/sealed-letter.jpg" alt="A folded letter closed with a red wax seal" width="1600" height="1100" loading="lazy" className="absolute inset-0 w-full h-full object-cover scale-125" />
+          <div className="absolute inset-0 bg-paper2 text-brand flex items-center justify-center p-10"><EnvelopeSketch className="w-full max-w-[520px] h-auto" /></div>
         </div>
 
         <div className="px-4 sm:px-10 lg:px-16 py-16 lg:py-20 flex flex-col">

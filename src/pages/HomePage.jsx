@@ -13,13 +13,13 @@ import { hasPhoto } from '../components/sketchFor';
 import { CategorySketch, InviteCardSketch, EnvelopeSketch, ScrollSketch, GiftBoxSketch, AcrylicSketch, CalendarSketch, ThoranamSketch, KolamSketch } from '../components/Sketches';
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
 
-/* Pictures of the world around the shop (open licences, credited in the footer). */
+/* The things we make, drawn: the hero's stage cycles through them. */
 const STAGE = [
-  { src: '/world/mehndi.jpg', alt: 'A bride’s hands painted with mehndi' },
-  { src: '/world/marigold.jpg', alt: 'A shrine decorated with marigold garlands' },
-  { src: '/world/sealed-letter.jpg', alt: 'A folded letter closed with a red wax seal' },
-  { src: '/world/henna.jpg', alt: 'Henna on open palms with gold bangles' },
-  { src: '/world/nadaswaram.jpg', alt: 'Nadaswaram players at a Tamil wedding' },
+  { Sketch: InviteCardSketch, caption: 'Folded cards with a kalash, foiled in gold' },
+  { Sketch: EnvelopeSketch, caption: 'Envelopes closed with a wax seal' },
+  { Sketch: ScrollSketch, caption: 'Royal scrolls with a silk tassel' },
+  { Sketch: GiftBoxSketch, caption: 'Keepsake boxes tied with ribbon' },
+  { Sketch: AcrylicSketch, caption: 'Clear acrylic with a mandala' },
 ];
 
 const rise = {
@@ -47,31 +47,32 @@ function Stripe({ tall = 'h-12' }) {
   );
 }
 
-/** Photographs that slowly change, like light shifting in the room. */
+/** The stage beside the card: one of our pieces draws itself, holds, then gives way to the next. */
 function Stage({ className = '' }) {
   const reduce = useReducedMotion();
   const [i, setI] = useState(0);
   useEffect(() => {
     if (reduce) return undefined;
-    const t = setInterval(() => { if (document.visibilityState === 'visible') setI((n) => (n + 1) % STAGE.length); }, 5600);
+    const t = setInterval(() => { if (document.visibilityState === 'visible') setI((n) => (n + 1) % STAGE.length); }, 5200);
     return () => clearInterval(t);
   }, [reduce]);
+  const { Sketch, caption } = STAGE[i];
   return (
-    <div className={`relative overflow-hidden bg-dark ${className}`}>
-      <AnimatePresence initial={false}>
-        <motion.img
-          key={STAGE[i].src}
-          src={STAGE[i].src}
-          alt={STAGE[i].alt}
-          width="1600"
-          height="1200"
-          className="absolute inset-0 w-full h-full object-cover"
-          initial={{ opacity: 0, scale: 1.06 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ opacity: { duration: 1.6 }, scale: { duration: 7, ease: 'linear' } }}
-        />
-      </AnimatePresence>
+    <div className={`relative overflow-hidden bg-paper2 text-brand flex flex-col ${className}`}>
+      <ThoranamSketch className="w-full h-auto shrink-0" count={10} />
+      <div className="relative flex-1 min-h-[260px]">
+        <AnimatePresence mode="wait">
+          <motion.div key={i} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.02 }} transition={{ duration: 0.6 }} className="absolute inset-0 flex flex-col items-center justify-center p-6">
+            <Sketch className="w-full max-w-[340px] h-auto flex-1 min-h-0" />
+            <p className="text-ink text-lg font-medium mt-3 text-center">{caption}</p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      <div className="flex justify-center gap-2 pb-5" role="tablist" aria-label="Pieces we make">
+        {STAGE.map((st, n) => (
+          <button key={st.caption} type="button" role="tab" aria-selected={n === i} aria-label={st.caption} onClick={() => setI(n)} className={`h-2.5 transition-all ${n === i ? 'w-8 bg-primary' : 'w-2.5 bg-ink/30 hover:bg-ink/50'}`} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -274,7 +275,7 @@ export default function HomePage() {
       {/* PRICES: one giant word, then every category as a bar that opens */}
       <section className="bg-paper2 py-24 lg:py-32">
         <div className="max-w-[640px] mx-auto px-4 [container-type:inline-size]">
-          <Rise as="h2" className="font-display font-bold uppercase text-brand leading-[0.8] tracking-tight text-[25cqw]">Prices</Rise>
+          <Rise as="h2" className="font-display font-bold uppercase text-brand leading-[0.8] tracking-tight text-[21cqw] whitespace-nowrap">Prices</Rise>
           <Rise i={1} as="p" className="text-lg mt-6">Price per card, printing of your names and wording included. Bigger orders cost less per card; each design shows its bulk price.</Rise>
           <div className="mt-8 flex flex-col gap-1.5">
             {groups.map((g, gi) => (
@@ -375,7 +376,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ beside the photographs */}
-      <section id="faq" className="bg-night text-white py-24 lg:pt-0 lg:pb-40 overflow-hidden">
+      <section id="faq" className="scroll-mt-28 bg-night text-white py-24 lg:pt-0 lg:pb-40 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-12 gap-12">
           <div className="lg:col-span-5 lg:pt-40">
             <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(30px,3vw,44px)] leading-tight">Before you order</Rise>

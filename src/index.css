@@ -27,6 +27,10 @@ html.dark {
 
 * { box-sizing: border-box; }
 
+/* The header is sticky (about 108px): in-page links land below it, and nothing scrolls sideways. */
+html { scroll-padding-top: 116px; }
+body { overflow-x: clip; }
+
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: #FBF5EC;
