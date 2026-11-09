@@ -135,14 +135,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* The top line scrolls away with the page; only the bar below it sticks (a constant 76px). */}
-      <div className="bg-night text-[#F3E8D8] text-[13px] sm:text-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-9 flex items-center justify-center sm:justify-between gap-6">
-          <span className="truncate">{settings.announcement || 'Digital colour printing · all media 13×19 in, up to 350 gsm'}</span>
-          <span className="hidden sm:flex gap-6"><span>Free proof on WhatsApp</span><a href="tel:+919787702336" className="hover:text-secondary">+91 97877 02336</a></span>
-        </div>
-      </div>
-
     <header className="sticky top-0 z-50">
       <nav className="relative bg-paper dark:bg-paper2 text-ink" onMouseLeave={() => setOpen(null)} aria-label="Main">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-[72px] flex items-center justify-between gap-4">
