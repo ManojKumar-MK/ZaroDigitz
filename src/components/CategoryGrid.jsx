@@ -16,7 +16,7 @@ export default function CategoryGrid({ products, limit }) {
         <Link
           key={cat}
           to={categoryPath(cat)}
-          className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all p-4"
+          className="group bg-paper2 transition p-4"
         >
           <div className="font-display font-bold text-dark text-sm sm:text-base leading-snug group-hover:text-primary transition-colors">
             {cat}

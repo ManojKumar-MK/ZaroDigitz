@@ -1,66 +1,91 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { FaWhatsapp } from 'react-icons/fa';
-import { LuSend, LuCircleCheck } from 'react-icons/lu';
 import { saveEnquiry } from '../firebase/orders';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { trackLead } from '../utils/analytics';
+import { EnvelopeSketch } from './Sketches';
+
+const field = 'w-full h-14 px-4 bg-paper text-ink text-base placeholder:text-ink/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary';
 
 /**
- * "Get the best price" enquiry: name + mobile + a prefilled message about what the visitor
+ * "Tell us what you need" enquiry: name, mobile, quantity and a note about what the visitor
  * was looking at. Saved to Admin → Enquiries; WhatsApp offered as the instant alternative.
  */
-export default function QuickEnquiry({ subject, title = 'Need the best price or a bulk quote?' }) {
+export default function QuickEnquiry({ subject, title = 'Tell us what you have in mind' }) {
   const { settings } = useShopSettings();
-  const [form, setForm] = useState({ name: '', mobile: '', message: subject ? `I'm interested in ${subject}. Quantity: ` : '' });
+  const [form, setForm] = useState({ name: '', mobile: '', qty: '', note: '' });
   const [state, setState] = useState('idle'); // idle | sending | sent | error
   const [error, setError] = useState('');
   const set = (k) => (e) => { setForm({ ...form, [k]: e.target.value }); if (error) setError(''); };
+  const about = subject ? `I'm interested in ${subject}.` : 'I need invitation cards.';
+  const message = [about, form.qty && `Quantity: ${form.qty}.`, form.note.trim()].filter(Boolean).join(' ');
 
   const submit = async (e) => {
     e.preventDefault();
     const mobile = form.mobile.replace(/\D/g, '');
-    if (!form.name.trim()) { setError('Please enter your name'); return; }
-    if (!/^[6-9]\d{9}$/.test(mobile.slice(-10))) { setError('Please enter a 10-digit mobile number'); return; }
+    if (!form.name.trim()) { setError('Please enter your name.'); return; }
+    if (!/^[6-9]\d{9}$/.test(mobile.slice(-10))) { setError('Please enter a 10-digit mobile number.'); return; }
     setError('');
     setState('sending');
     const page = typeof window !== 'undefined' ? window.location.href : '';
-    const r = await saveEnquiry({ name: form.name.trim(), mobile, message: `${form.message.trim() || 'Price enquiry'}\n\nPage: ${page}` });
+    const r = await saveEnquiry({ name: form.name.trim(), mobile, message: `${message}\n\nPage: ${page}` });
     if (r?.ok) { setState('sent'); trackLead('enquiry_form'); } else { setState('error'); setError('Could not send right now. Please use WhatsApp instead.'); }
   };
 
-  const wa = shopWhatsAppLink(`Hi Zaro Digitz! ${form.message.trim() || `I'd like the best price${subject ? ` for ${subject}` : ''}.`}`, settings.whatsappNumber);
-
-  if (state === 'sent') {
-    return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 flex items-start gap-3">
-        <LuCircleCheck className="text-emerald-600 mt-0.5 shrink-0" size={22} aria-hidden="true" />
-        <div>
-          <div className="font-bold text-dark">Thank you, {form.name.split(' ')[0]}!</div>
-          <p className="text-sm text-gray-600 mt-1">We will call or WhatsApp you on {form.mobile} shortly with the best price.</p>
-        </div>
-      </div>
-    );
-  }
+  const wa = shopWhatsAppLink(`Hi Zaro Digitz! ${message}`, settings.whatsappNumber);
 
   return (
-    <form onSubmit={submit} className="bg-paper2 p-5 sm:p-6" aria-label="Price enquiry">
-      <h2 className="font-display font-bold text-xl text-dark">{title}</h2>
-      <p className="text-sm text-gray-500 mt-1">Leave your number and we will call you back, or chat on WhatsApp now.</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-        <input className="h-11 rounded-xl border border-gray-200 px-3 text-sm focus:outline-none focus:border-primary" placeholder="Your name" value={form.name} onChange={set('name')} autoComplete="name" aria-label="Your name" />
-        <input className="h-11 rounded-xl border border-gray-200 px-3 text-sm focus:outline-none focus:border-primary" placeholder="10-digit mobile number" inputMode="tel" value={form.mobile} onChange={set('mobile')} autoComplete="tel" aria-label="Mobile number" />
-        <textarea className="sm:col-span-2 rounded-xl border border-gray-200 px-3 py-2 text-sm min-h-[70px] focus:outline-none focus:border-primary" value={form.message} onChange={set('message')} aria-label="Message" placeholder="What do you need? Quantity, budget, delivery city…" />
+    <section className="bg-paper2 text-ink" aria-label="Enquiry">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-16 lg:py-24 grid lg:grid-cols-12 gap-10 items-center">
+        <div className="lg:col-span-5">
+          <h2 className="font-display font-bold tracking-tight text-[clamp(28px,3vw,44px)] leading-tight">{title}</h2>
+          <p className="text-lg mt-4 max-w-[40ch]">Leave your number and we call you back with designs and prices, or chat with us on WhatsApp right now.</p>
+          <div className="hidden lg:block text-brand mt-8 max-w-[260px]"><EnvelopeSketch className="w-full h-auto" /></div>
+        </div>
+
+        <div className="lg:col-span-7">
+          {state === 'sent' ? (
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="bg-paper p-8">
+              <p className="font-display font-bold text-2xl">Thank you, {form.name.split(' ')[0]}.</p>
+              <p className="text-lg mt-2">We will call or WhatsApp you on {form.mobile} soon with designs and prices.</p>
+            </motion.div>
+          ) : (
+            <form onSubmit={submit} noValidate className="grid sm:grid-cols-2 gap-4">
+              <label className="block">
+                <span className="block font-semibold mb-1.5">Your name</span>
+                <input className={field} value={form.name} onChange={set('name')} autoComplete="name" />
+              </label>
+              <label className="block">
+                <span className="block font-semibold mb-1.5">Mobile number</span>
+                <input className={field} inputMode="tel" placeholder="10 digits" value={form.mobile} onChange={set('mobile')} autoComplete="tel" />
+              </label>
+              <label className="block">
+                <span className="block font-semibold mb-1.5">How many?</span>
+                <input className={field} inputMode="numeric" placeholder="e.g. 300" value={form.qty} onChange={set('qty')} />
+              </label>
+              <label className="block">
+                <span className="block font-semibold mb-1.5">Looking for</span>
+                <input className={`${field} bg-paper3`} value={subject || 'Invitation cards'} readOnly tabIndex={-1} />
+              </label>
+              <label className="block sm:col-span-2">
+                <span className="block font-semibold mb-1.5">Anything else? <span className="font-normal">(optional)</span></span>
+                <textarea className={`${field} h-auto min-h-[96px] py-3`} value={form.note} onChange={set('note')} placeholder="Event date, colours you like, language, delivery city…" />
+              </label>
+              {error && <p className="sm:col-span-2 text-red-700 dark:text-red-300 font-medium" role="alert">{error}</p>}
+              <div className="sm:col-span-2 flex flex-wrap gap-3 mt-1">
+                <button type="submit" disabled={state === 'sending'} className="inline-flex items-center justify-center h-14 px-8 bg-primary text-white font-bold transition-colors hover:bg-[#5A1420] disabled:opacity-60">
+                  {state === 'sending' ? 'Sending…' : 'Call me back'}
+                </button>
+                <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 h-14 px-8 bg-[#1F7A4D] text-white font-bold transition-transform hover:-translate-y-0.5">
+                  <FaWhatsapp size={20} aria-hidden="true" /> WhatsApp us
+                </a>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
-      {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
-      <div className="flex flex-wrap gap-2 mt-4">
-        <button type="submit" disabled={state === 'sending'} className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold bg-primary hover:bg-orange-600 text-white disabled:opacity-60">
-          <LuSend aria-hidden="true" /> {state === 'sending' ? 'Sending…' : 'Get the best price'}
-        </button>
-        <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold bg-green-600 hover:bg-green-700 text-white">
-          <FaWhatsapp aria-hidden="true" /> WhatsApp us
-        </a>
-      </div>
-    </form>
+    </section>
   );
 }

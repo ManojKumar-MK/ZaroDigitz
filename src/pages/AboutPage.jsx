@@ -35,7 +35,7 @@ export default function AboutPage() {
       <section className="hero-bg py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="text-secondary font-bold text-sm uppercase tracking-widest">About Us</span>
+            <span className="text-secondary font-bold text-sm ">About Us</span>
             <h1 className="font-display font-black text-5xl sm:text-6xl text-white mt-3 mb-6">
               The <span className="gradient-text">Zaro Digitz</span> Story
             </h1>
@@ -47,11 +47,11 @@ export default function AboutPage() {
       </section>
 
       {/* Story */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-paper2">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-              <span className="text-primary font-bold text-sm uppercase tracking-widest">Who we are</span>
+              <span className="text-primary font-bold text-sm ">Who we are</span>
               <h2 className="font-display font-black text-4xl text-dark mt-2 mb-6">
                 Cards That Start the <span className="gradient-text">Celebration</span>
               </h2>
@@ -63,8 +63,8 @@ export default function AboutPage() {
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-4">
               {offer.map((item, i) => (
-                <motion.div key={item.title} whileHover={{ x: 6 }} className="flex gap-4 items-start p-5 rounded-2xl bg-bg">
-                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-primary to-orange-500 rounded-xl flex items-center justify-center text-secondary font-black">{i + 1}</div>
+                <motion.div key={item.title} whileHover={{ x: 6 }} className="flex gap-4 items-start p-5 bg-paper">
+                  <div className="flex-shrink-0 w-10 h-10 bg-primary flex items-center justify-center text-secondary font-black">{i + 1}</div>
                   <div>
                     <div className="font-bold text-dark">{item.title}</div>
                     <div className="text-gray-500 text-sm">{item.desc}</div>
@@ -77,10 +77,10 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="py-20 bg-bg">
+      <section className="py-20 bg-paper">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <span className="text-primary font-bold text-sm uppercase tracking-widest">Our promise</span>
+            <span className="text-primary font-bold text-sm ">Our promise</span>
             <h2 className="font-display font-black text-4xl text-dark mt-2">What You Can <span className="gradient-text">Expect</span></h2>
           </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -92,9 +92,9 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
                 whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(122,31,43,0.15)' }}
-                className="bg-white rounded-2xl p-7 shadow-md border border-transparent hover:border-primary/20 transition-all group"
+                className="bg-paper2 p-7     transition group"
               >
-                <div className="w-14 h-14 mb-4 rounded-2xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-secondary transition-colors"><v.icon size={28} aria-hidden="true" /></div>
+                <div className="w-14 h-14 mb-4 bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-secondary transition-colors"><v.icon size={28} aria-hidden="true" /></div>
                 <h3 className="font-display font-bold text-xl text-dark mb-3">{v.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{v.desc}</p>
               </motion.div>
@@ -111,14 +111,14 @@ export default function AboutPage() {
               { icon: LuTarget, title: 'Our aim', text: 'To be the easiest place to order invitations online: clear designs, fair prices, and no surprises between the proof and the printed card.' },
               { icon: LuHeart, title: 'How we work', text: 'One person follows your order from the first message to dispatch, so you always know who to ask and what happens next.' },
             ].map((item, i) => (
-              <motion.div key={item.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="bg-white/5 border border-white/10 rounded-2xl p-8">
-                <h3 className="font-display font-bold text-2xl text-white mb-4 flex items-center gap-3"><span className="w-10 h-10 rounded-xl bg-primary/40 text-secondary flex items-center justify-center"><item.icon size={20} aria-hidden="true" /></span>{item.title}</h3>
+              <motion.div key={item.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="bg-white/5 p-8">
+                <h3 className="font-display font-bold text-2xl text-white mb-4 flex items-center gap-3"><span className="w-10 h-10 bg-primary/40 text-secondary flex items-center justify-center"><item.icon size={20} aria-hidden="true" /></span>{item.title}</h3>
                 <p className="text-gray-400 leading-relaxed">{item.text}</p>
               </motion.div>
             ))}
           </div>
           <div className="text-center mt-12">
-            <Link to="/cards" className="on-light inline-flex items-center gap-2 bg-secondary text-dark font-bold px-8 py-4 rounded-2xl hover:scale-105 transition-transform">
+            <Link to="/cards" className="on-light inline-flex items-center gap-2 bg-secondary text-dark font-bold px-8 py-4 hover:scale-105 transition-transform">
               Browse Designs <FiArrowRight />
             </Link>
           </div>

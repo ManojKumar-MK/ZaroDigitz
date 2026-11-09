@@ -29,14 +29,14 @@ export default function StickyCartButton() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate(canCheckout ? '/checkout' : '/cart')}
-            className="flex items-center gap-3 bg-gradient-to-r from-primary to-orange-500 hover:from-orange-600 hover:to-primary text-white px-6 py-4 rounded-2xl shadow-2xl shadow-orange-500/40 font-bold text-sm"
+            className="flex items-center gap-3 bg-primary text-white px-6 py-4    font-bold text-sm"
           >
             <FiShoppingBag size={20} />
             <div className="text-left">
               <div className="text-xs opacity-80">{totalItems} items</div>
               <div>{canCheckout ? 'Proceed to Checkout' : 'View Cart'}</div>
             </div>
-            <div className="bg-white/20 rounded-xl px-3 py-1 text-secondary font-bold">
+            <div className="bg-white/20 px-3 py-1 text-secondary font-bold">
               ₹{totalAmount.toLocaleString()}
             </div>
           </motion.button>

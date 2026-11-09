@@ -129,7 +129,7 @@ export default function ProductPage() {
   const whatsappHref = shopWhatsAppLink(`Hi Zaro Digitz! I like the design ${product.name} (${product.code}). I need about ${quantity} ${unit}s. Can you share details?\n${absoluteUrl(productPath(product))}`, settings.whatsappNumber);
 
   const stepper = (
-    <div className="inline-flex items-center rounded-2xl border border-gray-200 bg-white">
+    <div className="inline-flex items-center bg-paper2">
       <button type="button" aria-label="Fewer" disabled={quantity <= min} onClick={() => setQty(clampQty(product, quantity - step))} className="w-11 h-11 flex items-center justify-center text-gray-600 disabled:opacity-30"><FiMinus /></button>
       <input
         type="number"
@@ -147,7 +147,7 @@ export default function ProductPage() {
   );
 
   return (
-    <div className="bg-bg pb-24 lg:pb-0">
+    <div className="bg-paper pb-24 lg:pb-0">
       <Seo
         title={meta.title}
         description={meta.description}
@@ -168,7 +168,7 @@ export default function ProductPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-paper p-5 sm:p-8">
           {/* Gallery */}
           <div>
-            <button type="button" onClick={() => setZoom(true)} aria-label="Open larger image" className="w-full rounded-2xl bg-orange-50/60 border border-gray-100 flex items-center justify-center p-4 min-h-[320px] cursor-zoom-in">
+            <button type="button" onClick={() => setZoom(true)} aria-label="Open larger image" className="w-full bg-orange-50/60   flex items-center justify-center p-4 min-h-[320px] cursor-zoom-in">
               <motion.img
                 key={image}
                 initial={{ opacity: 0, scale: 0.98 }}
@@ -183,7 +183,7 @@ export default function ProductPage() {
             {images.length > 1 && (
               <div className="flex gap-3 mt-3 overflow-x-auto scrollbar-none">
                 {images.map((src, i) => (
-                  <button key={src} type="button" onClick={() => setActive(i)} aria-label={`Image ${i + 1} of ${images.length}`} className={`shrink-0 w-20 h-20 rounded-xl border-2 overflow-hidden ${i === active ? 'border-primary' : 'border-transparent'}`}>
+                  <button key={src} type="button" onClick={() => setActive(i)} aria-label={`Image ${i + 1} of ${images.length}`} className={`shrink-0 w-20 h-20  border-2 overflow-hidden ${i === active ? '' : ''}`}>
                     <img src={safeUrl(src)} alt="" className="w-full h-full object-cover" loading="lazy" />
                   </button>
                 ))}
@@ -214,7 +214,7 @@ export default function ProductPage() {
             {offer != null && <p className="text-xs text-gray-500 mt-1">Prices include printing of your names and wording. Courier extra.</p>}
 
             {tiers.length > 0 && (
-              <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+              <div className="mt-5 bg-amber-50/60 p-4">
                 <div className="text-sm font-bold text-dark mb-2">Bulk price per {unit}</div>
                 <table className="w-full text-sm">
                   <tbody>
@@ -248,11 +248,11 @@ export default function ProductPage() {
                 type="button"
                 onClick={handleAdd}
                 disabled={offer == null}
-                className="inline-flex items-center gap-2 bg-primary hover:bg-orange-800 disabled:opacity-50 text-white font-bold px-6 py-3 rounded-2xl transition-colors"
+                className="inline-flex items-center gap-2 bg-primary hover:bg-orange-800 disabled:opacity-50 text-white font-bold px-6 py-3 transition-colors"
               >
                 <FiShoppingCart /> {added ? 'Added to cart' : 'Add to cart'}
               </button>
-              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-2xl transition-colors">
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 transition-colors">
                 <FaWhatsapp /> Ask about this design
               </a>
             </div>
@@ -292,16 +292,13 @@ export default function ProductPage() {
             { icon: LuFileCheck2, title: 'You approve the proof', desc: 'changes are free until it is right.' },
             { icon: LuPrinter, title: 'We print and dispatch', desc: 'packed carefully and couriered to you.' },
           ].map((s, i) => (
-            <motion.div key={s.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="flex gap-3 items-start bg-white rounded-2xl border border-gray-100 p-4">
-              <div className="w-10 h-10 shrink-0 rounded-xl bg-primary text-secondary flex items-center justify-center"><s.icon aria-hidden="true" /></div>
+            <motion.div key={s.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="flex gap-3 items-start bg-paper2 p-4">
+              <div className="w-10 h-10 shrink-0 bg-primary text-secondary flex items-center justify-center"><s.icon aria-hidden="true" /></div>
               <div><div className="font-bold text-dark text-sm">{s.title}</div><div className="text-xs text-gray-500">{s.desc}</div></div>
             </motion.div>
           ))}
         </section>
 
-        <div className="mt-8">
-          <QuickEnquiry subject={product.name} title="Questions about this design? Ask us." />
-        </div>
 
         {related.length > 0 && (
           <section className="mt-14">
@@ -318,14 +315,18 @@ export default function ProductPage() {
         )}
       </div>
 
+      <div className="mt-16">
+        <QuickEnquiry subject={product.name} title="Questions about this design?" />
+      </div>
+
       {/* Sticky add-to-cart bar on phones: it floats over the page, so it may cast a shadow. taste-skill-ignore */}
       {offer != null && (
-        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-paper px-4 py-3 flex items-center gap-3 shadow-[0_-8px_24px_rgba(44,10,16,0.12)]" data-floating="taste-skill-ignore">
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-paper px-4 py-3 flex items-center gap-3 " data-floating="taste-skill-ignore">
           <div className="min-w-0 flex-1">
             <div className="text-xs text-gray-500 truncate">{product.name}</div>
             <div className="font-bold text-primary">{money(unitPrice)} <span className="text-xs text-gray-400 font-normal">× {quantity}</span></div>
           </div>
-          <button type="button" onClick={handleAdd} className="inline-flex items-center gap-2 bg-primary text-white font-bold px-5 py-3 rounded-xl">
+          <button type="button" onClick={handleAdd} className="inline-flex items-center gap-2 bg-primary text-white font-bold px-5 py-3 ">
             <FiShoppingCart /> {added ? 'Added' : 'Add'}
           </button>
         </div>
@@ -336,7 +337,7 @@ export default function ProductPage() {
         {zoom && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4" onClick={() => setZoom(false)} role="dialog" aria-label="Image preview">
             <button type="button" aria-label="Close" className="absolute top-4 right-4 text-white/80 hover:text-white" onClick={() => setZoom(false)}><FiX size={28} /></button>
-            <motion.img initial={{ scale: 0.95 }} animate={{ scale: 1 }} src={safeUrl(image)} alt={product.name} className="max-h-[90vh] max-w-full object-contain rounded-xl" onClick={(e) => e.stopPropagation()} />
+            <motion.img initial={{ scale: 0.95 }} animate={{ scale: 1 }} src={safeUrl(image)} alt={product.name} className="max-h-[90vh] max-w-full object-contain " onClick={(e) => e.stopPropagation()} />
           </motion.div>
         )}
       </AnimatePresence>

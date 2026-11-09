@@ -28,7 +28,7 @@ export default function CartPage() {
           <div className="mx-auto w-24 h-24 mb-6 rounded-full bg-primary/10 text-primary flex items-center justify-center"><LuShoppingCart size={36} /></div>
           <h2 className="font-display font-black text-3xl text-dark mb-3">Your Cart is Empty</h2>
           <p className="text-gray-500 mb-8">Pick a card design to get started.</p>
-          <Link to="/cards" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 rounded-2xl hover:bg-orange-600 transition-colors">
+          <Link to="/cards" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 hover:bg-[#5A1420] transition-colors">
             Browse Products <FiArrowRight />
           </Link>
         </motion.div>
@@ -57,11 +57,11 @@ export default function CartPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20, height: 0 }}
-                className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex gap-4 items-center"
+                className="bg-paper2 p-5    flex gap-4 items-center"
               >
-                <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} className="w-20 h-24 rounded-xl object-cover flex-shrink-0 bg-orange-50" />
+                <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} className="w-20 h-24 object-cover flex-shrink-0 bg-orange-50" />
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs text-gray-400 font-mono">{item.code}</div>
+                  <div className="text-xs text-gray-400 ">{item.code}</div>
                   <div className="font-bold text-dark text-base truncate">{item.name}</div>
                   <div className="text-xs text-gray-400">{item.category}</div>
                   <div className="font-black text-primary text-lg mt-1">₹{item.price} <span className="text-xs font-normal text-gray-400">per {String(item.per || 'card').replace(/^1\s+/, '')}</span></div>
@@ -74,13 +74,13 @@ export default function CartPage() {
                     <button
                       aria-label="Fewer"
                       onClick={() => item.quantity <= qtyRules(item).min ? removeItem(item.id) : updateQuantity(item.id, item.quantity - qtyRules(item).step)}
-                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center font-bold transition-colors"
+                      className="w-8 h-8 bg-paper3 hover:bg-paper3 flex items-center justify-center font-bold transition-colors"
                     >−</button>
                     <span className="w-12 text-center font-bold text-dark">{item.quantity}</span>
                     <button
                       aria-label="More"
                       onClick={() => updateQuantity(item.id, item.quantity + qtyRules(item).step)}
-                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center font-bold transition-colors"
+                      className="w-8 h-8 bg-paper3 hover:bg-paper3 flex items-center justify-center font-bold transition-colors"
                     >+</button>
                   </div>
                   <div className="text-sm font-bold text-dark">₹{(item.price * item.quantity).toLocaleString()}</div>
@@ -92,8 +92,8 @@ export default function CartPage() {
 
         {/* Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-[124px]">
-            <h2 className="font-display font-bold text-xl text-dark mb-5 pb-4 border-b border-gray-100">Order Summary</h2>
+          <div className="bg-paper2 p-6 sticky top-[124px]">
+            <h2 className="font-display font-bold text-xl text-dark mb-5 pb-4 ">Order Summary</h2>
             <div className="space-y-3 mb-5">
               {cart.map(item => (
                 <div key={item.id} className="flex justify-between text-sm">
@@ -102,7 +102,7 @@ export default function CartPage() {
                 </div>
               ))}
             </div>
-            <div className="border-t border-gray-100 pt-4 mb-6">
+            <div className="pt-4 mb-6">
               <div className="flex justify-between text-sm text-gray-500 mb-2">
                 <span>Subtotal</span>
                 <span>₹{totalAmount.toLocaleString()}</span>
@@ -120,7 +120,7 @@ export default function CartPage() {
               {!canCheckout && (
                 <div className="text-xs text-orange-500 mt-2">Minimum order amount for checkout is ₹{MIN_CHECKOUT_AMOUNT.toLocaleString()}.</div>
               )}
-              <div className="flex justify-between font-bold text-lg text-dark mt-3 pt-3 border-t border-gray-100">
+              <div className="flex justify-between font-bold text-lg text-dark mt-3 pt-3 ">
                 <span>Total</span>
                 <span className="text-primary">₹{(totalAmount + chargesTotal).toLocaleString()}</span>
               </div>
@@ -128,7 +128,7 @@ export default function CartPage() {
             {canCheckout ? (
               <Link
                 to="/checkout"
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-orange-500 hover:from-orange-600 hover:to-primary text-white font-bold py-4 rounded-2xl transition-all hover:shadow-xl hover:shadow-orange-500/30"
+                className="w-full flex items-center justify-center gap-2 bg-primary text-white font-bold py-4  transition  "
               >
                 <FiShoppingBag />
                 Proceed to Checkout
@@ -137,7 +137,7 @@ export default function CartPage() {
               <button
                 type="button"
                 disabled
-                className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-500 font-bold py-4 rounded-2xl cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-500 font-bold py-4 cursor-not-allowed"
               >
                 <FiShoppingBag />
                 Proceed to Checkout

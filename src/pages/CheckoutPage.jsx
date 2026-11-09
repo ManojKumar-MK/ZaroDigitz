@@ -287,18 +287,18 @@ export default function CheckoutPage() {
               href={`https://wa.me/${shopWhatsApp}?text=${encodeURIComponent(buildWhatsAppOrderText(lastOrder))}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full mb-3 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors shadow-lg shadow-green-600/30"
+              className="w-full mb-3 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 text-lg transition-colors  "
             >
               <FaWhatsapp size={22} /> Send order on WhatsApp
             </a>
           )}
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-4 mb-6 text-sm text-green-700">
+          <div className="bg-green-50 p-4 mb-6 text-sm text-green-700">
             {whatsappMode === 'auto' ? 'WhatsApp should have opened with your order filled in; just press Send. If it did not open, tap the button above.' : 'Tap the button above and press Send in WhatsApp.'} That lets us confirm your order quickly. Otherwise our team will call you within 24 hours. WhatsApp: +91 7010935230 / +91 6369619148.
           </div>
 
           {lastOrder?.orderNumber && (
             <p className="text-sm text-gray-600 mb-4">
-              Order ID: <span className="font-mono font-bold text-dark">{lastOrder.orderNumber}</span>. Quote this when you contact us.
+              Order ID: <span className="font-bold text-dark">{lastOrder.orderNumber}</span>. Quote this when you contact us.
             </p>
           )}
           {lastOrder?.pdfBlob && typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [new File([lastOrder.pdfBlob], 'invoice.pdf', { type: 'application/pdf' })] }) && (
@@ -308,7 +308,7 @@ export default function CheckoutPage() {
                 const file = new File([lastOrder.pdfBlob], `Invoice-${String(lastOrder.invoiceNo).replace(/[#/\\]+/g, '-')}.pdf`, { type: 'application/pdf' });
                 navigator.share({ files: [file], title: `Zaro Digitz invoice ${lastOrder.invoiceNo}`, text: `My Zaro Digitz order${lastOrder.orderNumber ? ` ${lastOrder.orderNumber}` : ''} invoice` }).catch(() => {});
               }}
-              className="w-full mb-3 inline-flex items-center justify-center gap-2 bg-white border border-green-600 text-green-700 font-bold px-8 py-3 rounded-2xl hover:bg-green-50 transition-colors"
+              className="w-full mb-3 inline-flex items-center justify-center gap-2 bg-paper2 text-green-700 font-bold px-8 py-3  hover:bg-green-50 transition-colors"
             >
               <FaWhatsapp /> Share invoice PDF (WhatsApp, etc.)
             </button>
@@ -316,13 +316,13 @@ export default function CheckoutPage() {
           {lastOrder && (
             <button
               onClick={() => downloadInvoicePDF(lastOrder, lastOrder.invoiceNo)}
-              className="w-full mb-4 inline-flex items-center justify-center gap-2 bg-white border border-primary text-primary font-bold px-8 py-3 rounded-2xl hover:bg-orange-50 transition-colors"
+              className="w-full mb-4 inline-flex items-center justify-center gap-2 bg-paper2 text-primary font-bold px-8 py-3  hover:bg-orange-50 transition-colors"
             >
               <FiDownload /> Download Invoice ({lastOrder.invoiceNo})
             </button>
           )}
 
-          <Link to="/" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 rounded-2xl hover:bg-orange-600 transition-colors">
+          <Link to="/" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 hover:bg-[#5A1420] transition-colors">
             Back to Home
           </Link>
         </motion.div>
@@ -335,7 +335,7 @@ export default function CheckoutPage() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 120, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-              className="fixed bottom-24 left-4 right-4 sm:bottom-6 sm:left-auto sm:right-6 sm:w-[380px] z-[95] bg-white rounded-3xl shadow-2xl border border-green-200 p-5"
+              className="fixed bottom-24 left-4 right-4 sm:bottom-6 sm:left-auto sm:right-6 sm:w-[380px] z-[95] bg-paper2 p-5"
               role="dialog"
               aria-label="Send your order on WhatsApp"
             >
@@ -353,11 +353,11 @@ export default function CheckoutPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setShowWaPrompt(false)}
-                  className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-3 rounded-2xl transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-3 transition-colors"
                 >
                   <FaWhatsapp /> Send on WhatsApp
                 </a>
-                <button type="button" onClick={() => setShowWaPrompt(false)} className="px-4 py-3 rounded-2xl text-sm font-semibold text-gray-600 hover:bg-gray-100">Later</button>
+                <button type="button" onClick={() => setShowWaPrompt(false)} className="px-4 py-3 text-sm font-semibold text-gray-600 hover:bg-paper3">Later</button>
               </div>
             </motion.div>
           )}
@@ -390,11 +390,11 @@ export default function CheckoutPage() {
             <button
               type="button"
               onClick={() => navigate('/cart')}
-              className="bg-white border border-primary text-primary font-bold px-6 py-3 rounded-2xl hover:bg-orange-50 transition-colors"
+              className="bg-paper2 text-primary font-bold px-6 py-3  hover:bg-orange-50 transition-colors"
             >
               Back to Cart
             </button>
-            <Link to="/cards" className="bg-primary text-white font-bold px-6 py-3 rounded-2xl hover:bg-orange-600 transition-colors">
+            <Link to="/cards" className="bg-primary text-white font-bold px-6 py-3 hover:bg-[#5A1420] transition-colors">
               Add More Items
             </Link>
           </div>
@@ -408,7 +408,7 @@ export default function CheckoutPage() {
       <h1 className="font-display font-black text-4xl text-dark mb-2">Checkout</h1>
       <p className="text-gray-500 mb-8">Fill in your details to complete the order</p>
       {settings.acceptingOrders === false && (
-        <div className="mb-6 rounded-2xl border border-amber-300 bg-amber-50 text-amber-900 px-5 py-4 text-sm">
+        <div className="mb-6 bg-amber-50 text-amber-900 px-5 py-4 text-sm">
           We are not taking online orders right now. Please WhatsApp or call us and we will help you directly.
         </div>
       )}
@@ -416,8 +416,8 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Form */}
         <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7">
-            <h2 className="font-display font-bold text-xl text-dark mb-6 pb-4 border-b border-gray-100">Delivery Details</h2>
+          <form onSubmit={handleSubmit} className="bg-paper2 p-7">
+            <h2 className="font-display font-bold text-xl text-dark mb-6 pb-4 ">Delivery Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {FIELD_CONFIG.filter(field => field.name !== 'email').map(field => (
                 <div key={field.name} className={field.type === 'textarea' ? 'sm:col-span-2' : ''}>
@@ -428,7 +428,7 @@ export default function CheckoutPage() {
                       onChange={e => { setForm(f => ({ ...f, [field.name]: e.target.value })); if (errors[field.name]) setErrors(er => ({ ...er, [field.name]: '' })); }}
                       placeholder={field.placeholder}
                       rows={3}
-                      className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary resize-none transition-colors ${errors[field.name] ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50'}`}
+                      className={`w-full px-4 py-3   text-sm focus:outline-none  resize-none transition-colors ${errors[field.name] ? ' bg-red-50' : ' bg-paper2'}`}
                     />
                   ) : (
                     <input
@@ -436,7 +436,7 @@ export default function CheckoutPage() {
                       value={form[field.name]}
                       onChange={e => { setForm(f => ({ ...f, [field.name]: e.target.value })); if (errors[field.name]) setErrors(er => ({ ...er, [field.name]: '' })); }}
                       placeholder={field.placeholder}
-                      className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary transition-colors ${errors[field.name] ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50'}`}
+                      className={`w-full px-4 py-3   text-sm focus:outline-none  transition-colors ${errors[field.name] ? ' bg-red-50' : ' bg-paper2'}`}
                     />
                   )}
                   {errors[field.name] && <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>}
@@ -454,7 +454,7 @@ export default function CheckoutPage() {
                     if (errors.email) setErrors((current) => ({ ...current, email: '' }));
                   }}
                   placeholder="Optional: invoice will be sent here"
-                  className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary transition-colors ${errors.email ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50'}`}
+                  className={`w-full px-4 py-3   text-sm focus:outline-none  transition-colors ${errors.email ? ' bg-red-50' : ' bg-paper2'}`}
                 />
                 <p className="mt-1 text-xs text-gray-500">If you enter your email, we will send the invoice PDF to it.</p>
                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -471,20 +471,20 @@ export default function CheckoutPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <label className="block">
                   <span className="text-sm font-medium text-gray-700">Names on the card</span>
-                  <input name="eventFor" value={form.eventFor} onChange={(e) => setForm({ ...form, eventFor: e.target.value })} maxLength={160} placeholder="e.g. Priya & Arjun" className="mt-1 w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <input name="eventFor" value={form.eventFor} onChange={(e) => setForm({ ...form, eventFor: e.target.value })} maxLength={160} placeholder="e.g. Priya & Arjun" className="mt-1 w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </label>
                 <label className="block">
                   <span className="text-sm font-medium text-gray-700">Event date</span>
-                  <input type="date" name="eventDate" value={form.eventDate} onChange={(e) => setForm({ ...form, eventDate: e.target.value })} className="mt-1 w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <input type="date" name="eventDate" value={form.eventDate} onChange={(e) => setForm({ ...form, eventDate: e.target.value })} className="mt-1 w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </label>
                 <label className="block sm:col-span-2">
                   <span className="text-sm font-medium text-gray-700">Wording or special requests</span>
-                  <textarea name="eventNotes" value={form.eventNotes} onChange={(e) => setForm({ ...form, eventNotes: e.target.value })} maxLength={2000} rows={3} placeholder="Language (Tamil / English), venue, family names, colours you like…" className="mt-1 w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <textarea name="eventNotes" value={form.eventNotes} onChange={(e) => setForm({ ...form, eventNotes: e.target.value })} maxLength={2000} rows={3} placeholder="Language (Tamil / English), venue, family names, colours you like…" className="mt-1 w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </label>
               </div>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+            <div className="mt-6 bg-paper2 p-4">
               <p className="text-sm text-gray-600">
                 After you place the order, we will message you on WhatsApp to collect the names and wording and send a digital proof. Printing starts only after you approve it.
               </p>
@@ -494,7 +494,7 @@ export default function CheckoutPage() {
               type="submit"
               disabled={loading}
               whileTap={{ scale: 0.97 }}
-              className="w-full mt-7 bg-gradient-to-r from-primary to-orange-500 hover:from-orange-600 hover:to-primary text-white font-bold py-4 rounded-2xl text-lg transition-all hover:shadow-xl hover:shadow-orange-500/30 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full mt-7 bg-primary text-white font-bold py-4  text-lg transition   disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -508,12 +508,12 @@ export default function CheckoutPage() {
 
         {/* Summary */}
         <div>
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-[124px]">
-            <h2 className="font-display font-bold text-xl text-dark mb-4 pb-4 border-b border-gray-100">Order Summary</h2>
+          <div className="bg-paper2 p-6 sticky top-[124px]">
+            <h2 className="font-display font-bold text-xl text-dark mb-4 pb-4 ">Order Summary</h2>
             <div className="space-y-3 max-h-64 overflow-y-auto mb-4 pr-1">
               {cart.map(item => (
                 <div key={item.id} className="flex gap-3 items-start">
-                  <img src={item.image || undefined} alt={item.name} className="w-12 h-12 rounded-xl object-cover flex-shrink-0" />
+                  <img src={item.image || undefined} alt={item.name} className="w-12 h-12 object-cover flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-sm text-dark truncate">{item.name}</div>
                     <div className="text-xs text-gray-400">Qty: {item.quantity}</div>
@@ -522,7 +522,7 @@ export default function CheckoutPage() {
                 </div>
               ))}
             </div>
-            <div className="border-t border-gray-100 pt-4 space-y-2">
+            <div className="pt-4 space-y-2">
               <div className="flex justify-between text-sm text-gray-500"><span>Subtotal</span><span>₹{totalAmount.toLocaleString()}</span></div>
               {chargeLines.map((line) => (
                 <div key={line.id} className="flex justify-between text-sm text-gray-500"><span>{line.label}</span><span>₹{line.amount.toLocaleString()}</span></div>
@@ -531,7 +531,7 @@ export default function CheckoutPage() {
                 <span>Note</span>
                 <span className="text-right">{chargesNote}</span>
               </div>
-              <div className="flex justify-between font-bold text-lg text-dark pt-2 border-t border-gray-100">
+              <div className="flex justify-between font-bold text-lg text-dark pt-2 ">
                 <span>Total</span>
                 <span className="text-primary">₹{grandTotal.toLocaleString()}</span>
               </div>

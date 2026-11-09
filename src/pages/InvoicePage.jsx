@@ -33,7 +33,7 @@ export default function InvoicePage() {
   const filename = state.invoiceNo ? `Invoice-${String(state.invoiceNo).replace(/[#/\\]+/g, '-')}.pdf` : 'Invoice.pdf';
 
   return (
-    <div className="bg-bg min-h-[70vh]">
+    <div className="bg-paper min-h-[70vh]">
       <Seo title="Invoice" noindex path={`/invoice/${token}`} />
       <div className="max-w-4xl mx-auto px-4 py-8">
         {state.status === 'loading' && <p className="text-gray-500 text-center py-20">Preparing your invoice…</p>}
@@ -58,11 +58,11 @@ export default function InvoicePage() {
                   {state.share.orderNumber ? `Order ${state.share.orderNumber} · ` : ''}{state.share.snapshot?.form?.fullName} · ₹{Number(state.share.snapshot?.grandTotal || 0).toLocaleString('en-IN')}
                 </p>
               </div>
-              <a href={state.url} download={filename} className="inline-flex items-center gap-2 bg-primary hover:bg-orange-600 text-white font-bold px-5 py-3 rounded-2xl transition-colors">
+              <a href={state.url} download={filename} className="inline-flex items-center gap-2 bg-primary hover:bg-[#5A1420] text-white font-bold px-5 py-3 transition-colors">
                 <FiDownload /> Download PDF
               </a>
             </div>
-            <iframe title="Invoice PDF" src={state.url} className="w-full h-[75vh] rounded-2xl border border-gray-200 bg-white" />
+            <iframe title="Invoice PDF" src={state.url} className="w-full h-[75vh] bg-paper2" />
             <p className="text-xs text-gray-400 mt-3 text-center">Zaro Digitz · No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123 · <Link to="/" className="text-primary hover:underline">digitz.zarocrackers.com</Link></p>
           </>
         )}

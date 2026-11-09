@@ -39,10 +39,10 @@ export default function ContactPage() {
   };
 
   const contactInfo = [
-    { icon: LuPhone, label: 'Call Us', value: '+91 7010935230, +91 6369619148', sub: 'Mon-Sat: 9AM - 7PM', color: 'from-blue-500 to-blue-600', href: 'tel:+917010935230' },
-    { icon: LuMail, label: 'Email Us', value: 'zarocrackers@gmail.com', sub: 'We reply within 24 hours', color: 'from-red-500 to-red-600', href: 'mailto:zarocrackers@gmail.com' },
-    { icon: FaWhatsapp, label: 'WhatsApp', value: '+91 7010935230', sub: 'Quick responses', color: 'from-green-500 to-green-600', href: shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards. Could you help me?', settings.whatsappNumber) },
-    { icon: LuMapPin, label: 'Visit Us', value: 'No. 3U, Maruthu Pandiyar Mettu Street', sub: 'Sivakasi, Tamil Nadu - 626123', color: 'from-orange-500 to-primary', href: '#map' },
+    { icon: LuPhone, label: 'Call Us', value: '+91 7010935230, +91 6369619148', sub: 'Mon-Sat: 9AM - 7PM', color: ' ', href: 'tel:+917010935230' },
+    { icon: LuMail, label: 'Email Us', value: 'zarocrackers@gmail.com', sub: 'We reply within 24 hours', color: ' ', href: 'mailto:zarocrackers@gmail.com' },
+    { icon: FaWhatsapp, label: 'WhatsApp', value: '+91 7010935230', sub: 'Quick responses', color: ' ', href: shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards. Could you help me?', settings.whatsappNumber) },
+    { icon: LuMapPin, label: 'Visit Us', value: 'No. 3U, Maruthu Pandiyar Mettu Street', sub: 'Sivakasi, Tamil Nadu - 626123', color: ' ', href: '#map' },
   ];
 
   return (
@@ -54,10 +54,10 @@ export default function ContactPage() {
         jsonLd={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Contact Us', path: '/contact' }])}
       />
       {/* Hero */}
-      <section className="bg-gradient-to-br from-dark to-gray-900 py-20">
+      <section className="bg-primary py-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <span className="text-secondary font-bold text-sm uppercase tracking-widest">Get In Touch</span>
+            <span className="text-secondary font-bold text-sm ">Get In Touch</span>
             <h1 className="font-display font-black text-5xl text-white mt-2">Contact <span className="gradient-text">Zaro Digitz</span></h1>
             <p className="text-gray-400 mt-3 max-w-xl mx-auto">Call, WhatsApp or message us about card designs, prices, wording or delivery. We usually reply the same day.</p>
           </motion.div>
@@ -65,7 +65,7 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Cards */}
-      <section className="py-12 bg-bg">
+      <section className="py-12 bg-paper">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {contactInfo.map((info, i) => (
@@ -77,12 +77,12 @@ export default function ContactPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl border border-transparent hover:border-primary/20 transition-all group block"
+                className="bg-paper2 p-6      transition group block"
               >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${info.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                <div className={`w-12 h-12  bg-primary ${info.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <info.icon size={22} className="text-white" />
                 </div>
-                <div className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">{info.label}</div>
+                <div className="text-xs text-gray-400 font-semibold mb-1">{info.label}</div>
                 <div className="font-bold text-dark text-sm">{info.value}</div>
                 <div className="text-xs text-gray-400 mt-1">{info.sub}</div>
               </motion.a>
@@ -92,7 +92,7 @@ export default function ContactPage() {
       </section>
 
       {/* Map + Form */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-paper2">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             {/* Map */}
@@ -103,7 +103,7 @@ export default function ContactPage() {
               viewport={{ once: true }}
             >
               <h2 className="font-display font-bold text-2xl text-dark mb-5">Find Our Store</h2>
-              <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-100 h-80">
+              <div className="overflow-hidden h-80">
                 <iframe
                   title="Zaro Digitz on Google Maps"
                   src={g.embed}
@@ -114,14 +114,14 @@ export default function ContactPage() {
                   loading="lazy"
                 />
               </div>
-              <div className="mt-4 p-4 bg-bg rounded-xl border border-gray-100">
+              <div className="mt-4 p-4 bg-paper ">
                 <div className="font-bold text-dark">ZARO Digitz</div>
                 <div className="text-sm text-gray-500 mt-1">No. 3U, Maruthu Pandiyar Mettu Street,<br />Sivakasi, Tamil Nadu - 626123</div>
                 <div className="text-sm text-primary font-medium mt-2 flex items-center gap-1.5"><LuPhone aria-hidden="true" /> +91 7010935230 / +91 6369619148</div>
                 <div className="flex flex-wrap gap-2 mt-4">
-                  <a href={g.directions} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors bg-dark text-white hover:bg-black"><LuNavigation aria-hidden="true" /> Get directions</a>
-                  <a href={g.maps} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors bg-white text-dark ring-1 ring-gray-200 hover:bg-gray-50"><LuMapPin aria-hidden="true" /> Open in Google Maps</a>
-                  <a href={g.review} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors on-light bg-secondary text-dark hover:brightness-95"><LuStar aria-hidden="true" /> Rate us on Google</a>
+                  <a href={g.directions} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors bg-dark text-white hover:bg-black"><LuNavigation aria-hidden="true" /> Get directions</a>
+                  <a href={g.maps} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors bg-paper2 text-dark ring-1 ring-gray-200 hover:bg-paper3"><LuMapPin aria-hidden="true" /> Open in Google Maps</a>
+                  <a href={g.review} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors on-light bg-secondary text-dark hover:brightness-95"><LuStar aria-hidden="true" /> Rate us on Google</a>
                 </div>
               </div>
             </motion.div>
@@ -137,7 +137,7 @@ export default function ContactPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-green-50 border border-green-200 rounded-2xl p-10 text-center"
+                  className="bg-green-50 p-10 text-center"
                 >
                   <FiCheckCircle size={48} className="text-green-500 mx-auto mb-4" />
                   <h3 className="font-display font-bold text-xl text-dark mb-2">Message Sent!</h3>
@@ -158,7 +158,7 @@ export default function ContactPage() {
                         value={form[field.name]}
                         onChange={e => { setForm(f => ({ ...f, [field.name]: e.target.value })); setErrors(er => ({ ...er, [field.name]: '' })); }}
                         placeholder={field.placeholder}
-                        className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary transition-colors ${errors[field.name] ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50'}`}
+                        className={`w-full px-4 py-3   text-sm focus:outline-none  transition-colors ${errors[field.name] ? ' bg-red-50' : ' bg-paper2'}`}
                       />
                       {errors[field.name] && <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>}
                     </div>
@@ -170,7 +170,7 @@ export default function ContactPage() {
                       onChange={e => { setForm(f => ({ ...f, message: e.target.value })); setErrors(er => ({ ...er, message: '' })); }}
                       placeholder="How can we help you?"
                       rows={5}
-                      className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary transition-colors resize-none ${errors.message ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50'}`}
+                      className={`w-full px-4 py-3   text-sm focus:outline-none  transition-colors resize-none ${errors.message ? ' bg-red-50' : ' bg-paper2'}`}
                     />
                     {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
                   </div>
@@ -178,7 +178,7 @@ export default function ContactPage() {
                     type="submit"
                     disabled={sending}
                     whileTap={{ scale: 0.97 }}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-orange-500 hover:from-orange-600 hover:to-primary text-white font-bold py-4 rounded-2xl transition-all hover:shadow-xl hover:shadow-orange-500/30 disabled:opacity-60"
+                    className="w-full flex items-center justify-center gap-2 bg-primary text-white font-bold py-4  transition   disabled:opacity-60"
                   >
                     {sending ? (
                       <><svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg> Sending...</>

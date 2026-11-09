@@ -154,7 +154,7 @@ export default function PriceListPage() {
                 key={c}
                 type="button"
                 onClick={() => navigate(c === 'All' ? '/cards' : categoryPath(c))}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${active ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-200 hover:border-primary hover:text-primary'}`}
+                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium  transition-colors ${active ? 'bg-primary text-white ' : 'bg-paper2 text-gray-700   hover:text-primary'}`}
               >
                 {c === 'All' ? 'All designs' : c}
               </button>
@@ -172,7 +172,7 @@ export default function PriceListPage() {
               onChange={(e) => update(() => setSearch(e.target.value))}
               placeholder="Search designs or codes"
               aria-label="Search designs"
-              className="w-full pl-9 pr-9 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full pl-9 pr-9 py-2.5 bg-paper2 focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
             {search && <button type="button" aria-label="Clear search" onClick={() => update(() => setSearch(''))} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"><FiX /></button>}
           </div>
@@ -187,11 +187,11 @@ export default function PriceListPage() {
                 onChange={(e) => update(() => setMaxPrice(e.target.value))}
                 placeholder={highestPrice ? String(highestPrice) : 'any'}
                 aria-label="Highest price per card"
-                className="w-24 px-3 py-2 rounded-xl border border-gray-200 bg-white"
+                className="w-24 px-3 py-2 bg-paper2"
               />
               per card
             </label>
-            <select value={sortBy} onChange={(e) => update(() => setSortBy(e.target.value))} aria-label="Sort designs" className="px-3 py-2 rounded-xl border border-gray-200 bg-white text-sm">
+            <select value={sortBy} onChange={(e) => update(() => setSortBy(e.target.value))} aria-label="Sort designs" className="px-3 py-2 bg-paper2 text-sm">
               {SORTS.map(([v, label]) => <option key={v} value={v}>{label}</option>)}
             </select>
           </div>
@@ -216,16 +216,16 @@ export default function PriceListPage() {
         {/* Pagination */}
         {pages > 1 && (
           <nav className="flex flex-wrap justify-center gap-2 mt-10" aria-label="Pages">
-            <button type="button" disabled={current === 1} onClick={() => goTo(current - 1)} className="px-3 py-2 rounded-lg border border-gray-200 bg-white disabled:opacity-40">Previous</button>
+            <button type="button" disabled={current === 1} onClick={() => goTo(current - 1)} className="px-3 py-2 bg-paper2 disabled:opacity-40">Previous</button>
             {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
-              <button key={n} type="button" aria-current={n === current ? 'page' : undefined} onClick={() => goTo(n)} className={`w-10 py-2 rounded-lg border ${n === current ? 'bg-primary text-white border-primary' : 'bg-white border-gray-200 hover:border-primary'}`}>{n}</button>
+              <button key={n} type="button" aria-current={n === current ? 'page' : undefined} onClick={() => goTo(n)} className={`w-10 py-2   ${n === current ? 'bg-primary text-white ' : 'bg-paper2  '}`}>{n}</button>
             ))}
-            <button type="button" disabled={current === pages} onClick={() => goTo(current + 1)} className="px-3 py-2 rounded-lg border border-gray-200 bg-white disabled:opacity-40">Next</button>
+            <button type="button" disabled={current === pages} onClick={() => goTo(current + 1)} className="px-3 py-2 bg-paper2 disabled:opacity-40">Next</button>
           </nav>
         )}
       </section>
 
-      <QuickEnquiry subject={routeCategory || 'invitation cards'} title="Can't find the right design? Tell us what you have in mind." />
+      <QuickEnquiry subject={routeCategory || 'invitation cards'} title="Can't find the right design?" />
     </div>
   );
 }

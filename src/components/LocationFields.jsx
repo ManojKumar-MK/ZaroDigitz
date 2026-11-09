@@ -15,7 +15,7 @@ export const INDIAN_STATES = [
 const COUNTRIES = ['India', 'Other'];
 
 const inputClass = (hasError) =>
-  `w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-primary transition-colors ${hasError ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50'}`;
+  `w-full px-4 py-3   text-sm focus:outline-none  transition-colors ${hasError ? ' bg-red-50' : ' bg-paper2'}`;
 
 /** Looks up an Indian pincode. Resolves { state, district, city } or null. */
 export async function lookupPincode(pincode, signal) {

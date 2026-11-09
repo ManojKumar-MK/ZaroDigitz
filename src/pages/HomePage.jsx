@@ -70,7 +70,7 @@ function Stage({ className = '' }) {
       </div>
       <div className="flex justify-center gap-2 pb-5" role="tablist" aria-label="Pieces we make">
         {STAGE.map((st, n) => (
-          <button key={st.caption} type="button" role="tab" aria-selected={n === i} aria-label={st.caption} onClick={() => setI(n)} className={`h-2.5 transition-all ${n === i ? 'w-8 bg-primary' : 'w-2.5 bg-ink/30 hover:bg-ink/50'}`} />
+          <button key={st.caption} type="button" role="tab" aria-selected={n === i} aria-label={st.caption} onClick={() => setI(n)} className={`h-2.5 transition-[width,background-color] ${n === i ? 'w-8 bg-primary' : 'w-2.5 bg-ink/30 hover:bg-ink/50'}`} />
         ))}
       </div>
     </div>
