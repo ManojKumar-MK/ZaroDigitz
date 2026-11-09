@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
 
-const MIN_CHECKOUT_AMOUNT = 2500;
+const MIN_CHECKOUT_AMOUNT = 1; // cards have a minimum quantity per design instead
 
 export default function StickyCartButton() {
   const { totalItems, totalAmount } = useCart();

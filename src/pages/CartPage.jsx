@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FiTrash2, FiArrowRight, FiShoppingBag } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
+import { qtyRules } from '../utils/pricing';
+import { PLACEHOLDER_IMAGE } from '../data/products';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { computeCharges, DEFAULT_CHARGES_NOTE } from '../data/charges';
 import { LuShoppingCart } from 'react-icons/lu';
 
-const MIN_CHECKOUT_AMOUNT = 2500;
+const MIN_CHECKOUT_AMOUNT = 1; // cards have a minimum quantity per design instead
 
 export default function CartPage() {
   const { cart, removeItem, updateQuantity, totalAmount, totalItems, clearCart } = useCart();
@@ -25,7 +27,7 @@ export default function CartPage() {
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}>
           <div className="mx-auto w-24 h-24 mb-6 rounded-full bg-primary/10 text-primary flex items-center justify-center"><LuShoppingCart size={36} /></div>
           <h2 className="font-display font-black text-3xl text-dark mb-3">Your Cart is Empty</h2>
-          <p className="text-gray-500 mb-8">Add some fireworks to your cart to get started!</p>
+          <p className="text-gray-500 mb-8">Pick a card design to get started.</p>
           <Link to="/cards" className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 rounded-2xl hover:bg-orange-600 transition-colors">
             Browse Products <FiArrowRight />
           </Link>
@@ -57,12 +59,12 @@ export default function CartPage() {
                 exit={{ opacity: 0, x: -20, height: 0 }}
                 className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex gap-4 items-center"
               >
-                <img src={item.image || undefined} alt={item.name} className="w-20 h-20 rounded-xl object-cover flex-shrink-0" />
+                <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} className="w-20 h-24 rounded-xl object-cover flex-shrink-0 bg-orange-50" />
                 <div className="flex-1 min-w-0">
                   <div className="text-xs text-gray-400 font-mono">{item.code}</div>
                   <div className="font-bold text-dark text-base truncate">{item.name}</div>
-                  <div className="text-xs text-gray-400">{item.category} · {item.brand}</div>
-                  <div className="font-black text-primary text-lg mt-1">₹{item.price}</div>
+                  <div className="text-xs text-gray-400">{item.category}</div>
+                  <div className="font-black text-primary text-lg mt-1">₹{item.price} <span className="text-xs font-normal text-gray-400">per {String(item.per || 'card').replace(/^1\s+/, '')}</span></div>
                 </div>
                 <div className="flex flex-col items-end gap-3">
                   <button onClick={() => removeItem(item.id)} className="text-gray-300 hover:text-red-500 transition-colors">
@@ -70,12 +72,14 @@ export default function CartPage() {
                   </button>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => item.quantity === 1 ? removeItem(item.id) : updateQuantity(item.id, item.quantity - 1)}
+                      aria-label="Fewer"
+                      onClick={() => item.quantity <= qtyRules(item).min ? removeItem(item.id) : updateQuantity(item.id, item.quantity - qtyRules(item).step)}
                       className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center font-bold transition-colors"
                     >−</button>
-                    <span className="w-8 text-center font-bold text-dark">{item.quantity}</span>
+                    <span className="w-12 text-center font-bold text-dark">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      aria-label="More"
+                      onClick={() => updateQuantity(item.id, item.quantity + qtyRules(item).step)}
                       className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center font-bold transition-colors"
                     >+</button>
                   </div>

@@ -14,7 +14,7 @@ const FLOW = ['new', 'confirmed', 'packed', 'shipped', 'delivered'];
 const fmt = (v) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); };
 const fmtDay = (v) => { if (!v) return ''; const d = new Date(v); return Number.isNaN(d.getTime()) ? v : d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); };
 
-/** Customer order tracking: order number + mobile number -> timeline, transport details, photos. */
+/** Customer order tracking: order number + mobile number -> timeline, courier details, photos. */
 export default function TrackPage() {
   const [params, setParams] = useSearchParams();
   const { settings } = useShopSettings();
@@ -51,7 +51,7 @@ export default function TrackPage() {
     <div className="bg-bg min-h-[70vh]">
       <Seo
         title="Track Your Order"
-        description="Track your Zaro Digitz order with your order number and mobile number: order status, packing, transport and LR details, and delivery updates."
+        description="Track your Zaro Digitz order with your order number and mobile number: proof, printing, courier tracking and delivery updates."
         path="/track"
         jsonLd={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Track Order', path: '/track' }])}
       />
@@ -111,7 +111,7 @@ export default function TrackPage() {
             {doc.status === 'delivered' && (
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-200 p-5 flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h2 className="font-display font-bold text-dark">Happy with your crackers?</h2>
+                  <h2 className="font-display font-bold text-dark">Happy with your cards?</h2>
                   <p className="text-sm text-gray-600 mt-1">A short Google review helps other families find Zaro Digitz. It takes a minute.</p>
                 </div>
                 <a href={googleBusinessLinks(settings).review} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold bg-dark text-white hover:bg-black"><LuStar aria-hidden="true" /> Rate us on Google</a>
@@ -120,11 +120,11 @@ export default function TrackPage() {
 
             {doc.shipment && (doc.shipment.lrNumber || doc.shipment.transport) && (
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
-                <h2 className="font-display font-bold text-dark mb-3">Transport details</h2>
+                <h2 className="font-display font-bold text-dark mb-3">Courier details</h2>
                 <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                  {doc.shipment.lrNumber && <><dt className="text-gray-500">LR number</dt><dd className="font-mono font-semibold text-dark">{doc.shipment.lrNumber}</dd></>}
-                  {doc.shipment.transport && <><dt className="text-gray-500">Transport</dt><dd className="text-dark">{doc.shipment.transport}</dd></>}
-                  {doc.shipment.transportContact && <><dt className="text-gray-500">Transport contact</dt><dd><a href={`tel:${doc.shipment.transportContact}`} className="text-primary">{doc.shipment.transportContact}</a></dd></>}
+                  {doc.shipment.lrNumber && <><dt className="text-gray-500">Tracking number</dt><dd className="font-mono font-semibold text-dark">{doc.shipment.lrNumber}</dd></>}
+                  {doc.shipment.transport && <><dt className="text-gray-500">Courier</dt><dd className="text-dark">{doc.shipment.transport}</dd></>}
+                  {doc.shipment.transportContact && <><dt className="text-gray-500">Courier contact</dt><dd><a href={`tel:${doc.shipment.transportContact}`} className="text-primary">{doc.shipment.transportContact}</a></dd></>}
                   {doc.shipment.vehicle && <><dt className="text-gray-500">Vehicle</dt><dd className="text-dark">{doc.shipment.vehicle}</dd></>}
                   {doc.shipment.bookedAt && <><dt className="text-gray-500">Booked on</dt><dd className="text-dark">{fmtDay(doc.shipment.bookedAt)}</dd></>}
                   {doc.shipment.expectedBy && <><dt className="text-gray-500">Expected by</dt><dd className="text-dark">{fmtDay(doc.shipment.expectedBy)}</dd></>}

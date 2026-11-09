@@ -67,6 +67,7 @@ export function buildOrderDocument(snapshot, { invoiceNumber, telegram, orderNum
       pincode: form.pincode || '',
     },
     customerKey: mobile || (form.email || '').toLowerCase() || 'unknown',
+    event: form.eventFor || form.eventDate || form.eventNotes ? { for: String(form.eventFor || '').slice(0, 160), date: String(form.eventDate || '').slice(0, 20), notes: String(form.eventNotes || '').slice(0, 2000) } : null,
     items,
     itemCount: items.reduce((n, i) => n + i.quantity, 0),
     subtotal: Number(totalAmount) || 0,

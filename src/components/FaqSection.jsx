@@ -11,7 +11,7 @@ export default function FaqSection({ faqs: faqsProp }) {
         <div className="text-center mb-10">
           <span className="text-primary font-bold text-sm uppercase tracking-widest">FAQ</span>
           <h2 className="font-display font-black text-4xl sm:text-5xl text-dark mt-2">
-            Questions About <span className="gradient-text">Buying Crackers</span>
+            Questions About <span className="gradient-text">Ordering Cards</span>
           </h2>
         </div>
         <div className="divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-bg">

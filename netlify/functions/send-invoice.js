@@ -7,6 +7,9 @@ function formatCurrency(value) {
   return `₹${Number(value || 0).toLocaleString('en-IN')}`;
 }
 
+// Free-text card details go into a Telegram HTML message, so escape them.
+const escapeHtml = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
 function buildOrderMessage(order) {
   const { form, cart, totalAmount, delivery, grandTotal } = order;
   const lines = [
@@ -17,6 +20,9 @@ function buildOrderMessage(order) {
     `Customer: ${form.fullName}`,
     `Mobile: ${form.mobile}${form.altMobile ? ` / ${form.altMobile}` : ''}`,
     `Address: ${form.address}, ${form.city}, ${form.district}, ${form.state}, ${form.country} - ${form.pincode}`,
+    ...(form.eventFor ? [`Card for: ${escapeHtml(form.eventFor)}`] : []),
+    ...(form.eventDate ? [`Event date: ${escapeHtml(form.eventDate)}`] : []),
+    ...(form.eventNotes ? [`Notes: ${escapeHtml(form.eventNotes)}`] : []),
     '',
     'Items:',
     ...cart.map((item) => `• ${item.name} x${item.quantity} — ${formatCurrency(item.price * item.quantity)}`),

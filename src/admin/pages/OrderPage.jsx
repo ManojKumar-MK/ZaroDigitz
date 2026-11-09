@@ -37,7 +37,7 @@ function OrderView({ order }) {
   const [note, setNote] = useState('');
   const [tracking, setTracking] = useState(null);
   const [shipment, setShipment] = useState(null);
-  const [photoLabel, setPhotoLabel] = useState('LR copy');
+  const [photoLabel, setPhotoLabel] = useState('Proof');
   const fileRef = useRef();
   const c = order.customer || {};
   const trackingId = order.trackingId || trackingIdFor(order.orderNumber, c.mobile);
@@ -194,20 +194,20 @@ function OrderView({ order }) {
 
           <Card title="Shipment" action={<span className="text-xs text-zinc-500">Visible to the customer</span>}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field label="LR number"><input className={inputClass} value={ship.lrNumber} onChange={(e) => setShipment({ ...ship, lrNumber: e.target.value })} placeholder="48213" /></Field>
-              <Field label="Transport"><input className={inputClass} value={ship.transport} onChange={(e) => setShipment({ ...ship, transport: e.target.value })} placeholder="KPN / VRL / ABT" /></Field>
-              <Field label="Transport phone"><input className={inputClass} value={ship.transportContact} onChange={(e) => setShipment({ ...ship, transportContact: e.target.value })} /></Field>
-              <Field label="Vehicle / bus no."><input className={inputClass} value={ship.vehicle} onChange={(e) => setShipment({ ...ship, vehicle: e.target.value })} /></Field>
+              <Field label="Tracking number"><input className={inputClass} value={ship.lrNumber} onChange={(e) => setShipment({ ...ship, lrNumber: e.target.value })} placeholder="AWB / consignment no." /></Field>
+              <Field label="Courier"><input className={inputClass} value={ship.transport} onChange={(e) => setShipment({ ...ship, transport: e.target.value })} placeholder="DTDC / Professional / India Post" /></Field>
+              <Field label="Courier phone"><input className={inputClass} value={ship.transportContact} onChange={(e) => setShipment({ ...ship, transportContact: e.target.value })} /></Field>
+              <Field label="Booking branch"><input className={inputClass} value={ship.vehicle} onChange={(e) => setShipment({ ...ship, vehicle: e.target.value })} /></Field>
               <Field label="Booked on"><input type="date" className={inputClass} value={ship.bookedAt} onChange={(e) => setShipment({ ...ship, bookedAt: e.target.value })} /></Field>
               <Field label="Expected by"><input type="date" className={inputClass} value={ship.expectedBy} onChange={(e) => setShipment({ ...ship, expectedBy: e.target.value })} /></Field>
-              <div className="sm:col-span-2"><Field label="Note for the customer"><input className={inputClass} value={ship.notes} onChange={(e) => setShipment({ ...ship, notes: e.target.value })} placeholder="Collect from the transport office with ID proof" /></Field></div>
+              <div className="sm:col-span-2"><Field label="Note for the customer"><input className={inputClass} value={ship.notes} onChange={(e) => setShipment({ ...ship, notes: e.target.value })} placeholder="Cards will reach you in 2–3 days" /></Field></div>
             </div>
 
             <div className="mt-5">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-[13px] font-medium text-zinc-700 mr-1">Photos</span>
                 <select className={`${inputClass} w-auto`} value={photoLabel} onChange={(e) => setPhotoLabel(e.target.value)} aria-label="Photo type">
-                  {['LR copy', 'Packed parcel', 'Loaded in vehicle', 'Delivery proof', 'Other'].map((l) => <option key={l}>{l}</option>)}
+                  {['Proof', 'Printed cards', 'Packed parcel', 'Courier receipt', 'Delivery proof', 'Other'].map((l) => <option key={l}>{l}</option>)}
                 </select>
                 <label className={`inline-flex items-center gap-2 h-9 px-3.5 rounded-lg text-sm font-medium ring-1 ring-inset ring-zinc-300 shadow-sm ${photos.length >= MAX_TRACKING_PHOTOS || busy ? 'text-zinc-400 cursor-not-allowed' : 'bg-white hover:bg-zinc-50 text-zinc-800 cursor-pointer'}`}>
                   <FiCamera size={15} /> Add
@@ -274,6 +274,15 @@ function OrderView({ order }) {
             {order.customerKey && <Link to={`/admin/orders?customer=${encodeURIComponent(order.customerKey)}`} className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">All orders from this customer <FiChevronRight size={14} /></Link>}
           </Card>
 
+          {order.event && (
+            <Card title="Card details">
+              <dl className="text-sm space-y-2">
+                {order.event.for && <div><dt className="text-zinc-500 text-xs">Names on the card</dt><dd className="text-zinc-900 font-medium">{order.event.for}</dd></div>}
+                {order.event.date && <div><dt className="text-zinc-500 text-xs">Event date</dt><dd className="text-zinc-900">{order.event.date}</dd></div>}
+                {order.event.notes && <div><dt className="text-zinc-500 text-xs">Wording / requests</dt><dd className="text-zinc-900 whitespace-pre-line">{order.event.notes}</dd></div>}
+              </dl>
+            </Card>
+          )}
           <Card title="Payment">
             <div className="grid grid-cols-2 gap-1.5 p-1 rounded-lg bg-zinc-100">
               {PAYMENT_STATUSES.map((p) => {

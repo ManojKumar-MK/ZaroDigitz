@@ -15,7 +15,7 @@ import { useShopSettings } from '../context/ShopSettingsContext';
 import { computeCharges, DEFAULT_CHARGES_NOTE } from '../data/charges';
 import { LuReceiptText, LuShoppingCart } from 'react-icons/lu';
 
-const MIN_CHECKOUT_AMOUNT = 2500;
+const MIN_CHECKOUT_AMOUNT = 1; // cards have a minimum quantity per design instead
 const EXTRA_CHARGES_NOTE = DEFAULT_CHARGES_NOTE;
 
 const FIELD_CONFIG = [
@@ -31,7 +31,7 @@ const FIELD_CONFIG = [
 export default function CheckoutPage() {
   const { cart, totalAmount, clearCart } = useCart();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ fullName: '', mobile: '', altMobile: '', email: '', address: '', city: '', district: '', state: '', country: '', pincode: '' });
+  const [form, setForm] = useState({ fullName: '', mobile: '', altMobile: '', email: '', address: '', city: '', district: '', state: '', country: '', pincode: '', eventFor: '', eventDate: '', eventNotes: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState('');
@@ -83,6 +83,9 @@ export default function CheckoutPage() {
       `Name: ${f.fullName}`,
       `Mobile: ${f.mobile}`,
       `Address: ${f.address}, ${f.city}, ${f.district}, ${f.state} - ${f.pincode}`,
+      f.eventFor ? `Card for: ${f.eventFor}` : null,
+      f.eventDate ? `Event date: ${f.eventDate}` : null,
+      f.eventNotes ? `Notes: ${f.eventNotes}` : null,
       '',
       'Items:',
       ...shown,
@@ -99,7 +102,7 @@ export default function CheckoutPage() {
   /** Plain-text order summary used for downstream order notifications. */
   const buildOrderMessage = () => {
     const lines = [
-      '🎆 New Order — ZARO Crackers',
+      '💌 New Order — ZARO Digitz',
       '',
       `Customer: ${form.fullName}`,
       `Mobile: ${form.mobile}${form.altMobile ? ' / ' + form.altMobile : ''}`,
@@ -463,9 +466,29 @@ export default function CheckoutPage() {
               <LocationFields form={form} setForm={setForm} errors={errors} setErrors={setErrors} />
             </div>
 
+            {/* Card details: optional, they help us prepare the proof faster */}
+            <div className="mt-8">
+              <h3 className="font-display font-bold text-lg text-dark">Card details <span className="text-sm font-normal text-gray-400">(optional)</span></h3>
+              <p className="text-xs text-gray-500 mb-4">We confirm everything with you on WhatsApp before printing, so you can skip this and tell us later.</p>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <label className="block">
+                  <span className="text-sm font-medium text-gray-700">Names on the card</span>
+                  <input name="eventFor" value={form.eventFor} onChange={(e) => setForm({ ...form, eventFor: e.target.value })} maxLength={160} placeholder="e.g. Priya & Arjun" className="mt-1 w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </label>
+                <label className="block">
+                  <span className="text-sm font-medium text-gray-700">Event date</span>
+                  <input type="date" name="eventDate" value={form.eventDate} onChange={(e) => setForm({ ...form, eventDate: e.target.value })} className="mt-1 w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </label>
+                <label className="block sm:col-span-2">
+                  <span className="text-sm font-medium text-gray-700">Wording or special requests</span>
+                  <textarea name="eventNotes" value={form.eventNotes} onChange={(e) => setForm({ ...form, eventNotes: e.target.value })} maxLength={2000} rows={3} placeholder="Language (Tamil / English), venue, family names, colours you like…" className="mt-1 w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                </label>
+              </div>
+            </div>
+
             <div className="mt-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
               <p className="text-sm text-gray-600">
-                Your order details will be processed after checkout, and our team will contact you using the mobile number provided.
+                After you place the order, we will message you on WhatsApp to collect the names and wording and send a digital proof. Printing starts only after you approve it.
               </p>
             </div>
 
