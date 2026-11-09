@@ -107,30 +107,27 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   doc.setFillColor(...ACCENT);
   doc.rect(0, 120, pageWidth, 4, 'F');
 
+  // Logo centred in the 120pt band; name and details beside it on one left edge.
   if (logoImage) {
-    doc.addImage(logoImage, 'PNG', 30, 12, 60, 60);
+    doc.addImage(logoImage, 'PNG', 40, 30, 60, 60);
   }
 
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(24);
-  doc.text('ZARO DIGITZ', 110, 36);
+  doc.setFontSize(22);
+  doc.text('ZARO DIGITZ', 116, 44);
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  COMPANY.addressLines.forEach((line, i) => doc.text(line, 110, 54 + i * 12));
-  doc.text(
-    `Phone: ${COMPANY.phone}  |  Email: ${COMPANY.email}`,
-    110,
-    54 + COMPANY.addressLines.length * 12
-  );
+  doc.setFontSize(9.5);
+  COMPANY.addressLines.forEach((line, i) => doc.text(line, 116, 60 + i * 12));
+  doc.text(`Phone: ${COMPANY.phone}  |  ${COMPANY.email}`, 116, 60 + COMPANY.addressLines.length * 12);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
   doc.setTextColor(...ACCENT);
-  doc.text('INVOICE', pageWidth - 40, 40, { align: 'right' });
+  doc.text('INVOICE', pageWidth - 40, 54, { align: 'right' });
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
-  doc.text('Digital colour printing · Sivakasi', pageWidth - 40, 56, { align: 'right' });
+  doc.text('Digital colour printing · Sivakasi', pageWidth - 40, 70, { align: 'right' });
 
   doc.setTextColor(30, 30, 30);
 
@@ -144,7 +141,7 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   doc.text(`Phone: ${form.mobile}${form.altMobile ? ' / ' + form.altMobile : ''}`, 40, y + 30);
   const addrLines = doc.splitTextToSize(
     `${form.address}, ${form.city}, ${form.district}, ${form.state} - ${form.pincode}`,
-    260
+    240
   );
   doc.text(addrLines, 40, y + 45);
   // Card details the customer gave at checkout (names, date, wording)
@@ -152,24 +149,25 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
     form.eventFor && `Names: ${form.eventFor}`,
     form.eventDate && `Event date: ${form.eventDate}`,
     form.eventNotes && `Notes: ${form.eventNotes}`,
-  ].filter(Boolean).flatMap((l) => doc.splitTextToSize(l, 260));
+  ].filter(Boolean).flatMap((l) => doc.splitTextToSize(l, 175));
   let eventBottom = y + 45 + addrLines.length * 13;
   if (eventLines.length) {
     doc.setFont('helvetica', 'bold');
-    doc.text('Card details:', pageWidth - 300, y + 45);
+    doc.text('Card details:', metaX, y + 40);
     doc.setFont('helvetica', 'normal');
-    doc.text(eventLines, pageWidth - 300, y + 60);
-    eventBottom = Math.max(eventBottom, y + 60 + eventLines.length * 13);
+    doc.text(eventLines, metaX, y + 55);
+    eventBottom = Math.max(eventBottom, y + 55 + eventLines.length * 13);
   }
 
+  const metaX = pageWidth - 215;
   doc.setFont('helvetica', 'bold');
-  doc.text('Invoice No:', pageWidth - 200, y);
+  doc.text('Invoice No:', metaX, y);
   doc.setFont('helvetica', 'normal');
-  doc.text(invoiceNo, pageWidth - 120, y);
+  doc.text(invoiceNo, metaX + 78, y);
   doc.setFont('helvetica', 'bold');
-  doc.text('Date:', pageWidth - 200, y + 15);
+  doc.text('Date:', metaX, y + 15);
   doc.setFont('helvetica', 'normal');
-  doc.text(dateStr, pageWidth - 120, y + 15);
+  doc.text(dateStr, metaX + 78, y + 15);
 
   // ---- Items table ----
   const rows = cart.map((item, i) => {
@@ -185,7 +183,7 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   autoTable(doc, {
     startY: tableStartY,
     margin: { left: 40, right: 40 },
-    tableWidth: 'wrap',
+    tableWidth: 'auto',
     head: [['S.No', 'Item', 'Qty', 'MRP', 'Price', 'Total']],
     body: rows,
     theme: 'grid',
@@ -203,15 +201,15 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
       overflow: 'linebreak',
       lineColor: [200, 200, 200],
       lineWidth: 0.2,
-      valign: 'middle',
+      valign: 'top',
     },
     columnStyles: {
       0: { halign: 'center', cellWidth: 34 },
-      1: { cellWidth: 190, overflow: 'linebreak' },
-      2: { halign: 'center', cellWidth: 38 },
-      3: { halign: 'right', cellWidth: 60 },
-      4: { halign: 'right', cellWidth: 60 },
-      5: { halign: 'right', cellWidth: 60 },
+      1: { cellWidth: 'auto', overflow: 'linebreak' },
+      2: { halign: 'center', cellWidth: 44 },
+      3: { halign: 'right', cellWidth: 72 },
+      4: { halign: 'right', cellWidth: 72 },
+      5: { halign: 'right', cellWidth: 82 },
     },
     alternateRowStyles: {
       fillColor: [245, 245, 245],
@@ -252,7 +250,7 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   doc.setFontSize(14);
   doc.text('Grand Total', totalsX, grandTotalY);
   doc.text(rupee(grandTotal), totalsValueX, grandTotalY, { align: 'right' });
-  doc.setDrawColor(...LOGO_COLORS.pink);
+  doc.setDrawColor(...ACCENT);
   doc.setLineWidth(1.5);
   doc.line(totalsX, grandTotalY + 4, totalsValueX, grandTotalY + 4);
 
@@ -261,7 +259,7 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   doc.setFont('helvetica', 'italic');
   doc.setFontSize(10);
   doc.setTextColor(90, 90, 90);
-  doc.text('Thank you for shopping with us! Our team will call to confirm delivery.', 40, finalY);
+  doc.text('Thank you! We will send your proof on WhatsApp before printing.', 40, finalY);
 
   // ---- Bank info (optional) ----
   if (BANK_INFO.show) {
@@ -289,6 +287,7 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
   doc.rect(0, pageHeight - 20, pageWidth, 20, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(9);
+  doc.text(`${COMPANY.phone}  ·  ${COMPANY.email}`, 40, pageHeight - 7);
   doc.text(COMPANY.name.toUpperCase(), pageWidth - 40, pageHeight - 7, { align: 'right' });
 
   return { doc, invoiceNo };
