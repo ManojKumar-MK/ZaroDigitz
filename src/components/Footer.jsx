@@ -1,81 +1,83 @@
 import { Link } from 'react-router-dom';
 import { FaWhatsapp } from 'react-icons/fa';
-import { SHOP_CATEGORIES, categoryPath } from '../seo/catalog';
+import { LuClock, LuMail, LuMapPin, LuPhone } from 'react-icons/lu';
+import { categoryPath } from '../seo/catalog';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
-import { EnvelopeSketch } from './Sketches';
 
-const menu = [
-  ['/cards', 'All designs'],
-  ['/about', 'About us'],
-  ['/contact', 'Contact'],
-  ['/#faq', 'Questions'],
+const COLUMNS = [
+  {
+    title: 'Wedding & invitations',
+    links: ['Hindu Wedding Cards', 'Muslim Wedding Cards', 'Christian Wedding Cards', 'Scroll Invitations', 'Premium Box Invitations', 'Birthday Invitations', 'House Warming Invitations'].map((c) => [categoryPath(c), c.replace(/ (Cards|Invitations)$/, '')]),
+  },
+  {
+    title: 'Digital printing',
+    links: ['Visiting Cards & Stationery', 'Labels & Stickers', 'Flyers & Brochures', 'Bill Books & Receipt Books', 'ID Cards', 'Certificates', 'School & College Notebooks'].map((c) => [categoryPath(c), c]),
+  },
+  {
+    title: 'Studio',
+    links: [['/cards', 'All designs'], ['/about', 'About us'], ['/contact', 'Visit us'], ['/#faq', 'Questions'], ['/cart', 'Your cart']],
+  },
 ];
 
-/** The back of the card: the stripe again, the press, and the menu set large. */
+const PHONES = ['+91 97877 02336', '+91 63696 19148', '+91 63830 34170'];
+
+/** Site footer: who we are, where everything is, and how to reach us. */
 export default function Footer() {
   const { settings } = useShopSettings();
   const a = BUSINESS.address;
   return (
     <footer className="bg-night text-[#FBF5EC]">
-      <div className="flex h-2 overflow-hidden" aria-hidden="true">
-        {Array.from({ length: 120 }, (_, i) => <span key={i} className={`shrink-0 w-7 ${i % 2 ? 'bg-paper' : 'bg-[#C9A032]'}`} />)}
-      </div>
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 xl:px-12 py-16 lg:py-20">
+        <div className="grid gap-12 lg:grid-cols-12">
+          {/* Brand */}
+          <div className="lg:col-span-4">
+            <Link to="/" className="inline-flex items-center gap-3">
+              <img src="/zaro-logo-112.webp" width="52" height="52" loading="lazy" alt="" className="w-[52px] h-[52px] object-contain" />
+              <span className="leading-tight">
+                <span className="block font-display font-bold text-xl text-[#F3DFA2]">ZARO Digitz</span>
+                <span className="block text-sm text-[#FBF5EC]/75" lang="ta">ஷாரோ டிஜிட்ஸ்</span>
+              </span>
+            </Link>
+            <p className="mt-5 text-[15px] leading-relaxed text-[#FBF5EC]/85 max-w-[36ch]">Digital colour printing and wedding invitations from Sivakasi. Every order gets a proof on WhatsApp before we print.</p>
+            <div className="flex flex-wrap gap-2 mt-6">
+              <a href={shopWhatsAppLink(settings.whatsappGreeting, settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 h-11 px-5 bg-[#1F7A4D] text-white text-sm font-semibold transition-transform hover:-translate-y-0.5"><FaWhatsapp size={18} aria-hidden="true" /> WhatsApp</a>
+              <a href="tel:+919787702336" className="inline-flex items-center gap-2 h-11 px-5 bg-white/10 hover:bg-white/15 text-sm font-semibold transition-colors"><LuPhone size={16} aria-hidden="true" /> Call us</a>
+            </div>
+          </div>
 
-      <div className="lg:grid lg:grid-cols-2 lg:min-h-[100svh]">
-        <div className="relative h-[50svh] lg:h-auto overflow-hidden">
-          <div className="absolute inset-0 bg-paper2 text-brand flex items-center justify-center p-10"><EnvelopeSketch className="w-full max-w-[520px] h-auto" /></div>
-        </div>
-
-        <div className="px-4 sm:px-10 lg:px-16 py-16 lg:py-20 flex flex-col">
-          <Link to="/" className="flex items-center gap-3 w-fit">
-            <img src="/zaro-logo-112.webp" width="40" height="40" loading="lazy" alt="" className="w-10 h-10 rounded-full object-cover" />
-            <span className="font-display font-bold text-lg">ZARO Digitz</span>
-          </Link>
-
-          <nav aria-label="Footer" className="mt-14 group/menu">
-            <ul className="space-y-5">
-              {menu.map(([to, label]) => (
-                <li key={to}>
-                  <Link to={to} className="inline-block font-display font-bold text-[8vw] lg:text-[2.6vw] leading-none transition-[transform,color] duration-300 hover:translate-x-3 hover:text-secondary group-hover/menu:text-[#FBF5EC]/60 hover:!text-secondary">{label}</Link>
-                </li>
-              ))}
-            </ul>
+          {/* Links */}
+          <nav aria-label="Footer" className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-3 gap-8">
+            {COLUMNS.map((col) => (
+              <div key={col.title}>
+                <h2 className="font-display font-semibold text-[15px] text-[#F3DFA2]">{col.title}</h2>
+                <ul className="mt-4 space-y-2.5 text-[15px]">
+                  {col.links.map(([to, label]) => (
+                    <li key={to}><Link to={to} className="text-[#FBF5EC]/80 hover:text-white transition-colors">{label}</Link></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </nav>
 
-          <div className="grid sm:grid-cols-2 gap-8 mt-16 text-[15px] leading-relaxed">
-            <div>
-              <p className="font-semibold">Visit or call</p>
-              <a href={googleBusinessLinks(settings).maps} target="_blank" rel="noopener noreferrer" className="block hover:text-secondary">{a.streetAddress},<br />Sivakasi, Tamil Nadu {a.postalCode}</a>
-              <a href="tel:+919787702336" className="block mt-1 hover:text-secondary">+91 97877 02336</a>
-              <a href="tel:+916369619148" className="block hover:text-secondary">+91 63696 19148</a>
-              <a href="tel:+916383034170" className="block hover:text-secondary">+91 63830 34170</a>
-              <a href="mailto:zarodigitz@gmail.com" className="block mt-1 hover:text-secondary">zarodigitz@gmail.com</a>
-            </div>
-            <div>
-              <p className="font-semibold">Message us</p>
-              <a href={shopWhatsAppLink(settings.whatsappGreeting, settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-secondary"><FaWhatsapp /> WhatsApp</a>
-              <p className="mt-1">Monday to Saturday, 9 am to 10 pm</p>
-              <p>Sunday, 10 am to 8 pm</p>
-            </div>
+          {/* Visit */}
+          <div className="lg:col-span-3">
+            <h2 className="font-display font-semibold text-[15px] text-[#F3DFA2]">Visit us</h2>
+            <ul className="mt-4 space-y-4 text-[15px] text-[#FBF5EC]/85">
+              <li className="flex gap-3"><LuMapPin size={18} className="shrink-0 mt-0.5 text-[#C9A032]" aria-hidden="true" /><a href={googleBusinessLinks(settings).maps} target="_blank" rel="noopener noreferrer" className="hover:text-white">{a.streetAddress},<br />Sivakasi, Tamil Nadu {a.postalCode}</a></li>
+              <li className="flex gap-3"><LuPhone size={18} className="shrink-0 mt-0.5 text-[#C9A032]" aria-hidden="true" /><span className="grid">{PHONES.map((p) => <a key={p} href={`tel:${p.replace(/\s/g, '')}`} className="hover:text-white tabular-nums">{p}</a>)}</span></li>
+              <li className="flex gap-3"><LuMail size={18} className="shrink-0 mt-0.5 text-[#C9A032]" aria-hidden="true" /><a href={`mailto:${BUSINESS.email}`} className="hover:text-white break-all">{BUSINESS.email}</a></li>
+              <li className="flex gap-3"><LuClock size={18} className="shrink-0 mt-0.5 text-[#C9A032]" aria-hidden="true" /><span>Mon–Sat 9 am – 10 pm<br />Sunday 10 am – 8 pm</span></li>
+            </ul>
           </div>
+        </div>
 
-          <div className="mt-12">
-            <p className="font-semibold text-[15px]">Cards and printing</p>
-            <p className="mt-2 text-[15px] leading-relaxed">
-              {SHOP_CATEGORIES.map((cat, i) => (
-                <span key={cat}>
-                  <Link to={categoryPath(cat)} className="hover:text-secondary underline-offset-4 hover:underline">{cat}</Link>
-                  {i < SHOP_CATEGORIES.length - 1 && <span aria-hidden="true"> · </span>}
-                </span>
-              ))}
-            </p>
-          </div>
-
-          <div className="mt-auto pt-14 text-[13px] text-[#FBF5EC]/85 space-y-3">
-            <p>© {new Date().getFullYear()} Zaro Digitz, Sivakasi · GSTIN {BUSINESS.gstin}</p>
-          </div>
+      </div>
+      <div className="bg-black/25">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 xl:px-12 py-5 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between text-[13px] text-[#FBF5EC]/70">
+          <p>© {new Date().getFullYear()} Zaro Digitz, Sivakasi · GSTIN {BUSINESS.gstin}</p>
+          <p>Designed and printed in Sivakasi</p>
         </div>
       </div>
     </footer>

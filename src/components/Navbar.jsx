@@ -155,26 +155,26 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <ul className="hidden xl:flex items-center gap-2">
+          <ul className="hidden xl:flex items-center gap-0.5">
             {MENUS.map((m) => (
               <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
-                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`relative h-20 px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
-                  <m.icon size={18} className="text-brand" aria-hidden="true" />{m.label}<LuChevronDown size={16} className={`opacity-70 transition-transform ${open === m.label ? 'rotate-180' : ''}`} aria-hidden="true" />
-                  {open === m.label && <motion.span layoutId="nav-open" className="absolute left-4 right-4 bottom-0 h-[3px] bg-secondary" />}
+                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`relative h-20 px-3.5 inline-flex items-center gap-2 text-[15px] font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
+                  <m.icon size={17} className="text-brand/80" aria-hidden="true" />{m.label}<LuChevronDown size={15} className={`opacity-70 transition-transform ${open === m.label ? 'rotate-180' : ''}`} aria-hidden="true" />
+                  {open === m.label && <motion.span layoutId="nav-open" className="absolute left-3.5 right-3.5 bottom-0 h-[3px] bg-secondary" />}
                 </button>
               </li>
             ))}
             {LINKS.map((l) => (
-              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-20 px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}><l.icon size={18} className="text-brand" aria-hidden="true" />{l.label}</Link></li>
+              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-20 px-3.5 inline-flex items-center gap-2 text-[15px] font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}><l.icon size={17} className="text-brand/80" aria-hidden="true" />{l.label}</Link></li>
             ))}
           </ul>
 
-          <div className="flex items-center gap-1.5 xl:pl-4">
-            <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors"><LuSearch size={21} /></button>
-            <ThemeToggle className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors" />
-            <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden xl:inline-flex items-center h-11 px-6 ml-3 order-last bg-primary text-white font-semibold transition-colors hover:bg-[#5A1420]">Get a quote</a>
-            <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative w-11 h-11 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors">
-              <LuShoppingBag size={21} />
+          <div className="flex items-center gap-1 xl:pl-2">
+            <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors"><LuSearch size={19} /></button>
+            <ThemeToggle className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors" />
+            <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden xl:inline-flex items-center h-10 px-5 ml-3 order-last bg-primary text-white text-[15px] font-semibold transition-colors hover:bg-[#5A1420]">Get a quote</a>
+            <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors">
+              <LuShoppingBag size={19} />
               {totalItems > 0 && <motion.span key={totalItems} initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-0.5 right-0.5 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center font-bold">{totalItems}</motion.span>}
             </button>
           </div>
