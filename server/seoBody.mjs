@@ -14,7 +14,7 @@ const a = (href, text) => `<a href="${esc(href)}">${esc(text)}</a>`;
 // Plain, dark styling close to the real site so the swap to the app is not jarring.
 const STYLE = 'max-width:72rem;margin:0 auto;padding:6rem 1rem 3rem;font-family:Inter,system-ui,sans-serif;color:#e5e7eb;background:#0f0f10;line-height:1.6';
 
-const NAV = `<nav aria-label="Main">${[['/', 'Home'], ['/cards', 'Wedding Cards'], ['/about', 'About Us'], ['/contact', 'Contact Us'], ['/track', 'Track Order']].map(([h, t]) => a(h, t)).join(' · ')}</nav>`;
+const NAV = `<nav aria-label="Main">${[['/', 'Home'], ['/cards', 'Wedding Cards'], ['/about', 'About Us'], ['/contact', 'Contact Us']].map(([h, t]) => a(h, t)).join(' · ')}</nav>`;
 const crumbs = (items) => `<nav aria-label="Breadcrumb">${[['/', 'Home'], ...items].map(([h, t]) => a(h, t)).join(' › ')}</nav>`;
 const priceLine = (p) => {
   const price = getOfferPrice(p);

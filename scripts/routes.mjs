@@ -14,7 +14,6 @@ export function getRoutes() {
     ...GUIDES.map((g) => r(`/guides/${g.slug}`, { priority: '0.7', changefreq: 'monthly', lastmod: g.datePublished })),
     r('/about', { priority: '0.6', changefreq: 'monthly' }),
     r('/contact', { priority: '0.6', changefreq: 'monthly' }),
-    r('/track', { priority: '0.4', changefreq: 'yearly' }),
     ...products.map((p) =>
       r(productPath(p), {
         priority: '0.6',

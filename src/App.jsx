@@ -40,7 +40,6 @@ import ContactPage from './pages/ContactPage';
 import Seo from './components/Seo';
 import ProductPage from './pages/ProductPage';
 import NotFoundPage from './pages/NotFoundPage';
-import TrackPage from './pages/TrackPage';
 const InvoicePage = lazyWithRetry(() => import('./pages/InvoicePage'), 'invoice');
 
 // Remount the price list when the category changes so search/pagination state resets.
@@ -88,7 +87,6 @@ function AppLayout() {
           <Route path="/cards" element={<PriceListRoute />} />
           <Route path="/cards/:slug" element={<PriceListRoute />} />
           <Route path="/product/:code" element={<ProductRoute />} />
-          <Route path="/track" element={<TrackPage />} />
           <Route path="/invoice/:token" element={<Suspense fallback={<div className="max-w-4xl mx-auto px-4 py-12 text-gray-500">Loading invoice…</div>}><InvoicePage /></Suspense>} />
           <Route path="/cart" element={<><Seo title="Your Cart" path="/cart" noindex /><CartPage /></>} />
           <Route path="/checkout" element={<><Seo title="Checkout" path="/checkout" noindex /><Suspense fallback={<div className="max-w-6xl mx-auto px-4 py-12 text-gray-500 flex items-center gap-3"><span className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" /> Loading checkout…</div>}><CheckoutPage /></Suspense></>} />

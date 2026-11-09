@@ -6,7 +6,7 @@ import { rawProducts, normalizeProduct, categoryTamil } from '../../data/product
 import { computeCharges, DEFAULT_CHARGES_NOTE } from '../../data/charges';
 import { createAdminOrder, ORDER_STATUSES, PAYMENT_STATUSES, STATUS_LABELS } from '../../firebase/orders';
 import { generateInvoicePDF } from '../../utils/generateInvoicePDF';
-import { runtimeUrl } from '../../seo/site';
+
 import usePincodeAutofill, { pincodeHint } from '../usePincodeAutofill';
 import { INDIAN_STATES } from '../../components/LocationFields';
 import { Button, Card, Field, inputClass, inr } from '../ui';
@@ -195,7 +195,7 @@ export default function NewOrder() {
           {lines.map((l) => <div key={l.id} className="flex justify-between"><dt className="text-zinc-500">{l.label}</dt><dd>{l.amount < 0 ? `- ${inr(-l.amount)}` : inr(l.amount)}</dd></div>)}
           <div className="flex justify-between font-bold text-zinc-900 text-lg pt-2 border-t border-zinc-100"><dt>Total</dt><dd><span key={grandTotal} className="total-pop">{inr(grandTotal)}</span></dd></div>
         </dl>
-        <p className="text-[11px] text-zinc-400 mt-3">The order gets an ID, a tracking page ({runtimeUrl('/track')}) and an invoice link, exactly like website orders.</p>
+        <p className="text-[11px] text-zinc-400 mt-3">The order gets an ID and an invoice link, exactly like website orders.</p>
       </Card>
 
       {cart.length > 0 && (

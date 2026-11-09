@@ -14,7 +14,6 @@ export const STATIC_PAGES = [
   },
   { path: '/about', crumb: 'About Us', label: 'About us', title: 'About Us - Invitation Printing in Sivakasi', description: 'Zaro Digitz designs and prints wedding cards, function invitations, calendars and stationery in Sivakasi, from the team behind Zaro Digitz.' },
   { path: '/contact', crumb: 'Contact Us', label: 'Contact', title: 'Contact Us - Call or WhatsApp', description: 'Contact Zaro Digitz, Sivakasi. Call or WhatsApp +91 70109 35230, or visit us at No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123.' },
-  { path: '/track', crumb: 'Track Order', label: 'Track order', title: 'Track Your Order', description: 'Track your Zaro Digitz order with your order number and mobile number: proof, printing, dispatch and delivery updates.' },
 ];
 
 export const staticPage = (path) => STATIC_PAGES.find((p) => p.path === path);

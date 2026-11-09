@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { FiArrowLeft, FiEdit2, FiPrinter, FiDownload, FiExternalLink, FiLink, FiPhone, FiXCircle, FiTrash2, FiCamera, FiCheck, FiTruck, FiUser, FiMapPin, FiChevronRight, FiStar } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit2, FiPrinter, FiDownload, FiExternalLink, FiPhone, FiXCircle, FiTrash2, FiCamera, FiCheck, FiTruck, FiUser, FiMapPin, FiChevronRight, FiStar } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useAdminData } from '../AdminData';
 import { useToast } from '../Toast';
 import { PAYMENT_STATUSES, STATUS_LABELS, STATUS_DESCRIPTIONS, MAX_TRACKING_PHOTOS, setOrderTestFlag, setOrderStatus, updateOrder, deleteOrder, addTimelineNote, saveShipment, addTrackingPhoto, removeTrackingPhoto, subscribeTracking, trackingIdFor } from '../../firebase/orders';
 import { downloadInvoicePDF } from '../../utils/generateInvoicePDF';
 import { compressImage } from '../../utils/image';
-import { runtimeUrl, googleBusinessLinks } from '../../seo/site';
+import { googleBusinessLinks } from '../../seo/site';
 import { rawProducts, normalizeProduct } from '../../data/products';
 import { readOrderDraft } from '../OrderEditor';
 import { Thumb } from '../ProductPicker';
@@ -41,7 +41,6 @@ function OrderView({ order }) {
   const fileRef = useRef();
   const c = order.customer || {};
   const trackingId = order.trackingId || trackingIdFor(order.orderNumber, c.mobile);
-  const trackUrl = runtimeUrl(`/track?order=${encodeURIComponent(order.orderNumber)}&mobile=${encodeURIComponent(c.mobile || '')}`);
   const waTo = c.mobile ? (c.mobile.length === 10 ? `91${c.mobile}` : c.mobile) : null;
   const hasDraft = Boolean(readOrderDraft(order.id));
 
@@ -72,7 +71,7 @@ function OrderView({ order }) {
   const photos = tracking?.photos || [];
   const items = order.items || [];
   const reviewMessage = `Hi ${c.name}, thank you for ordering from Zaro Digitz! If you liked your cards, could you leave us a quick Google review? It really helps other families find us: ${googleBusinessLinks(settings).review}`;
-  const statusMessage = `Hi ${c.name}, update on your Zaro Digitz order ${order.orderNumber}: ${STATUS_LABELS[order.status]}. ${STATUS_DESCRIPTIONS[order.status] || ''}${ship.lrNumber ? ` LR no. ${ship.lrNumber}${ship.transport ? ` via ${ship.transport}` : ''}.` : ''} Track it here: ${trackUrl}`;
+  const statusMessage = `Hi ${c.name}, update on your Zaro Digitz order ${order.orderNumber}: ${STATUS_LABELS[order.status]}. ${STATUS_DESCRIPTIONS[order.status] || ''}${ship.lrNumber ? ` LR no. ${ship.lrNumber}${ship.transport ? ` via ${ship.transport}` : ''}.` : ''}`;
 
   const onPhoto = async (e) => {
     const file = e.target.files?.[0];
@@ -84,7 +83,6 @@ function OrderView({ order }) {
     }, `${photoLabel || 'Photo'} attached`);
   };
 
-  const copy = (text, what) => { navigator.clipboard?.writeText(text); toast(`${what} copied`); };
 
   return (
     <div className="space-y-6">
@@ -115,8 +113,6 @@ function OrderView({ order }) {
             <Menu items={[
               order.snapshot && { label: 'Download invoice PDF', icon: FiDownload, onClick: () => downloadInvoicePDF(order.snapshot, order.invoiceNumber || order.orderNumber) },
               order.invoiceUrl && { label: 'Open invoice link', icon: FiExternalLink, href: order.invoiceUrl },
-              { label: 'Copy tracking link', icon: FiLink, onClick: () => copy(trackUrl, 'Tracking link') },
-              { label: 'Open tracking page', icon: FiExternalLink, href: trackUrl },
               waTo && { label: 'Send status on WhatsApp', icon: FaWhatsapp, href: `https://wa.me/${waTo}?text=${encodeURIComponent(statusMessage)}` },
               waTo && { label: 'Ask for a Google review', icon: FiStar, href: `https://wa.me/${waTo}?text=${encodeURIComponent(reviewMessage)}` },
               !cancelled && order.status !== 'delivered' && { label: 'Cancel order', icon: FiXCircle, danger: true, onClick: () => { if (window.confirm(`Cancel order ${order.orderNumber}?`)) run(() => setOrderStatus(order, 'cancelled'), 'Order cancelled'); } },
@@ -298,7 +294,6 @@ function OrderView({ order }) {
               <div className="flex justify-between gap-3"><dt className="text-zinc-500">Invoice</dt><dd className="text-zinc-900">{order.invoiceNumber || '—'}</dd></div>
               <div className="flex justify-between gap-3"><dt className="text-zinc-500">Source</dt><dd className="text-zinc-900">{capital(order.source || 'website')}</dd></div>
               <div className="flex justify-between gap-3"><dt className="text-zinc-500">Telegram</dt><dd className={order.telegram?.ok ? 'text-emerald-600' : 'text-zinc-500'}>{order.telegram == null ? '—' : order.telegram.ok ? 'Sent' : order.telegram.reason === 'pending' ? 'Sending…' : 'Failed'}</dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-zinc-500">Tracking</dt><dd><button type="button" onClick={() => copy(trackUrl, 'Tracking link')} className="inline-flex items-center gap-1 text-primary font-medium hover:underline"><FiLink size={13} /> Copy link</button></dd></div>
             </dl>
           </Card>
 

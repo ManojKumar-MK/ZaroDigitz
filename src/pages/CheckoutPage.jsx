@@ -78,7 +78,6 @@ export default function CheckoutPage() {
       order.orderNumber ? `Order ID: ${order.orderNumber}` : null,
       order.invoiceNo ? `Invoice: ${order.invoiceNo}` : null,
       order.invoiceUrl ? `Invoice PDF: ${order.invoiceUrl}` : null,
-      order.orderNumber ? `Track: ${runtimeUrl(`/track?order=${encodeURIComponent(order.orderNumber)}&mobile=${encodeURIComponent(f.mobile)}`)}` : null,
       '',
       `Name: ${f.fullName}`,
       `Mobile: ${f.mobile}`,
@@ -299,8 +298,7 @@ export default function CheckoutPage() {
 
           {lastOrder?.orderNumber && (
             <p className="text-sm text-gray-600 mb-4">
-              Order ID: <span className="font-mono font-bold text-dark">{lastOrder.orderNumber}</span>. Quote this when you contact us, or{' '}
-              <Link to={`/track?order=${encodeURIComponent(lastOrder.orderNumber)}&mobile=${encodeURIComponent(lastOrder.form.mobile)}`} className="text-primary font-semibold hover:underline">track your order here</Link>.
+              Order ID: <span className="font-mono font-bold text-dark">{lastOrder.orderNumber}</span>. Quote this when you contact us.
             </p>
           )}
           {lastOrder?.pdfBlob && typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [new File([lastOrder.pdfBlob], 'invoice.pdf', { type: 'application/pdf' })] }) && (
@@ -510,7 +508,7 @@ export default function CheckoutPage() {
 
         {/* Summary */}
         <div>
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-[124px]">
             <h2 className="font-display font-bold text-xl text-dark mb-4 pb-4 border-b border-gray-100">Order Summary</h2>
             <div className="space-y-3 max-h-64 overflow-y-auto mb-4 pr-1">
               {cart.map(item => (

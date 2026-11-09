@@ -9,7 +9,6 @@ import { EnvelopeSketch } from './Sketches';
 const menu = [
   ['/cards', 'All designs'],
   ['/about', 'About us'],
-  ['/track', 'Track your order'],
   ['/contact', 'Contact'],
   ['/#faq', 'Questions'],
 ];

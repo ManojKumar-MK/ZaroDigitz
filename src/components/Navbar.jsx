@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiShoppingBag, FiMenu, FiX, FiSearch, FiChevronDown, FiMinus, FiPlus } from 'react-icons/fi';
@@ -125,13 +125,25 @@ export default function Navbar() {
   const show = openedOn === location.key ? panel : null;
   const openPanel = (p) => { setOpenedOn(location.key); setPanel(p); };
   const close = () => setPanel(null);
+  // After the first bit of scrolling the top line folds away (the header gets shorter)
+  // and an open dropdown closes, so neither sits over the page being read.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+      setOpen(null);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50">
-      <div className="bg-night text-[#F3E8D8] text-[13px] sm:text-sm">
+      <div className={`bg-night text-[#F3E8D8] text-[13px] sm:text-sm overflow-hidden transition-[height] duration-300 ${scrolled ? 'h-0' : 'h-9'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-9 flex items-center justify-center sm:justify-between gap-6">
           <span className="truncate">{settings.announcement || 'Free digital proof on WhatsApp before we print'}</span>
-          <span className="hidden sm:flex gap-6"><Link to="/track" className="hover:text-secondary">Track your order</Link><a href="tel:+917010935230" className="hover:text-secondary">+91 70109 35230</a></span>
+          <span className="hidden sm:flex gap-6"><span>Courier across India</span><a href="tel:+917010935230" className="hover:text-secondary">+91 70109 35230</a></span>
         </div>
       </div>
 
@@ -208,7 +220,7 @@ export default function Navbar() {
                     </ul>
                   </details>
                 ))}
-                {[{ to: '/cards', label: 'All designs' }, ...LINKS, { to: '/track', label: 'Track order' }, { to: '/about', label: 'About us' }].map((l) => (
+                {[{ to: '/cards', label: 'All designs' }, ...LINKS, { to: '/about', label: 'About us' }].map((l) => (
                   <Link key={l.to} to={l.to} onClick={close} className="flex items-center h-14 font-semibold text-lg hover:text-brand">{l.label}</Link>
                 ))}
               </div>

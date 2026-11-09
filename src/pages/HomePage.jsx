@@ -158,7 +158,7 @@ export default function HomePage() {
       <Seo path="/" jsonLd={faqSchema(getFaqs(settings))} />
 
       {/* HERO: the invitation card, filled in by the visitor, beside the room */}
-      <section className="bg-[#5A1420] dark:bg-night p-3 sm:p-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:min-h-[calc(100svh-104px)]">
+      <section className="bg-[#5A1420] dark:bg-night p-3 sm:p-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:min-h-[calc(100svh-108px)]">
         <div className="bg-paper flex flex-col overflow-hidden">
           <Stripe />
           <div className="flex-1 flex flex-col items-center text-center px-6 sm:px-12 py-10 lg:py-12">
