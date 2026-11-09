@@ -40,13 +40,13 @@ export default function InvoicePage() {
         {state.status === 'missing' && (
           <div className="text-center py-20">
             <h1 className="font-display font-black text-2xl text-dark">Invoice not found</h1>
-            <p className="text-gray-500 mt-2">This link is not valid. Please check the message you received, or contact us on WhatsApp at +91 7010935230.</p>
+            <p className="text-gray-500 mt-2">This link is not valid. Please check the message you received, or contact us on WhatsApp at +91 9787702336.</p>
           </div>
         )}
         {state.status === 'error' && (
           <div className="text-center py-20">
             <h1 className="font-display font-black text-2xl text-dark">Invoice unavailable</h1>
-            <p className="text-gray-500 mt-2">Please try again in a moment or contact us on WhatsApp at +91 7010935230.</p>
+            <p className="text-gray-500 mt-2">Please try again in a moment or contact us on WhatsApp at +91 9787702336.</p>
           </div>
         )}
         {state.status === 'ready' && (

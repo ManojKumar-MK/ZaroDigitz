@@ -18,11 +18,11 @@ export function setDiscountPercent(value) {
 
 export const SHOP = {
   name: "Zaro Digitz",
-  tagline: "Wedding Cards & Printing",
+  tagline: "Digital Colour Printing",
   address: "No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi - 626123",
-  email: "zarocrackers@gmail.com",
+  email: "zarodigitz@gmail.com",
   website: "digitz.zarocrackers.com",
-  phones: ["70109 35230", "63696 19148"],
+  phones: ["97877 02336", "63696 19148", "63830 34170"],
 };
 
 export const TERMS = [
@@ -155,7 +155,7 @@ export function hasDiscount(product) {
 }
 
 
-export const categories = ["All", "Hindu Wedding Cards", "Muslim Wedding Cards", "Christian Wedding Cards", "Budget Wedding Cards", "Scroll Invitations", "Acrylic Invitations", "Foil & Metallic Cards", "Premium Box Invitations", "Birthday Invitations", "House Warming Invitations", "Ear Piercing Invitations", "Baby Shower Invitations", "Puberty Ceremony Invitations", "Holy Communion Invitations", "Diaries & Calendars", "Return Gifts", "Visiting Cards & Stationery", "Custom Printing"];
+export const categories = ["All", "Hindu Wedding Cards", "Muslim Wedding Cards", "Christian Wedding Cards", "Budget Wedding Cards", "Scroll Invitations", "Acrylic Invitations", "Foil & Metallic Cards", "Premium Box Invitations", "Birthday Invitations", "House Warming Invitations", "Ear Piercing Invitations", "Baby Shower Invitations", "Puberty Ceremony Invitations", "Holy Communion Invitations", "School & College Notebooks", "Diaries & Calendars", "Return Gifts", "Visiting Cards & Stationery", "Bill Books & Receipt Books", "Labels & Stickers", "Sweet & Cake Boxes", "Flyers & Brochures", "Letterheads & Envelopes", "ID Cards", "Certificates", "Synthetic & Texture Board Prints", "Branding & Signage", "Custom Printing"];
 
 /** Tamil names shown under category headings (optional). */
 export const categoryTamil = {
@@ -169,6 +169,7 @@ export const categoryTamil = {
   "Baby Shower Invitations": "வளைகாப்பு அழைப்பிதழ்",
   "Puberty Ceremony Invitations": "மஞ்சள் நீராட்டு விழா அழைப்பிதழ்",
   "Diaries & Calendars": "டைரி & காலண்டர்",
+  "School & College Notebooks": "நோட்டுப் புத்தகங்கள்",
   "Return Gifts": "ரிட்டர்ன் கிஃப்ட்"
 };
 
@@ -188,7 +189,19 @@ export const rawProducts = [
   {"id": 12, "code": "ZD-012", "name": "Valaikappu Bangles Invite", "category": "Baby Shower Invitations", "per": "1 card", "mrp": 16, "offerPrice": 16, "minQty": 100, "qtyStep": 50, "tiers": [{"from": 300, "price": 14.5}], "material": "Art board", "size": "5 x 7 in", "orientation": "Portrait", "style": "Single card", "image": "", "sample": true},
   {"id": 13, "code": "ZD-013", "name": "2027 Table Calendar", "category": "Diaries & Calendars", "per": "1 piece", "mrp": 95, "offerPrice": 95, "minQty": 50, "qtyStep": 25, "tiers": [{"from": 100, "price": 88}, {"from": 250, "price": 82}], "material": "Board with wire binding", "size": "8 x 6 in", "orientation": "Landscape", "style": "Desk calendar", "image": "", "sample": true},
   {"id": 14, "code": "ZD-014", "name": "Personalised Steel Tumbler Gift", "category": "Return Gifts", "per": "1 piece", "mrp": 120, "offerPrice": 120, "minQty": 50, "qtyStep": 25, "tiers": [{"from": 100, "price": 110}], "material": "Steel", "size": "300 ml", "orientation": "-", "style": "Gift", "image": "", "sample": true},
-  {"id": 15, "code": "ZD-015", "name": "Premium Visiting Cards (100)", "category": "Visiting Cards & Stationery", "per": "1 pack", "mrp": 450, "offerPrice": 450, "minQty": 1, "qtyStep": 1, "tiers": [], "material": "350 gsm matte", "size": "3.5 x 2 in", "orientation": "Landscape", "style": "Pack of 100", "image": "", "sample": true},
+  {"id": 15, "code": "ZD-015", "name": "Premium Visiting Cards (100)", "category": "Visiting Cards & Stationery", "per": "1 pack", "mrp": 450, "offerPrice": 450, "minQty": 1, "qtyStep": 1, "tiers": [], "material": "350 gsm matte", "size": "3.5 x 2 in", "orientation": "Landscape", "style": "Pack of 100", "image": "", "sample": true},,
+  {"id": 16, "code": "ZD-016", "name": "Long Notebook, 172 Pages, Custom Cover", "category": "School & College Notebooks", "per": "1 notebook", "mrp": 48, "offerPrice": 48, "minQty": 100, "qtyStep": 50, "tiers": [{"from": 500, "price": 44}, {"from": 1000, "price": 41}], "material": "58 gsm maplitho, 250 gsm cover", "size": "29.7 x 19 cm", "orientation": "Portrait", "style": "Centre-stapled", "image": "", "sample": true},
+  {"id": 17, "code": "ZD-017", "name": "Hard Bound A5 Notebook with Your Logo", "category": "School & College Notebooks", "per": "1 notebook", "mrp": 95, "offerPrice": 95, "minQty": 50, "qtyStep": 25, "tiers": [{"from": 200, "price": 88}, {"from": 500, "price": 82}], "material": "70 gsm, hard board cover", "size": "A5", "orientation": "Portrait", "style": "Case bound", "image": "", "sample": true},
+  {"id": 18, "code": "ZD-018", "name": "Bill Book, Duplicate, 50 Sets", "category": "Bill Books & Receipt Books", "per": "1 book", "mrp": 85, "offerPrice": 85, "minQty": 10, "qtyStep": 5, "tiers": [{"from": 50, "price": 76}], "material": "NCR carbonless paper", "size": "A5", "orientation": "Portrait", "style": "Numbered, perforated", "image": "", "sample": true},
+  {"id": 19, "code": "ZD-019", "name": "Round Product Labels, Gloss", "category": "Labels & Stickers", "per": "1 sheet of 24", "mrp": 18, "offerPrice": 18, "minQty": 50, "qtyStep": 50, "tiers": [{"from": 500, "price": 14}], "material": "Gloss sticker paper", "size": "40 mm round", "orientation": "-", "style": "Die cut", "image": "", "sample": true},
+  {"id": 20, "code": "ZD-020", "name": "Sweet Box with Window, 500 g", "category": "Sweet & Cake Boxes", "per": "1 box", "mrp": 22, "offerPrice": 22, "minQty": 200, "qtyStep": 100, "tiers": [{"from": 1000, "price": 19}], "material": "300 gsm duplex board", "size": "20 x 14 x 5 cm", "orientation": "-", "style": "Printed, window", "image": "", "sample": true},
+  {"id": 21, "code": "ZD-021", "name": "2027 Executive Diary with Name Emboss", "category": "Diaries & Calendars", "per": "1 diary", "mrp": 260, "offerPrice": 260, "minQty": 25, "qtyStep": 25, "tiers": [{"from": 100, "price": 240}], "material": "Leatherette cover, 70 gsm", "size": "A5", "orientation": "Portrait", "style": "Dated, gold emboss", "image": "", "sample": true},
+  {"id": 22, "code": "ZD-022", "name": "A5 Flyers, Full Colour, Both Sides", "category": "Flyers & Brochures", "per": "1 flyer", "mrp": 3.5, "offerPrice": 3.5, "minQty": 500, "qtyStep": 500, "tiers": [{"from": 2000, "price": 2.6}], "material": "130 gsm art paper", "size": "A5", "orientation": "Portrait", "style": "Double side", "image": "", "sample": true},
+  {"id": 23, "code": "ZD-023", "name": "Tri-fold Brochure, A4", "category": "Flyers & Brochures", "per": "1 brochure", "mrp": 12, "offerPrice": 12, "minQty": 200, "qtyStep": 100, "tiers": [{"from": 1000, "price": 9.5}], "material": "170 gsm gloss", "size": "A4 folded", "orientation": "Landscape", "style": "Tri-fold", "image": "", "sample": true},
+  {"id": 24, "code": "ZD-024", "name": "Company Letterhead, 100 gsm", "category": "Letterheads & Envelopes", "per": "1 sheet", "mrp": 4, "offerPrice": 4, "minQty": 250, "qtyStep": 250, "tiers": [{"from": 1000, "price": 3.2}], "material": "100 gsm bond", "size": "A4", "orientation": "Portrait", "style": "Single side", "image": "", "sample": true},
+  {"id": 25, "code": "ZD-025", "name": "PVC ID Card with Photo", "category": "ID Cards", "per": "1 card", "mrp": 45, "offerPrice": 45, "minQty": 25, "qtyStep": 25, "tiers": [{"from": 200, "price": 38}], "material": "PVC", "size": "86 x 54 mm", "orientation": "Portrait", "style": "Both sides, with lanyard slot", "image": "", "sample": true},
+  {"id": 26, "code": "ZD-026", "name": "Certificate on Texture Board", "category": "Certificates", "per": "1 certificate", "mrp": 18, "offerPrice": 18, "minQty": 50, "qtyStep": 50, "tiers": [{"from": 300, "price": 14}], "material": "300 gsm texture board", "size": "A4", "orientation": "Landscape", "style": "Gold border", "image": "", "sample": true},
+  {"id": 27, "code": "ZD-027", "name": "Synthetic Waterproof Print, 13 x 19 in", "category": "Synthetic & Texture Board Prints", "per": "1 sheet", "mrp": 40, "offerPrice": 40, "minQty": 10, "qtyStep": 10, "tiers": [{"from": 100, "price": 32}], "material": "Synthetic, tear-proof", "size": "13 x 19 in", "orientation": "-", "style": "Full colour", "image": "", "sample": true}
 ];
 
 // Enrich every product with a `price` field (its current offer price) so

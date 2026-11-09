@@ -40,7 +40,7 @@ export function findProductBySlug(list, slug) {
 }
 
 /** WhatsApp/phone shown in search descriptions (people can tap it right from Google). */
-const SHOP_PHONE = '70109 35230';
+const SHOP_PHONE = '97877 02336';
 const money = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
 /** First description that fits Google's ~160 characters, else the shortest. */
 const fitDescription = (...options) => options.find((d) => d.length <= 160) || options[options.length - 1].slice(0, 160);
@@ -69,9 +69,19 @@ export const CATEGORY_BLURBS = {
   "Baby Shower Invitations": "Valaikappu, seemantham and baby shower invitations with bangle, cradle and floral motifs.",
   "Puberty Ceremony Invitations": "Manjal neerattu vizha and puberty ceremony invitations in graceful traditional styles.",
   "Holy Communion Invitations": "First holy communion and confirmation invitations with soft colours and simple, elegant layouts.",
+  "School & College Notebooks": "Long and short notebooks, hard-bound and spiral notebooks with your school, college or company name on the cover, printed in bulk.",
+  "Bill Books & Receipt Books": "Numbered bill books, receipt books and delivery challans in duplicate or triplicate, with your shop name and GST details.",
+  "Labels & Stickers": "Product labels, name stickers and die-cut stickers for shops, makers and return gifts.",
+  "Sweet & Cake Boxes": "Printed sweet boxes, cake boxes and gift cartons with your shop name, for festivals and functions.",
   "Diaries & Calendars": "Personalised diaries, desk and wall calendars for businesses, shops and gifting.",
   "Return Gifts": "Personalised return gifts for weddings and functions, printed with names or the event date.",
   "Visiting Cards & Stationery": "Visiting cards, letterheads, bill books and envelopes printed in Sivakasi.",
+  "Flyers & Brochures": "Flyers, pamphlets and folded brochures in full colour on art paper, for shops, schools, events and offers.",
+  "Letterheads & Envelopes": "Company letterheads, envelopes and stationery sets with your logo and contact details.",
+  "ID Cards": "PVC and laminated ID cards with photo for schools, colleges, offices and events.",
+  "Certificates": "Certificates printed on texture board or art card, with gold borders and names filled in for every student or participant.",
+  "Synthetic & Texture Board Prints": "Tear-proof synthetic prints and premium texture board prints up to 13 x 19 inches and 350 gsm.",
+  "Branding & Signage": "Logos, shop branding, standees and boards to make your business look its best.",
   "Custom Printing": "Anything else you need printed: flex banners, stickers, labels and custom jobs. Tell us what you need."
 };
 
@@ -193,7 +203,7 @@ export const FAQS = [
   },
   {
     q: "Where is Zaro Digitz located?",
-    a: "Zaro Digitz is in Sivakasi, Tamil Nadu: No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123. Call or WhatsApp 70109 35230.",
+    a: "Zaro Digitz is in Sivakasi, Tamil Nadu: No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123. Call or WhatsApp 97877 02336.",
   },
 ];
 

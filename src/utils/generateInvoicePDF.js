@@ -8,8 +8,8 @@ import autoTable from 'jspdf-autotable';
 const COMPANY = {
   name: 'ZARO Digitz',
   addressLines: ['No. 3U, Maruthu Pandiyar Mettu Street', 'Sivakasi, Tamil Nadu - 626123', 'GSTIN 33AAEFZ1822D1ZK'],
-  phone: '+91 70109 35230',
-  email: 'zarocrackers@gmail.com',
+  phone: '+91 97877 02336',
+  email: 'zarodigitz@gmail.com',
 };
 
 // Set show:true and fill these in to print a "BANK INFO" panel like the

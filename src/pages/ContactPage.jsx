@@ -39,9 +39,9 @@ export default function ContactPage() {
   };
 
   const contactInfo = [
-    { icon: LuPhone, label: 'Call Us', value: '+91 7010935230, +91 6369619148', sub: 'Mon-Sat: 9AM - 7PM', color: ' ', href: 'tel:+917010935230' },
-    { icon: LuMail, label: 'Email Us', value: 'zarocrackers@gmail.com', sub: 'We reply within 24 hours', color: ' ', href: 'mailto:zarocrackers@gmail.com' },
-    { icon: FaWhatsapp, label: 'WhatsApp', value: '+91 7010935230', sub: 'Quick responses', color: ' ', href: shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards. Could you help me?', settings.whatsappNumber) },
+    { icon: LuPhone, label: 'Call Us', value: '+91 9787702336, +91 6369619148', sub: 'Mon-Sat: 9AM - 7PM', color: ' ', href: 'tel:+919787702336' },
+    { icon: LuMail, label: 'Email Us', value: 'zarodigitz@gmail.com', sub: 'We reply within 24 hours', color: ' ', href: 'mailto:zarodigitz@gmail.com' },
+    { icon: FaWhatsapp, label: 'WhatsApp', value: '+91 9787702336', sub: 'Quick responses', color: ' ', href: shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards. Could you help me?', settings.whatsappNumber) },
     { icon: LuMapPin, label: 'Visit Us', value: 'No. 3U, Maruthu Pandiyar Mettu Street', sub: 'Sivakasi, Tamil Nadu - 626123', color: ' ', href: '#map' },
   ];
 
@@ -49,7 +49,7 @@ export default function ContactPage() {
     <div>
       <Seo
         title={staticPage('/contact').title}
-        description="Contact Zaro Digitz, Sivakasi. Call or WhatsApp +91 70109 35230, or visit us at No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123."
+        description="Contact Zaro Digitz, Sivakasi. Call or WhatsApp +91 97877 02336, or visit us at No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123."
         path="/contact"
         jsonLd={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Contact Us', path: '/contact' }])}
       />
@@ -117,7 +117,7 @@ export default function ContactPage() {
               <div className="mt-4 p-4 bg-paper ">
                 <div className="font-bold text-dark">ZARO Digitz</div>
                 <div className="text-sm text-gray-500 mt-1">No. 3U, Maruthu Pandiyar Mettu Street,<br />Sivakasi, Tamil Nadu - 626123</div>
-                <div className="text-sm text-primary font-medium mt-2 flex items-center gap-1.5"><LuPhone aria-hidden="true" /> +91 7010935230 / +91 6369619148</div>
+                <div className="text-sm text-primary font-medium mt-2 flex items-center gap-1.5"><LuPhone aria-hidden="true" /> +91 9787702336 / +91 6369619148</div>
                 <div className="flex flex-wrap gap-2 mt-4">
                   <a href={g.directions} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors bg-dark text-white hover:bg-black"><LuNavigation aria-hidden="true" /> Get directions</a>
                   <a href={g.maps} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors bg-paper2 text-dark ring-1 ring-gray-200 hover:bg-paper3"><LuMapPin aria-hidden="true" /> Open in Google Maps</a>

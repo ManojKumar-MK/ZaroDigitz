@@ -20,9 +20,9 @@ function useDraw(delay = 0) {
 }
 
 /** One stroke. `gold` paints it in foil; `d` is the path; `i` staggers it. */
-function S({ d, gold = false, i = 0, w = 2.4, fill }) {
+function S({ d, gold = false, i = 0, w = 2.4, fill, strokeDasharray }) {
   const draw = useDraw(i * 0.12);
-  return <motion.path d={d} fill={fill || 'none'} stroke={gold ? GOLD : 'currentColor'} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" {...draw} />;
+  return <motion.path d={d} fill={fill || 'none'} stroke={gold ? GOLD : 'currentColor'} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={strokeDasharray} {...draw} />;
 }
 
 function Frame({ title, className = '', children, viewBox = '0 0 240 240' }) {
@@ -161,8 +161,69 @@ export function KolamSketch({ className }) {
   );
 }
 
+export function NotebookSketch({ className }) {
+  return (
+    <Frame title="Sketch of a notebook with a printed cover" className={className}>
+      <S d="M62 32 L184 28 L188 214 L66 218 Z" i={0} />
+      <S d="M62 32 L66 218" i={1} w={4} />
+      <S d="M70 42 L70 206" i={1} w={1.2} />
+      <S d="M90 60 L170 57 L172 104 L92 107 Z" gold i={2} />
+      <S d="M104 76 C112 72 120 80 130 75 C140 70 148 78 158 74" i={3} w={2.6} />
+      <S d="M108 92 L154 90.5" gold i={4} w={1.6} />
+      <S d="M94 132 L172 129 M95 146 L172 143 M96 160 L172 157 M97 174 L172 171" i={5} w={1.2} />
+      <S d="M188 60 C200 64 200 80 188 84" gold i={6} w={1.6} />
+    </Frame>
+  );
+}
+
+export function BillBookSketch({ className }) {
+  return (
+    <Frame title="Sketch of a numbered bill book" className={className}>
+      <S d="M58 44 L182 40 L186 206 L62 210 Z" i={0} />
+      <S d="M58 60 L182 56" i={1} w={1.2} strokeDasharray="2 6" />
+      <S d="M76 74 C86 70 96 78 106 73" gold i={2} w={2.6} />
+      <S d="M140 72 L168 71" gold i={3} w={2} />
+      <S d="M74 98 L172 95 M74 98 L76 176 L174 173 L172 95 M74 122 L173 119 M74 146 L174 143 M140 96 L142 174" i={4} w={1.2} />
+      <S d="M120 192 C130 188 140 196 150 191" i={5} w={1.6} />
+      <S d="M48 216 L190 210" i={6} w={1} />
+    </Frame>
+  );
+}
+
+export function LabelSketch({ className }) {
+  return (
+    <Frame title="Sketch of a sheet of round printed labels" className={className}>
+      <S d="M50 40 L190 36 L194 206 L54 210 Z" i={0} />
+      {[[86, 82], [150, 80], [88, 146], [152, 144]].map(([x, y], n) => (
+        <g key={n}>
+          <S d={`M${x} ${y} m-24 0 a24 24 0 1 0 48 0 a24 24 0 1 0 -48 0`} gold i={1 + n * 0.4} w={2} />
+          <S d={`M${x - 12} ${y - 2} C${x - 6} ${y - 6} ${x} ${y + 2} ${x + 12} ${y - 3} M${x - 8} ${y + 8} L${x + 8} ${y + 7}`} i={2 + n * 0.4} w={1.4} />
+        </g>
+      ))}
+      <S d="M176 186 C182 178 188 182 192 176" i={4} w={1.4} />
+    </Frame>
+  );
+}
+
+export function SweetBoxSketch({ className }) {
+  return (
+    <Frame title="Sketch of a printed sweet box with a window" className={className}>
+      <S d="M40 104 L120 132 L200 104 L120 80 Z" i={0} />
+      <S d="M40 104 L40 170 L120 200 L200 170 L200 104" i={1} />
+      <S d="M120 132 L120 200" i={2} w={1.4} />
+      <S d="M78 104 L120 118 L162 104 L120 92 Z" gold i={3} w={1.8} />
+      <S d="M56 150 C66 146 76 156 88 152 M138 156 C150 152 160 160 176 154" i={4} w={1.6} />
+      <S d="M110 102 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M130 104 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0" gold i={5} w={2} />
+    </Frame>
+  );
+}
+
 /** The sketch that fits a category, so designs without a photo still show the right kind of thing. */
 export function CategorySketch({ category = '', className }) {
+  if (/notebook/i.test(category)) return <NotebookSketch className={className} />;
+  if (/bill|receipt/i.test(category)) return <BillBookSketch className={className} />;
+  if (/label|sticker/i.test(category)) return <LabelSketch className={className} />;
+  if (/sweet|cake/i.test(category)) return <SweetBoxSketch className={className} />;
   if (/scroll/i.test(category)) return <ScrollSketch className={className} />;
   if (/box|gift/i.test(category)) return <GiftBoxSketch className={className} />;
   if (/acrylic/i.test(category)) return <AcrylicSketch className={className} />;

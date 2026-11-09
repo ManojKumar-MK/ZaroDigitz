@@ -58,7 +58,7 @@ function generateInvoicePdf(order, invoiceNumber) {
   doc.setFontSize(10);
   doc.text('No. 3U, Maruthu Pandiyar Mettu Street', 40, 54);
   doc.text('Sivakasi, Tamil Nadu - 626123 · GSTIN 33AAEFZ1822D1ZK', 40, 66);
-  doc.text('Phone: +91 70109 35230  |  Email: zarocrackers@gmail.com', 40, 78);
+  doc.text('Phone: +91 97877 02336  |  Email: zarodigitz@gmail.com', 40, 78);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
   doc.text('INVOICE', pageWidth - 40, 40, { align: 'right' });
@@ -164,7 +164,7 @@ function generateInvoicePdf(order, invoiceNumber) {
  * Free personal-notification service that messages YOUR OWN number; no Meta business
  * account involved. One-time setup per phone: save +34 644 27 31 86 as a contact, send
  * it "I allow callmebot to send me messages" on WhatsApp, and it replies with an API key.
- *   CALLMEBOT_RECIPIENTS="917010935230:APIKEY1,916369619148:APIKEY2"
+ *   CALLMEBOT_RECIPIENTS="919787702336:APIKEY1,916369619148:APIKEY2"
  * Best effort only: failures are reported in the response but never fail the order.
  */
 function getCallMeBotRecipients() {

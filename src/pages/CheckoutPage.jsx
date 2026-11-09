@@ -96,7 +96,7 @@ export default function CheckoutPage() {
       'Please confirm my order. Thank you!',
     ].filter((l) => l !== null).join('\n');
   };
-  const shopWhatsApp = String(settings.whatsappNumber || '917010935230').replace(/\D/g, '');
+  const shopWhatsApp = String(settings.whatsappNumber || '919787702336').replace(/\D/g, '');
 
   /** Plain-text order summary used for downstream order notifications. */
   const buildOrderMessage = () => {
@@ -293,7 +293,7 @@ export default function CheckoutPage() {
             </a>
           )}
           <div className="bg-green-50 p-4 mb-6 text-sm text-green-700">
-            {whatsappMode === 'auto' ? 'WhatsApp should have opened with your order filled in; just press Send. If it did not open, tap the button above.' : 'Tap the button above and press Send in WhatsApp.'} That lets us confirm your order quickly. Otherwise our team will call you within 24 hours. WhatsApp: +91 7010935230 / +91 6369619148.
+            {whatsappMode === 'auto' ? 'WhatsApp should have opened with your order filled in; just press Send. If it did not open, tap the button above.' : 'Tap the button above and press Send in WhatsApp.'} That lets us confirm your order quickly. Otherwise our team will call you within 24 hours. WhatsApp: +91 9787702336 / +91 6369619148.
           </div>
 
           {lastOrder?.orderNumber && (
@@ -508,7 +508,7 @@ export default function CheckoutPage() {
 
         {/* Summary */}
         <div>
-          <div className="bg-paper2 p-6 sticky top-[124px]">
+          <div className="bg-paper2 p-6 sticky top-[96px]">
             <h2 className="font-display font-bold text-xl text-dark mb-4 pb-4 ">Order Summary</h2>
             <div className="space-y-3 max-h-64 overflow-y-auto mb-4 pr-1">
               {cart.map(item => (

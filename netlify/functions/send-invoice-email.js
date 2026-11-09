@@ -14,7 +14,7 @@ function getSmtpConfig() {
   const user = process.env.EMAIL_USER || process.env.SMTP_USER;
   const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
   const fromName = process.env.EMAIL_FROM_NAME || process.env.SMTP_FROM_NAME || 'Zaro Digitz';
-  const fromAddress = process.env.EMAIL_FROM || process.env.SMTP_FROM || (user ? `${fromName} <${user}>` : 'Zaro Digitz <zarocrackers@gmail.com>');
+  const fromAddress = process.env.EMAIL_FROM || process.env.SMTP_FROM || (user ? `${fromName} <${user}>` : 'Zaro Digitz <zarodigitz@gmail.com>');
 
   return { host, port, secure, user, pass, fromAddress };
 }

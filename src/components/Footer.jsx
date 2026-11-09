@@ -48,8 +48,10 @@ export default function Footer() {
             <div>
               <p className="font-semibold">Visit or call</p>
               <a href={googleBusinessLinks(settings).maps} target="_blank" rel="noopener noreferrer" className="block hover:text-secondary">{a.streetAddress},<br />Sivakasi, Tamil Nadu {a.postalCode}</a>
-              <a href="tel:+917010935230" className="block mt-1 hover:text-secondary">+91 70109 35230</a>
+              <a href="tel:+919787702336" className="block mt-1 hover:text-secondary">+91 97877 02336</a>
               <a href="tel:+916369619148" className="block hover:text-secondary">+91 63696 19148</a>
+              <a href="tel:+916383034170" className="block hover:text-secondary">+91 63830 34170</a>
+              <a href="mailto:zarodigitz@gmail.com" className="block mt-1 hover:text-secondary">zarodigitz@gmail.com</a>
             </div>
             <div>
               <p className="font-semibold">Message us</p>

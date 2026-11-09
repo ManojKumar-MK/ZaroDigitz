@@ -56,7 +56,7 @@ export default function Settings() {
             <input className={inputClass} value={f.announcement || ''} onChange={(e) => setF({ ...f, announcement: e.target.value })} placeholder="💌 Wedding season offer: free foil on orders above 500 cards" />
           </Field>
           <Field label="Shop WhatsApp number" hint="Country code + number, digits only. The 'Send order on WhatsApp' button after checkout opens this number.">
-            <input className={inputClass} value={f.whatsappNumber || ''} onChange={(e) => setF({ ...f, whatsappNumber: e.target.value.replace(/\D/g, '') })} placeholder="917010935230" />
+            <input className={inputClass} value={f.whatsappNumber || ''} onChange={(e) => setF({ ...f, whatsappNumber: e.target.value.replace(/\D/g, '') })} placeholder="919787702336" />
           </Field>
           <Field label="WhatsApp greeting" hint="Prefilled when a visitor taps the floating WhatsApp button or the footer icon. The page they were viewing is added automatically.">
             <textarea className={`${inputClass} min-h-[70px]`} value={f.whatsappGreeting ?? ''} onChange={(e) => setF({ ...f, whatsappGreeting: e.target.value })} />
@@ -83,7 +83,7 @@ export default function Settings() {
           </Field>
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={f.acceptingOrders !== false} onChange={(e) => setF({ ...f, acceptingOrders: e.target.checked })} /> Accepting online orders (unticking shows a notice on checkout)</label>
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={f.telegramEnabled !== false} onChange={(e) => setF({ ...f, telegramEnabled: e.target.checked })} /> Also send each order to Telegram (existing behaviour)</label>
-          <div className="flex justify-end"><Button disabled={busy} onClick={() => run(() => saveSettings({ discountPercent: f.discountPercent, announcement: f.announcement || '', acceptingOrders: f.acceptingOrders !== false, telegramEnabled: f.telegramEnabled !== false, whatsappNumber: String(f.whatsappNumber || '917010935230').replace(/\D/g, ''), whatsappAfterOrder: f.whatsappAfterOrder || (f.autoOpenWhatsApp === false ? 'off' : 'prompt'), whatsappGreeting: (f.whatsappGreeting ?? '').trim(), ga4Id: /^G-[A-Z0-9]+$/.test(f.ga4Id || '') ? f.ga4Id : '', googlePlaceId: f.googlePlaceId || '', googleCid: f.googleCid || '' }), 'Settings saved')}>Save settings</Button></div>
+          <div className="flex justify-end"><Button disabled={busy} onClick={() => run(() => saveSettings({ discountPercent: f.discountPercent, announcement: f.announcement || '', acceptingOrders: f.acceptingOrders !== false, telegramEnabled: f.telegramEnabled !== false, whatsappNumber: String(f.whatsappNumber || '919787702336').replace(/\D/g, ''), whatsappAfterOrder: f.whatsappAfterOrder || (f.autoOpenWhatsApp === false ? 'off' : 'prompt'), whatsappGreeting: (f.whatsappGreeting ?? '').trim(), ga4Id: /^G-[A-Z0-9]+$/.test(f.ga4Id || '') ? f.ga4Id : '', googlePlaceId: f.googlePlaceId || '', googleCid: f.googleCid || '' }), 'Settings saved')}>Save settings</Button></div>
         </div>
       </Card>
 

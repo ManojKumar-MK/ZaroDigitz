@@ -17,7 +17,7 @@ export const DEFAULT_SETTINGS = {
   discountPercent: DISCOUNT_PERCENT,
   announcement: '',
   acceptingOrders: true,
-  whatsappNumber: '917010935230',
+  whatsappNumber: '919787702336',
   // 'prompt' = confirmation page first, then a slide-in WhatsApp prompt (default)
   // 'auto'   = open WhatsApp immediately when the order is placed
   // 'off'    = only the button on the confirmation page

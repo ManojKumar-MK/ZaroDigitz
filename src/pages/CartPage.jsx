@@ -92,7 +92,7 @@ export default function CartPage() {
 
         {/* Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-paper2 p-6 sticky top-[124px]">
+          <div className="bg-paper2 p-6 sticky top-[96px]">
             <h2 className="font-display font-bold text-xl text-dark mb-5 pb-4 ">Order Summary</h2>
             <div className="space-y-3 mb-5">
               {cart.map(item => (

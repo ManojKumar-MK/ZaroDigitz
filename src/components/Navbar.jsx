@@ -8,7 +8,7 @@ import { useCart } from '../context/CartContext';
 import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
 import { categoryPath, productPath } from '../seo/catalog';
 import { qtyRules } from '../utils/pricing';
-import { InviteCardSketch, ScrollSketch } from './Sketches';
+import { InviteCardSketch, ScrollSketch, NotebookSketch } from './Sketches';
 
 // Menu groups, in the order a visitor thinks about them.
 const MENUS = [
@@ -20,15 +20,16 @@ const MENUS = [
   {
     label: 'Other Invitations',
     sketch: ScrollSketch,
-    items: ['Birthday Invitations', 'House Warming Invitations', 'Ear Piercing Invitations', 'Baby Shower Invitations', 'Puberty Ceremony Invitations', 'Holy Communion Invitations', 'Visiting Cards & Stationery', 'Custom Printing'],
+    items: ['Birthday Invitations', 'House Warming Invitations', 'Ear Piercing Invitations', 'Baby Shower Invitations', 'Puberty Ceremony Invitations', 'Holy Communion Invitations', 'Return Gifts'],
+  },
+  {
+    label: 'Digital Printing',
+    sketch: NotebookSketch,
+    items: ['Visiting Cards & Stationery', 'Labels & Stickers', 'Flyers & Brochures', 'Bill Books & Receipt Books', 'Letterheads & Envelopes', 'ID Cards', 'Certificates', 'Synthetic & Texture Board Prints', 'School & College Notebooks', 'Diaries & Calendars', 'Sweet & Cake Boxes', 'Branding & Signage', 'Custom Printing'],
   },
 ];
-// Single-page sections sit beside the two menus.
-const LINKS = [
-  { to: categoryPath('Diaries & Calendars'), label: 'Diaries & Calendars' },
-  { to: categoryPath('Return Gifts'), label: 'Return Gifts' },
-  { to: '/contact', label: 'Visit Us' },
-];
+// Single-page sections sit beside the menus.
+const LINKS = [{ to: '/contact', label: 'Visit Us' }];
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
 function SearchPanel({ onClose }) {
@@ -125,37 +126,33 @@ export default function Navbar() {
   const show = openedOn === location.key ? panel : null;
   const openPanel = (p) => { setOpenedOn(location.key); setPanel(p); };
   const close = () => setPanel(null);
-  // After the first bit of scrolling the top line folds away (the header gets shorter)
-  // and an open dropdown closes, so neither sits over the page being read.
-  const [scrolled, setScrolled] = useState(false);
+  // An open dropdown closes as soon as the page scrolls, so it never sits over what is being read.
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 40);
-      setOpen(null);
-    };
-    onScroll();
+    const onScroll = () => setOpen(null);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
-    <header className="sticky top-0 z-50">
-      <div className={`bg-night text-[#F3E8D8] text-[13px] sm:text-sm overflow-hidden transition-[height] duration-300 ${scrolled ? 'h-0' : 'h-9'}`}>
+    <>
+      {/* The top line scrolls away with the page; only the bar below it sticks (a constant 76px). */}
+      <div className="bg-night text-[#F3E8D8] text-[13px] sm:text-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-9 flex items-center justify-center sm:justify-between gap-6">
-          <span className="truncate">{settings.announcement || 'Free digital proof on WhatsApp before we print'}</span>
-          <span className="hidden sm:flex gap-6"><span>Courier across India</span><a href="tel:+917010935230" className="hover:text-secondary">+91 70109 35230</a></span>
+          <span className="truncate">{settings.announcement || 'Digital colour printing · all media 13×19 in, up to 350 gsm'}</span>
+          <span className="hidden sm:flex gap-6"><span>Free proof on WhatsApp</span><a href="tel:+919787702336" className="hover:text-secondary">+91 97877 02336</a></span>
         </div>
       </div>
 
-      <nav className="bg-paper text-ink" onMouseLeave={() => setOpen(null)} aria-label="Main">
+    <header className="sticky top-0 z-50">
+      <nav className="relative bg-paper dark:bg-paper2 text-ink" onMouseLeave={() => setOpen(null)} aria-label="Main">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-[72px] flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <button type="button" aria-label="Open menu" className="lg:hidden p-2 -ml-2 hover:text-brand" onClick={() => openPanel('menu')}><FiMenu size={22} /></button>
             <Link to="/" className="flex items-center gap-3 group">
-              <img src="/zaro-logo-112.webp" width="44" height="44" alt="" className="w-11 h-11 rounded-full object-cover transition-transform group-hover:rotate-6" />
+              <img src="/zaro-logo-112.webp" width="52" height="52" alt="" className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full object-cover transition-transform duration-500 group-hover:rotate-[20deg]" />
               <span className="leading-tight">
                 <span className="block font-display font-bold text-lg sm:text-xl text-brand">ZARO Digitz</span>
-                <span className="hidden sm:block text-[13px]">Wedding cards &amp; printing · Sivakasi</span>
+                <span className="hidden sm:block text-[13px]">Digital colour printing · Sivakasi</span>
               </span>
             </Link>
           </div>
@@ -163,8 +160,9 @@ export default function Navbar() {
           <ul className="hidden lg:flex items-center gap-1">
             {MENUS.map((m) => (
               <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
-                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`h-[72px] px-3 xl:px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
+                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`relative h-[72px] px-3 xl:px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
                   {m.label} <FiChevronDown className={`transition-transform ${open === m.label ? 'rotate-180' : ''}`} />
+                  {open === m.label && <motion.span layoutId="nav-open" className="absolute left-3 right-3 xl:left-4 xl:right-4 bottom-0 h-[3px] bg-secondary" />}
                 </button>
               </li>
             ))}
@@ -176,6 +174,7 @@ export default function Navbar() {
           <div className="flex items-center gap-1">
             <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="p-2.5 hover:text-brand transition-colors"><FiSearch size={21} /></button>
             <ThemeToggle className="p-2.5 hover:text-brand transition-colors" />
+            <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden xl:inline-flex items-center h-11 px-5 ml-2 order-last bg-primary text-white font-semibold transition-colors hover:bg-[#5A1420]">Get a quote</a>
             <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative p-2.5 hover:text-brand transition-colors">
               <FiShoppingBag size={21} />
               {totalItems > 0 && <motion.span key={totalItems} initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-0.5 right-0.5 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center font-bold">{totalItems}</motion.span>}
@@ -183,13 +182,18 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* The card's stripe runs along the bar's bottom edge */}
+        <div className="flex h-1 overflow-hidden" aria-hidden="true">
+          {Array.from({ length: 120 }, (_, i) => <span key={i} className={`shrink-0 w-7 ${i % 2 ? 'bg-secondary' : 'bg-primary'}`} />)}
+        </div>
+
         {/* Desktop mega menu */}
         <AnimatePresence>
           {open && (
-            <motion.div key={open} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="hidden lg:block absolute inset-x-0 bg-paper2 text-ink shadow-xl">
+            <motion.div key={open} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="hidden lg:block absolute inset-x-0 top-full bg-paper2 dark:bg-paper3 text-ink shadow-xl">
               {MENUS.filter((m) => m.label === open).map((m) => (
                 <div key={m.label} className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-8">
-                  <ul className="col-span-8 grid grid-cols-2 gap-x-10 gap-y-3">
+                  <ul className={`col-span-8 grid ${m.items.length > 8 ? 'grid-cols-3' : 'grid-cols-2'} gap-x-10 gap-y-3`}>
                     {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={() => setOpen(null)} className="text-lg hover:text-brand hover:translate-x-1 inline-block transition-transform">{c}</Link></li>)}
                     <li className="col-span-2 mt-3"><Link to="/cards" onClick={() => setOpen(null)} className="font-semibold text-brand underline underline-offset-4">See every design</Link></li>
                   </ul>
@@ -229,5 +233,6 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </header>
+    </>
   );
 }

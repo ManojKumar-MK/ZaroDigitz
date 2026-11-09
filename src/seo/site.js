@@ -3,21 +3,21 @@
 
 export const SITE_URL = 'https://digitz.zarocrackers.com';
 export const SITE_NAME = 'Zaro Digitz';
-export const DEFAULT_TITLE = 'Zaro Digitz | Wedding Cards & Invitation Printing in Sivakasi';
+export const DEFAULT_TITLE = 'Zaro Digitz | Digital Colour Printing & Wedding Cards, Sivakasi';
 export const DEFAULT_DESCRIPTION =
-  'Wedding invitation cards printed in Sivakasi: Hindu, Muslim and Christian designs, foil, scroll, acrylic and box invites, plus calendars and return gifts. Design approved on WhatsApp before printing. Call 70109 35230.';
+  'Digital colour printing in Sivakasi: wedding cards and invitations, visiting cards, stickers, flyers, brochures, bill books, letterheads, ID cards, certificates and notebooks. Call 97877 02336.';
 export const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
 export const LOGO_URL = `${SITE_URL}/zaro-logo.png`;
 /** Spellings people use for the brand; helps Google learn "zaro" is a name, not a typo of "zara". */
-export const BRAND_ALTERNATE_NAMES = ['ZARO Digitz', 'Zaro Digitz Sivakasi', 'Zaro Digital Printing', 'Zaro Wedding Cards'];
+export const BRAND_ALTERNATE_NAMES = ['ZARO Digitz', 'ஷாரோ டிஜிட்ஸ்', 'Zaro Digitz Sivakasi', 'Zaro Digital Colour Printing', 'Zaro Wedding Cards'];
 export const LOCALE = 'en_IN';
 
 export const BUSINESS = {
   name: SITE_NAME,
   legalName: 'Zaro Digitz',
-  phones: ['+91 70109 35230', '+91 63696 19148'],
-  email: 'zarocrackers@gmail.com',
-  whatsapp: 'https://wa.me/917010935230',
+  phones: ['+91 97877 02336', '+91 63696 19148', '+91 63830 34170'],
+  email: 'zarodigitz@gmail.com',
+  whatsapp: 'https://wa.me/919787702336',
   instagram: '',
   address: {
     streetAddress: 'No. 3U, Maruthu Pandiyar Mettu Street',
@@ -90,7 +90,7 @@ export function localBusinessSchema() {
     '@id': `${SITE_URL}/#business`,
     name: BUSINESS.name,
     alternateName: BRAND_ALTERNATE_NAMES,
-    slogan: 'Wedding cards and printing from Sivakasi',
+    slogan: 'Digital colour printing, Sivakasi',
     url: SITE_URL,
     logo: { '@type': 'ImageObject', url: LOGO_URL, width: 531, height: 470 },
     image: DEFAULT_IMAGE,

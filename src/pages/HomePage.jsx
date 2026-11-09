@@ -389,7 +389,7 @@ export default function HomePage() {
             <Rise i={1} className="mt-6 space-y-1 text-lg text-white/90">
               <p>{BUSINESS.address.streetAddress}, Sivakasi {BUSINESS.address.postalCode}</p>
               <p>Monday to Saturday, 9 am to 10 pm</p>
-              <p>Call or WhatsApp <a href="tel:+917010935230" className="underline underline-offset-4 hover:text-secondary">+91 70109 35230</a></p>
+              <p>Call or WhatsApp <a href="tel:+919787702336" className="underline underline-offset-4 hover:text-secondary">+91 97877 02336</a></p>
             </Rise>
             <div className="mt-10 space-y-7">
               {getFaqs(settings).slice(0, 6).map((f, i) => (
@@ -430,7 +430,7 @@ export default function HomePage() {
           </div>
           <Rise i={3} className="flex flex-wrap gap-3">
             <a href={googleBusinessLinks(settings).directions} target="_blank" rel="noopener noreferrer" className="inline-flex items-center h-14 px-7 bg-primary text-white font-bold hover:bg-[#5A1420] transition-colors">Get directions</a>
-            <a href="tel:+917010935230" className="inline-flex items-center h-14 px-7 bg-paper2 hover:bg-paper3 font-semibold transition-colors">Call before you come</a>
+            <a href="tel:+919787702336" className="inline-flex items-center h-14 px-7 bg-paper2 hover:bg-paper3 font-semibold transition-colors">Call before you come</a>
           </Rise>
         </div>
         <Rise i={1} className="min-h-[360px] bg-paper2">
