@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { FaWhatsapp } from 'react-icons/fa';
 import Seo from '../components/Seo';
-import { faqSchema, getFaqs, categoryPath, productPath } from '../seo/catalog';
+import { faqSchema, getFaqs, categoryPath } from '../seo/catalog';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
-import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
-import { qtyRules } from '../utils/pricing';
+import { getCatalogProducts } from '../data/products';
+
 import ProductCard from '../components/ProductCard';
-import { hasPhoto } from '../components/sketchFor';
-import { LuClock, LuMapPin, LuNavigation, LuPhone } from 'react-icons/lu';
-import { CategorySketch, PhoneProofSketch, PrinterSketch, InviteCardSketch, EnvelopeSketch, ScrollSketch, GiftBoxSketch, AcrylicSketch, CalendarSketch, ThoranamSketch, KolamSketch } from '../components/Sketches';
+
+import { LuAward, LuCalendarDays, LuClock, LuContact, LuFileText, LuIdCard, LuLayers, LuMapPin, LuMegaphone, LuNavigation, LuNewspaper, LuNotebook, LuPackage, LuPhone, LuReceipt, LuSticker } from 'react-icons/lu';
+import { PhoneProofSketch, PrinterSketch, InviteCardSketch, EnvelopeSketch, ScrollSketch, GiftBoxSketch, AcrylicSketch, CalendarSketch, ThoranamSketch, KolamSketch } from '../components/Sketches';
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
 
 /* The things we make, drawn: the hero's stage cycles through them. */
@@ -32,7 +32,6 @@ const Rise = ({ i = 0, className, children, as = 'div' }) => {
   return <M variants={rise} custom={i} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }} className={className}>{children}</M>;
 };
 
-const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 const fmtDate = (v) => {
   if (!v) return '';
   const d = new Date(`${v}T00:00:00`);
@@ -79,14 +78,14 @@ function Stage({ className = '' }) {
 }
 
 /** A row of designs that scrolls sideways, with arrows and a "3 / 10" counter. */
-function Rail({ items }) {
+function Rail({ items, id }) {
   const [at, setAt] = useState(0);
   const scroller = (el) => el && (el.onscroll = () => {
     const w = el.firstElementChild?.offsetWidth || 1;
     setAt(Math.min(items.length - 1, Math.round(el.scrollLeft / (w + 16))));
   });
   const move = (dir) => {
-    const el = document.getElementById('fav-rail');
+    const el = document.getElementById(id);
     const w = el?.firstElementChild?.offsetWidth || 280;
     el?.scrollBy({ left: dir * (w + 16), behavior: 'smooth' });
   };
@@ -97,7 +96,7 @@ function Rail({ items }) {
         <button type="button" aria-label="Previous designs" onClick={() => move(-1)} className="w-12 h-12 bg-paper2 hover:bg-paper3 text-xl transition-colors">←</button>
         <button type="button" aria-label="Next designs" onClick={() => move(1)} className="w-12 h-12 bg-paper2 hover:bg-paper3 text-xl transition-colors">→</button>
       </div>
-      <div id="fav-rail" ref={scroller} className="col-span-full flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none mt-8 -mx-4 px-4 sm:-mx-8 sm:px-8">
+      <div id={id} ref={scroller} className="col-span-full flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none mt-8 -mx-4 px-4 sm:-mx-8 sm:px-8">
         {items.map((p) => (
           <div key={p.code} className="snap-start shrink-0 w-[72%] sm:w-[42%] lg:w-[23%]"><ProductCard product={p} /></div>
         ))}
@@ -105,6 +104,21 @@ function Rail({ items }) {
     </>
   );
 }
+
+const SERVICES = [
+  { name: 'Visiting Cards & Stationery', label: 'Visiting cards', icon: LuContact },
+  { name: 'Labels & Stickers', label: 'Stickers', icon: LuSticker },
+  { name: 'Flyers & Brochures', label: 'Flyers & brochures', icon: LuNewspaper },
+  { name: 'Bill Books & Receipt Books', label: 'Bill books', icon: LuReceipt },
+  { name: 'Letterheads & Envelopes', label: 'Letterheads', icon: LuFileText },
+  { name: 'ID Cards', label: 'ID cards', icon: LuIdCard },
+  { name: 'Certificates', label: 'Certificates', icon: LuAward },
+  { name: 'Synthetic & Texture Board Prints', label: 'Synthetic & texture board', icon: LuLayers },
+  { name: 'School & College Notebooks', label: 'Notebooks', icon: LuNotebook },
+  { name: 'Diaries & Calendars', label: 'Diaries & calendars', icon: LuCalendarDays },
+  { name: 'Sweet & Cake Boxes', label: 'Boxes & packaging', icon: LuPackage },
+  { name: 'Branding & Signage', label: 'Branding', icon: LuMegaphone },
+];
 
 const TRADITIONS = [
   { name: 'Hindu Wedding Cards', note: 'Kalash, kolam and temple borders', Sketch: InviteCardSketch },
@@ -149,7 +163,9 @@ export default function HomePage() {
 
   const priced = useMemo(() => catalogProducts.filter((p) => p.price != null), [catalogProducts]);
   const favourites = useMemo(() => [...priced].sort((a, b) => a.price - b.price).slice(0, 10), [priced]);
-  const tiles = useMemo(() => [...priced].sort((a, b) => (b.sortOrder ?? b.id ?? 0) - (a.sortOrder ?? a.id ?? 0)).slice(0, 8), [priced]);
+  const isCard = (p) => /wedding|invitation|scroll|acrylic|foil|box invitation/i.test(p.category);
+  const printing = useMemo(() => priced.filter((p) => !isCard(p)).slice(0, 10), [priced]); // eslint-disable-line react-hooks/exhaustive-deps
+  const budget = useMemo(() => priced.filter(isCard).sort((a, b) => a.price - b.price).slice(0, 10), [priced]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const bride = card.bride.trim() || 'Priya';
   const groom = card.groom.trim() || 'Arjun';
@@ -239,7 +255,7 @@ export default function HomePage() {
       {/* FAVOURITES: designs people order most, gentlest prices first */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 lg:pt-32 grid grid-cols-[1fr_auto] items-end gap-y-2">
         <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Customer favourites</Rise>
-        <Rail items={favourites} />
+        <Rail id="rail-favourites" items={favourites} />
       </section>
 
       {/* SHOWCASE: what we print, one plate at a time */}
@@ -274,8 +290,34 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* SERVICES: everything on the shop sign, one tap away */}
+      <section className="bg-night text-[#FBF5EC] py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="grid lg:grid-cols-12 gap-6 items-end">
+            <Rise as="h2" className="lg:col-span-7 font-display font-bold tracking-tight text-[clamp(32px,3.6vw,52px)] leading-tight">Digital colour printing, done here</Rise>
+            <Rise i={1} as="p" className="lg:col-span-5 text-lg text-[#FBF5EC]/90">All media up to 13 × 19 inches and 350 gsm, printed in our Sivakasi studio. Small runs today, big runs this week.</Rise>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mt-12">
+            {SERVICES.map(({ name, label, icon: Icon }, i) => (
+              <Rise key={name} i={i % 4}>
+                <Link to={categoryPath(name)} className="group h-28 sm:h-32 px-5 flex items-center gap-4 bg-white/5 hover:bg-secondary hover:text-[#211114] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-secondary">
+                  <Icon size={30} className="text-secondary group-hover:text-[#211114] transition-colors shrink-0" aria-hidden="true" />
+                  <span className="font-display font-semibold text-lg leading-snug">{label}</span>
+                </Link>
+              </Rise>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PRINTING FAVOURITES */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 lg:pt-32 pb-8 grid grid-cols-[1fr_auto] items-end gap-y-2">
+        <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Printing favourites</Rise>
+        <Rail id="rail-printing" items={printing} />
+      </section>
+
       {/* TRADITIONS: every kind of card, drawn */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 pb-24 lg:pb-32">
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32">
         <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Browse by tradition and style</Rise>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-10">
           {TRADITIONS.map(({ name, note, Sketch }, i) => (
@@ -333,33 +375,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* DESIGNS: each one a print with its swing tag */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32">
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
-          <Rise as="h2" className="font-display font-bold tracking-tight text-[32px] leading-tight">Designs to start from</Rise>
-          <Rise i={1}><Link to="/cards" className="text-lg font-semibold text-brand underline underline-offset-4 decoration-2 hover:decoration-secondary">All designs</Link></Rise>
-        </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-7">
-          {tiles.map((p, i) => {
-            const pair = [['bg-primary', 'text-white'], ['bg-[#C9A032]', 'text-[#211114]'], ['bg-[#211114]', 'text-[#F3DFA2]'], ['bg-paper2', 'text-ink']][i % 4];
-            return (
-              <Rise key={p.code} i={i % 4}>
-                <Link to={productPath(p)} className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
-                  <div className="aspect-[4/5] overflow-hidden bg-paper2 text-brand">
-                    {hasPhoto(p)
-                      ? <img src={p.image} alt={p.name} width="400" height="500" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }} />
-                      : <CategorySketch category={p.category} className="w-full h-full p-6 transition-transform duration-700 group-hover:scale-105 group-hover:-rotate-2" />}
-                  </div>
-                  <div className={`${pair[0]} ${pair[1]} p-3 min-h-[92px] text-[13px] tabular-nums flex flex-col justify-between`}>
-                    <div className="flex justify-between font-semibold text-sm"><span>{money(p.price)}</span><span>min {qtyRules(p).min}</span><span className="hidden sm:inline">{p.size || '—'}</span></div>
-                    <p className="font-semibold text-base leading-snug group-hover:underline">{p.name}</p>
-                    <div className="flex justify-between opacity-90"><span>{p.code}</span><span className="hidden sm:inline">{p.category.replace(/ (Cards|Invitations)$/, '')}</span></div>
-                  </div>
-                </Link>
-              </Rise>
-            );
-          })}
-        </div>
+      {/* BUDGET: lovely cards at gentle prices */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32 grid grid-cols-[1fr_auto] items-end gap-y-2">
+        <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Budget-friendly wedding cards</Rise>
+        <Rail id="rail-budget" items={budget} />
       </section>
 
       {/* FAQ beside the photographs */}
