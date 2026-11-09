@@ -27,8 +27,8 @@ html.dark {
 
 * { box-sizing: border-box; }
 
-/* The header bar is sticky (76px): in-page links land below it, and nothing scrolls sideways. */
-html { scroll-padding-top: 92px; }
+/* The header bar is sticky (80px): in-page links land below it, and nothing scrolls sideways. */
+html { scroll-padding-top: 96px; }
 body { overflow-x: clip; }
 
 body {

@@ -141,36 +141,36 @@ export default function Navbar() {
     <>
     <header className="sticky top-0 z-50">
       <nav className="relative bg-paper dark:bg-paper2 text-ink" onMouseLeave={() => setOpen(null)} aria-label="Main">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-[72px] flex items-center justify-between gap-4">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 xl:px-12 h-20 flex items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <button type="button" aria-label="Open menu" className="lg:hidden w-11 h-11 -ml-2 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand" onClick={() => openPanel('menu')}><LuMenu size={22} /></button>
+            <button type="button" aria-label="Open menu" className="xl:hidden w-11 h-11 -ml-2 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand" onClick={() => openPanel('menu')}><LuMenu size={22} /></button>
             <Link to="/" className="flex items-center gap-3 group">
               <img src="/zaro-logo-112.webp" width="52" height="52" alt="" className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full object-cover transition-transform duration-500 group-hover:rotate-[20deg]" />
               <span className="leading-tight">
                 <span className="block font-display font-bold text-lg sm:text-xl text-brand">ZARO Digitz</span>
-                <span className="hidden sm:block text-[13px]">Digital colour printing · Sivakasi</span>
+                <span className="hidden sm:block xl:hidden 2xl:block text-[13px] mt-0.5">Digital colour printing · Sivakasi</span>
               </span>
             </Link>
           </div>
 
-          <ul className="hidden lg:flex items-center gap-1">
+          <ul className="hidden xl:flex items-center gap-2">
             {MENUS.map((m) => (
               <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
-                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`relative h-[72px] px-3 xl:px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
+                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`relative h-20 px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
                   <m.icon size={18} className="text-brand" aria-hidden="true" />{m.label}<LuChevronDown size={16} className={`opacity-70 transition-transform ${open === m.label ? 'rotate-180' : ''}`} aria-hidden="true" />
-                  {open === m.label && <motion.span layoutId="nav-open" className="absolute left-3 right-3 xl:left-4 xl:right-4 bottom-0 h-[3px] bg-secondary" />}
+                  {open === m.label && <motion.span layoutId="nav-open" className="absolute left-4 right-4 bottom-0 h-[3px] bg-secondary" />}
                 </button>
               </li>
             ))}
             {LINKS.map((l) => (
-              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-[72px] px-3 xl:px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}><l.icon size={18} className="text-brand" aria-hidden="true" />{l.label}</Link></li>
+              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-20 px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}><l.icon size={18} className="text-brand" aria-hidden="true" />{l.label}</Link></li>
             ))}
           </ul>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5 xl:pl-4">
             <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors"><LuSearch size={21} /></button>
             <ThemeToggle className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors" />
-            <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden xl:inline-flex items-center h-11 px-5 ml-2 order-last bg-primary text-white font-semibold transition-colors hover:bg-[#5A1420]">Get a quote</a>
+            <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden xl:inline-flex items-center h-11 px-6 ml-3 order-last bg-primary text-white font-semibold transition-colors hover:bg-[#5A1420]">Get a quote</a>
             <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative w-11 h-11 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors">
               <LuShoppingBag size={21} />
               {totalItems > 0 && <motion.span key={totalItems} initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-0.5 right-0.5 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center font-bold">{totalItems}</motion.span>}
@@ -181,9 +181,9 @@ export default function Navbar() {
         {/* Desktop mega menu */}
         <AnimatePresence>
           {open && (
-            <motion.div key={open} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="hidden lg:block absolute inset-x-0 top-full bg-paper2 dark:bg-paper3 text-ink shadow-xl">
+            <motion.div key={open} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="hidden xl:block absolute inset-x-0 top-full bg-paper2 dark:bg-paper3 text-ink shadow-xl">
               {MENUS.filter((m) => m.label === open).map((m) => (
-                <div key={m.label} className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-8">
+                <div key={m.label} className="max-w-[1440px] mx-auto px-12 py-12 grid grid-cols-12 gap-x-8 gap-y-6">
                   <p className="col-span-12 -mb-3 inline-flex items-center gap-2 font-display font-bold text-xl text-brand"><m.icon size={22} aria-hidden="true" />{m.label}</p>
                   <ul className={`col-span-8 grid ${m.items.length > 8 ? 'grid-cols-3' : 'grid-cols-2'} gap-x-10 gap-y-3`}>
                     {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={() => setOpen(null)} className="text-lg hover:text-brand hover:translate-x-1 inline-block transition-transform">{c}</Link></li>)}
@@ -201,7 +201,7 @@ export default function Navbar() {
         {show === 'search' && <SearchPanel key="search" onClose={close} />}
         {show === 'cart' && <CartDrawer key="cart" onClose={close} />}
         {show === 'menu' && (
-          <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60 lg:hidden" onClick={close}>
+          <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60 xl:hidden" onClick={close}>
             <motion.aside initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute left-0 top-0 h-full w-[86%] max-w-sm bg-paper text-ink overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Menu">
               <div className="flex items-center justify-between px-5 h-16 bg-paper2">
                 <span className="font-display font-bold text-lg text-brand">ZARO Digitz</span>
