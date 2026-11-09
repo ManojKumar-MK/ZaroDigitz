@@ -32,6 +32,16 @@ function Personalised({ item }) {
             <div key={s.label} className="grid grid-cols-[140px_minmax(0,1fr)] gap-3"><dt className="text-zinc-500">{s.label}</dt><dd className="text-zinc-900 whitespace-pre-line break-words">{s.value}</dd></div>
           ))}
         </dl>
+        {doc?.previews && Object.keys(doc.previews).length > 1 && (
+          <div className="flex flex-wrap gap-3 mt-4">
+            {Object.entries(doc.previews).map(([pageName, src]) => (
+              <a key={pageName} href={src} download={`${item.code || 'design'}-${pageName}.jpg`} className="group text-xs text-zinc-600">
+                <img src={src} alt={`${pageName} page`} className="h-28 w-auto rounded-lg ring-1 ring-zinc-200" />
+                <span className="inline-flex items-center gap-1 mt-1 group-hover:text-zinc-900"><FiDownload size={12} /> {pageName}</span>
+              </a>
+            ))}
+          </div>
+        )}
         {doc?.photos && Object.keys(doc.photos).length > 0 && (
           <div className="flex flex-wrap gap-3 mt-4">
             {Object.entries(doc.photos).map(([label, src]) => (

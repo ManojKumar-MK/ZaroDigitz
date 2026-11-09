@@ -20,6 +20,16 @@ export default function TemplateCanvas({ template, values = {}, photos = {}, edi
           className: `absolute ${ring} ${editing ? 'cursor-move' : ''}`,
           onPointerDown: editing ? (e) => { onSelect?.(f.id); onPointerDownField?.(e, f); } : undefined,
         };
+        if (f.type === 'qr') {
+          const q = photos[f.id];
+          return (
+            <div {...common}>
+              {q?.src
+                ? <img src={q.src} alt="Venue QR code" draggable="false" className="w-full h-full object-contain pointer-events-none" />
+                : <div className="w-full h-full bg-black/10 flex items-center justify-center text-[2.4cqw] font-bold text-black/60">QR</div>}
+            </div>
+          );
+        }
         if (f.type === 'photo') {
           const p = photos[f.id];
           return (

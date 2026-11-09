@@ -3,7 +3,7 @@ import { FiUpload, FiTrash2, FiSave, FiAlignLeft, FiAlignCenter, FiAlignRight } 
 import { compressImage } from '../utils/image';
 import { psdToTemplate } from './psdImport';
 import TemplateCanvas from '../personalise/TemplateCanvas';
-import { FONTS, loadTemplate, saveTemplate, deleteTemplate, newField } from '../personalise/templates';
+import { FONTS, loadTemplate, saveTemplate, deleteTemplate, newField, pagesOf } from '../personalise/templates';
 import { useToast } from './Toast';
 import { Button, Card, Field, inputClass } from './ui';
 
@@ -19,6 +19,7 @@ const QUICK = [
   { label: 'Phone', type: 'text', sample: '98765 43210', font: 'poppins', size: 3 },
   { label: 'Message', type: 'text', sample: 'With the blessings of our elders…', font: 'playfair', size: 3.2, lines: 3, max: 160 },
   { label: 'Photo', type: 'photo' },
+  { label: 'QR code (venue)', type: 'qr' },
 ];
 const SIZES = [['Small', 3], ['Medium', 5], ['Large', 7.5]];
 const STYLES = [['Elegant', 'playfair'], ['Script', 'greatvibes'], ['Simple', 'poppins'], ['Tamil', 'muktamalar']];
@@ -32,7 +33,10 @@ const chip = (on) => `h-9 px-3 rounded-lg text-sm font-medium ring-1 transition 
  */
 export default function TemplateEditor({ code }) {
   const toast = useToast();
-  const [template, setTemplate] = useState(null); // { image, fields }
+  // The design's pages (Front, Inside, Envelope…); each has its own image and boxes.
+  const [doc, setDoc] = useState(null); // { pages: [{ name, image, fields }] }
+  const [pageIdx, setPageIdx] = useState(0);
+  const template = doc?.pages[Math.min(pageIdx, doc.pages.length - 1)] || null;
   const [selected, setSelected] = useState(null);
   const [busy, setBusy] = useState('');
   const [dirty, setDirty] = useState(false);
@@ -41,11 +45,27 @@ export default function TemplateEditor({ code }) {
 
   useEffect(() => {
     let gone = false;
-    loadTemplate(code).then((t) => { if (!gone) setTemplate(t); });
+    loadTemplate(code).then((t) => { if (!gone) setDoc(t ? { pages: pagesOf(t) } : null); });
     return () => { gone = true; };
   }, [code]);
 
-  const update = (fn) => { setTemplate((t) => fn(t)); setDirty(true); };
+  const update = (fn) => {
+    setDoc((d) => {
+      if (!d) { const first = fn(undefined); return { pages: [{ name: 'Front', ...first }] }; }
+      return { ...d, pages: d.pages.map((pg, i) => (i === Math.min(pageIdx, d.pages.length - 1) ? { ...pg, ...fn(pg) } : pg)) };
+    });
+    setDirty(true);
+  };
+  const addPage = (name) => {
+    setDoc((d) => ({ ...d, pages: [...d.pages, { name, image: null, fields: [] }] }));
+    setPageIdx(doc.pages.length);
+    setSelected(null);
+  };
+  const removePage = () => {
+    if (pageIdx === 0 || !window.confirm(`Remove the ${template.name} page?`)) return;
+    setDoc((d) => ({ ...d, pages: d.pages.filter((_, i) => i !== pageIdx) }));
+    setPageIdx(0); setSelected(null); setDirty(true);
+  };
   const field = template?.fields.find((f) => f.id === selected);
   const setField = (patch) => update((t) => ({ ...t, fields: t.fields.map((f) => (f.id === selected ? { ...f, ...patch } : f)) }));
 
@@ -102,14 +122,14 @@ export default function TemplateEditor({ code }) {
   const remove = () => { update((t) => ({ ...t, fields: t.fields.filter((f) => f.id !== selected) })); setSelected(null); };
   const save = async () => {
     setBusy('Saving…');
-    try { await saveTemplate(code, { image: template.image, fields: template.fields }); setDirty(false); toast('Saved. Customers can personalise this design now.'); }
+    try { const pages = doc.pages.filter((pg) => pg.image); await saveTemplate(code, { pages, image: pages[0].image, fields: pages[0].fields }); setDirty(false); toast('Saved. Customers can personalise this design now.'); }
     catch (err) { toast(err.message || 'Could not save', 'error'); }
     finally { setBusy(''); }
   };
   const removeAll = async () => {
     if (!window.confirm('Turn off personalisation for this design?')) return;
     await deleteTemplate(code).catch(() => null);
-    setTemplate(null); setSelected(null); setDirty(false);
+    setDoc(null); setPageIdx(0); setSelected(null); setDirty(false);
     toast('Personalisation turned off');
   };
 
@@ -121,9 +141,20 @@ export default function TemplateEditor({ code }) {
 
   return (
     <Card title="Personalise (customers add their names, date and photos)">
+      {doc && (
+        <div className="flex flex-wrap items-center gap-2 mb-5" role="tablist" aria-label="Pages">
+          {doc.pages.map((pg, i) => (
+            <button key={`${pg.name}-${i}`} type="button" role="tab" aria-selected={i === pageIdx} onClick={() => { setPageIdx(i); setSelected(null); }} className={chip(i === pageIdx)}>{pg.name}{!pg.image ? ' · add design' : ''}</button>
+          ))}
+          {['Inside', 'Envelope', 'Back'].filter((n) => !doc.pages.some((pg) => pg.name === n)).map((n) => (
+            <button key={n} type="button" onClick={() => addPage(n)} className="h-9 px-3 rounded-lg text-sm font-medium text-zinc-600 dark:text-zinc-300 ring-1 ring-dashed ring-zinc-300 hover:ring-zinc-500">+ {n}</button>
+          ))}
+          {pageIdx > 0 && <button type="button" onClick={removePage} className="ml-auto text-sm text-red-700 dark:text-red-400 hover:underline">Remove this page</button>}
+        </div>
+      )}
       {!template?.image ? (
         <div className="space-y-3">
-          {step(1, 'Upload the design')}
+          {step(1, doc ? `Upload the ${template?.name || 'page'} design` : 'Upload the design')}
           <p className="text-sm text-zinc-600 dark:text-zinc-300">Upload the <strong>PSD</strong>: text layers become boxes automatically (name a layer “photo” for a photo frame). Or upload a JPG, PNG or SVG with the name and date layers hidden.</p>
           <label className="inline-flex items-center gap-2 h-11 px-5 rounded-lg text-sm font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 cursor-pointer">
             <FiUpload /> {busy || 'Upload PSD, JPG, PNG or SVG'}
@@ -161,7 +192,14 @@ export default function TemplateEditor({ code }) {
                 <Field label="Box name"><input className={inputClass} value={field.label} onChange={(e) => setField({ label: e.target.value })} /></Field>
                 {field.type === 'text' && <Field label="Sample text"><input className={inputClass} value={field.sample} onChange={(e) => setField({ sample: e.target.value })} /></Field>}
 
-                {field.type !== 'photo' ? (
+                {field.type === 'qr' && (
+                  <>
+                    <Field label="Sample address or map link"><input className={inputClass} value={field.sample} onChange={(e) => setField({ sample: e.target.value })} /></Field>
+                    <div><span className="block text-[13px] font-medium mb-1.5">Colour</span><div className="flex gap-2">{SWATCHES.filter((c) => c !== '#FFFFFF').map((c) => <button key={c} type="button" aria-label={`Colour ${c}`} onClick={() => setField({ color: c })} className={`w-8 h-8 rounded-full ring-2 ${field.color?.toUpperCase() === c ? 'ring-zinc-900 dark:ring-white' : 'ring-zinc-300'}`} style={{ background: c }} />)}</div></div>
+                    <p className="text-xs text-zinc-500">Customers paste a Google Maps link or type the venue; the QR code opens directions. Keep the box square and on a light area.</p>
+                  </>
+                )}
+                {field.type === 'qr' ? null : field.type !== 'photo' ? (
                   <>
                     <div><span className="block text-[13px] font-medium mb-1.5">Size</span><div className="flex gap-2">{SIZES.map(([l, v]) => <button key={l} type="button" onClick={() => setField({ size: v })} className={chip(Math.abs(field.size - v) < 0.6)}>{l}</button>)}</div></div>
                     <div><span className="block text-[13px] font-medium mb-1.5">Style</span><div className="flex flex-wrap gap-2">{STYLES.map(([l, v]) => <button key={l} type="button" onClick={() => setField({ font: v })} className={chip(field.font === v)} style={{ fontFamily: FONTS.find((f) => f.id === v)?.family }}>{l}</button>)}</div></div>

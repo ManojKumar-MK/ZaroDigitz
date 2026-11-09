@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { LuX, LuLanguages, LuShare2, LuShoppingBag, LuImagePlus } from 'react-icons/lu';
 import TemplateCanvas from './TemplateCanvas';
 import { SceneView, CameraView } from './TryOn';
 import { modeFor } from '../components/liveModes';
-import { WORDING, displayText, renderPreview, savePersonalisation, toTamil } from './templates';
+import { WORDING, displayText, renderPreview, savePersonalisation, toTamil, pagesOf, makeQr, qrTarget } from './templates';
 import { compressImage } from '../utils/image';
 
 const DRAFT = (code) => `digitz-personalise-${code}`;
@@ -21,6 +21,24 @@ export default function PersonaliseDialog({ product, template, quantity, onAdd, 
   const [values, setValues] = useState(() => readDraft(product.code));
   const [photos, setPhotos] = useState({});
   const [busy, setBusy] = useState('');
+  // Pages: Front, Inside, Envelope… (one-page templates have just Front)
+  const pages = pagesOf(template);
+  const [pageIdx, setPageIdx] = useState(0);
+  const page = pages[Math.min(pageIdx, pages.length - 1)];
+  const allFields = pages.flatMap((pg) => pg.fields.map((f) => ({ ...f, page: pg.name })));
+  // QR boxes: a code made from the venue link or address, redrawn as the customer types
+  const [qrs, setQrs] = useState({});
+  useEffect(() => {
+    let gone = false;
+    const qrFields = allFields.filter((f) => f.type === 'qr');
+    if (!qrFields.length) return undefined;
+    const t = setTimeout(async () => {
+      const pairs = await Promise.all(qrFields.map(async (f) => [f.id, { src: await makeQr(qrTarget(values[f.id] || f.sample), f.color).catch(() => null) }]));
+      if (!gone) setQrs(Object.fromEntries(pairs));
+    }, 250);
+    return () => { gone = true; clearTimeout(t); };
+  }, [values, template]); // eslint-disable-line react-hooks/exhaustive-deps
+  const art = { ...photos, ...qrs }; // photos and QR codes, both drawn into their boxes
   // Design (live editor) | scene (in a room, tilts) | camera (over the customer's own space)
   const [view, setView] = useState('design');
   const [shot, setShot] = useState(null); // rendered preview for the scene and camera views
@@ -29,7 +47,7 @@ export default function PersonaliseDialog({ product, template, quantity, onAdd, 
     setView(v);
     if (v === 'design') return;
     setBusy('Making your preview…');
-    try { setShot(await renderPreview(template, values, photos, 900)); } finally { setBusy(''); }
+    try { setShot(await renderPreview(pages[0], values, art, 900)); } finally { setBusy(''); }
   };
   const [error, setError] = useState('');
 
@@ -64,13 +82,15 @@ export default function PersonaliseDialog({ product, template, quantity, onAdd, 
     setBusy('');
   };
 
-  const textFields = template.fields.filter((f) => f.type !== 'photo');
-  const photoFields = template.fields.filter((f) => f.type === 'photo');
+  const textFields = allFields.filter((f) => f.type !== 'photo');
+  const photoFields = allFields.filter((f) => f.type === 'photo');
+  const multi = pages.length > 1;
+  const label = (f) => (multi ? `${f.page}: ${f.label}` : f.label);
 
   const share = async () => {
     setBusy('Making the preview…');
     try {
-      const url = await renderPreview(template, values, photos, 1200);
+      const url = await renderPreview(page, values, art, 1200);
       const blob = await (await fetch(url)).blob();
       const file = new File([blob], `${product.code}-preview.jpg`, { type: 'image/jpeg' });
       if (navigator.canShare?.({ files: [file] })) await navigator.share({ files: [file], title: product.name, text: `My ${product.name} from Zaro Digitz` });
@@ -79,14 +99,16 @@ export default function PersonaliseDialog({ product, template, quantity, onAdd, 
   };
 
   const add = async () => {
-    const missing = textFields.filter((f) => f.type !== 'date' && !String(values[f.id] || '').trim()).map((f) => f.label);
+    const missing = textFields.filter((f) => f.type === 'text' && f.page === pages[0].name && !String(values[f.id] || '').trim()).map((f) => f.label);
     if (missing.length) { setError(`Please fill in: ${missing.join(', ')}.`); return; }
     setBusy('Saving your design…');
     try {
-      const preview = await renderPreview(template, values, photos, 1000);
-      const summary = textFields.map((f) => ({ label: f.label, value: displayText(f, values) }));
+      const rendered = await Promise.all(pages.map(async (pg) => [pg.name, await renderPreview(pg, values, art, 1000)]));
+      const previews = Object.fromEntries(rendered);
+      const preview = rendered[0][1];
+      const summary = textFields.map((f) => ({ label: label(f), value: f.type === 'qr' ? qrTarget(values[f.id] || f.sample) : displayText(f, values) }));
       const photoList = Object.fromEntries(photoFields.filter((f) => photos[f.id]?.src).map((f) => [f.label || f.id, photos[f.id].src]));
-      const token = await savePersonalisation({ code: product.code, name: product.name, values: Object.fromEntries(summary.map((s) => [s.label, s.value])), photos: photoList, preview });
+      const token = await savePersonalisation({ code: product.code, name: product.name, values: Object.fromEntries(summary.map((s) => [s.label, s.value])), photos: photoList, preview, previews: multi ? previews : undefined });
       onAdd({ token, summary, preview, quantity });
       try { localStorage.removeItem(DRAFT(product.code)); } catch { /* ignore */ }
     } catch (e) {
@@ -112,21 +134,41 @@ export default function PersonaliseDialog({ product, template, quantity, onAdd, 
                   <button key={v} type="button" role="tab" aria-selected={view === v} onClick={() => show(v)} className={`h-10 px-4 font-semibold transition-colors ${view === v ? 'bg-primary text-white' : 'bg-paper hover:bg-paper2'}`}>{l}</button>
                 ))}
               </div>
-              {view === 'design' && <TemplateCanvas template={template} values={values} photos={photos} />}
+              {view === 'design' && multi && (
+                <div className="flex gap-1 mb-3" role="tablist" aria-label="Pages">
+                  {pages.map((pg, n) => <button key={pg.name} type="button" role="tab" aria-selected={n === pageIdx} onClick={() => setPageIdx(n)} className={`h-9 px-3 text-sm font-semibold ${n === pageIdx ? 'bg-night text-white' : 'bg-paper hover:bg-paper2'}`}>{pg.name}</button>)}
+                </div>
+              )}
+              {view === 'design' && (
+                <AnimatePresence mode="wait">
+                  <motion.div key={page.name} initial={{ opacity: 0, rotateY: -12 }} animate={{ opacity: 1, rotateY: 0 }} exit={{ opacity: 0, rotateY: 12 }} transition={{ duration: 0.35 }} style={{ transformPerspective: 1200 }}>
+                    <TemplateCanvas template={page} values={values} photos={art} />
+                  </motion.div>
+                </AnimatePresence>
+              )}
               {view === 'scene' && shot && <SceneView src={shot} kind={kind} />}
               {view === 'camera' && shot && <CameraView src={shot} name={product.code} />}
             </motion.div>
           </div>
 
           <div className="p-5 sm:p-8 space-y-6 lg:overflow-y-auto">
-            {textFields.map((f) => (
+            {textFields.map((f, n) => (
               <div key={f.id}>
+                {multi && f.page !== textFields[n - 1]?.page && (
+                  <button type="button" onClick={() => setPageIdx(pages.findIndex((pg) => pg.name === f.page))} className="block w-full text-left font-display font-bold text-lg text-brand mb-3 pt-2">{f.page}</button>
+                )}
                 <div className="flex items-center justify-between gap-3 mb-1.5">
                   <label htmlFor={`pf-${f.id}`} className="font-semibold">{f.label}</label>
                   {f.type === 'text' && (
                     <button type="button" onClick={() => tamil(f)} className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline"><LuLanguages size={16} aria-hidden="true" /> தமிழ்</button>
                   )}
                 </div>
+                {f.type === 'qr' && (
+                  <>
+                    <input id={`pf-${f.id}`} className={input} value={values[f.id] || ''} placeholder="Paste a Google Maps link, or type the venue address" onChange={(e) => set(f.id, e.target.value)} onFocus={() => setPageIdx(pages.findIndex((pg) => pg.name === f.page))} />
+                    <p className="text-sm mt-1.5">Guests scan the code on the card to get directions.</p>
+                  </>
+                )}
                 {f.type === 'date' && <input id={`pf-${f.id}`} type="date" className={input} value={values[f.id] || ''} onChange={(e) => set(f.id, e.target.value)} />}
                 {f.type === 'text' && f.lines > 1 && (
                   <>

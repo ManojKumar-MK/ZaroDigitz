@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LuCheck, LuLayers, LuSearch } from 'react-icons/lu';
 import { useAdminData } from '../AdminData';
-import { loadTemplate } from '../../personalise/templates';
+import { loadTemplate, pagesOf } from '../../personalise/templates';
 import { CategorySketch } from '../../components/Sketches';
 import { PageHeader } from '../ui';
 
@@ -53,13 +53,13 @@ export default function Templates() {
           return (
             <Link key={p.code} to={`/admin/products/${encodeURIComponent(p.code)}#personalise`} className="group bg-white dark:bg-zinc-900 rounded-xl ring-1 ring-zinc-200 dark:ring-zinc-800 overflow-hidden hover:ring-secondary transition">
               <div className="aspect-[4/5] bg-[#F3E8D8] dark:bg-zinc-800 text-primary dark:text-[rgb(var(--accent-light-rgb))] flex items-center justify-center overflow-hidden">
-                {t?.image ? <img src={t.image} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" /> : <CategorySketch category={p.category} className="w-2/3 h-2/3 opacity-70" />}
+                {pagesOf(t)[0]?.image ? <img src={pagesOf(t)[0].image} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" /> : <CategorySketch category={p.category} className="w-2/3 h-2/3 opacity-70" />}
               </div>
               <div className="p-3">
                 <p className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 line-clamp-2 min-h-[2.5em]">{p.name}</p>
                 <p className="text-xs text-zinc-500 mt-0.5">{p.code} · {p.category}</p>
                 <p className={`mt-2 inline-flex items-center gap-1.5 text-xs font-semibold ${t ? 'text-emerald-700 dark:text-emerald-400' : 'text-primary dark:text-[rgb(var(--accent-light-rgb))]'}`}>
-                  {t ? <><LuCheck size={14} /> {t.fields.length} boxes · ready</> : <><LuLayers size={14} /> Set up personalisation</>}
+                  {t ? <><LuCheck size={14} /> {pagesOf(t).length > 1 ? `${pagesOf(t).length} pages · ` : ''}{pagesOf(t).reduce((n, pg) => n + pg.fields.length, 0)} boxes · ready</> : <><LuLayers size={14} /> Set up personalisation</>}
                 </p>
               </div>
             </Link>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" width="1400" height="1000">
+  <!-- Original Zaro Digitz sample: envelope front. The guest's name and address are added on top. -->
+  <rect width="1400" height="1000" fill="#F1E3CF"/>
+  <path d="M0 0 L700 430 L1400 0 Z" fill="#E6D2B4"/>
+  <path d="M0 0 L700 430 L1400 0" fill="none" stroke="#C9A032" stroke-width="3"/>
+  <circle cx="700" cy="430" r="58" fill="#7A1F2B"/>
+  <circle cx="700" cy="430" r="44" fill="none" stroke="#E9C766" stroke-width="3"/>
+  <path d="M700 402 C686 416 686 444 700 458 C714 444 714 416 700 402 Z M672 430 L728 430" fill="none" stroke="#E9C766" stroke-width="3"/>
+  <text x="560" y="560" font-family="Georgia, serif" font-size="34" fill="#7A1F2B">To,</text>
+  <path d="M580 760 L1290 760 M580 830 L1290 830" stroke="#C9A032" stroke-width="2" opacity=".6"/>
+</svg>

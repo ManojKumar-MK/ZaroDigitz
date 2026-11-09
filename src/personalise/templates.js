@@ -27,24 +27,71 @@ export const WORDING = [
 
 export const newFieldId = () => Math.random().toString(36).slice(2, 9);
 
+/** A template's pages: [{ name, image, fields }]. One-page templates ({ image, fields }) still work. */
+export function pagesOf(t) {
+  if (!t) return [];
+  if (Array.isArray(t.pages) && t.pages.length) return t.pages.filter((pg) => pg && pg.image && Array.isArray(pg.fields));
+  return t.image && Array.isArray(t.fields) ? [{ name: 'Front', image: t.image, fields: t.fields }] : [];
+}
+
+/** Where a QR box points: a pasted link as it is, anything else as a Google Maps search. */
+export function qrTarget(value) {
+  const v = String(value || '').trim();
+  if (!v) return '';
+  return /^https?:\/\//i.test(v) ? v : `https://maps.google.com/?q=${encodeURIComponent(v)}`;
+}
+
+/** A QR code as a transparent PNG data URL in the box's colour. */
+export async function makeQr(text, color = '#211114') {
+  if (!text) return null;
+  const QR = await import('qrcode');
+  return (QR.default || QR).toDataURL(text, { margin: 1, width: 600, errorCorrectionLevel: 'M', color: { dark: color, light: '#ffffff00' } });
+}
+
 /** A new box in the middle of the design. */
 export function newField(type) {
   const base = { id: newFieldId(), type, x: 0.3, y: 0.4, w: 0.4, h: 0.08, label: '', sample: '', font: 'playfair', size: 5, color: '#7A1F2B', align: 'center', max: 40, lines: 1, lang: 'en' };
   if (type === 'photo') return { ...base, label: 'Photo', w: 0.28, h: 0.2, shape: 'circle' };
   if (type === 'date') return { ...base, label: 'Event date', size: 3.2, font: 'poppins', dateStyle: 'long' };
+  if (type === 'qr') return { ...base, label: 'Venue location', sample: 'Sri Mahal, Sivakasi', w: 0.22, h: 0.16, color: '#211114' };
   return { ...base, label: 'Name', sample: 'Priya' };
 }
 
 // Built-in sample templates (original Zaro Digitz artwork in /public/templates). A design uses
 // its sample until the admin saves a layout of its own.
 const f = (id, type, label, x, y, w, h, extra = {}) => ({ id, type, label, x, y, w, h, sample: '', font: 'playfair', size: 5, color: '#F3DFA2', align: 'center', max: 40, lines: 1, lang: 'en', ...extra });
-const WEDDING = {
+const WEDDING_FRONT = {
+  name: 'Front',
   image: '/templates/wedding-classic.svg',
   fields: [
     f('bride', 'text', "Bride's name", 0.15, 0.40, 0.7, 0.09, { sample: 'Priya', font: 'greatvibes', size: 9, color: '#FFFFFF', max: 24 }),
     f('groom', 'text', "Groom's name", 0.15, 0.565, 0.7, 0.09, { sample: 'Arjun', font: 'greatvibes', size: 9, color: '#FFFFFF', max: 24 }),
     f('date', 'date', 'Wedding date', 0.15, 0.665, 0.7, 0.05, { font: 'poppins', size: 3.4 }),
     f('venue', 'text', 'Venue', 0.15, 0.74, 0.7, 0.12, { sample: 'Sri Mahal, Sivakasi', size: 3.6, lines: 3, max: 120 }),
+  ],
+};
+const WEDDING = {
+  pages: [
+    WEDDING_FRONT,
+    {
+      name: 'Inside',
+      image: '/templates/wedding-inside.svg',
+      fields: [
+        f('invite', 'text', 'Invitation wording', 0.12, 0.14, 0.76, 0.2, { sample: 'With the blessings of our elders, we invite you to the wedding of our children.', size: 3.4, lines: 3, max: 220, color: '#5A1420' }),
+        f('muhurtham', 'text', 'Muhurtham time', 0.12, 0.38, 0.76, 0.06, { sample: 'Muhurtham: 7.30 am to 9.00 am', font: 'poppins', size: 3, color: '#211114' }),
+        f('reception', 'text', 'Reception', 0.12, 0.46, 0.76, 0.06, { sample: 'Reception: 6.30 pm onwards', font: 'poppins', size: 3, color: '#211114' }),
+        f('families', 'text', 'Family names', 0.12, 0.55, 0.76, 0.12, { sample: 'With best wishes from the families of the bride and groom', size: 3, lines: 3, color: '#5A1420' }),
+        f('qr', 'qr', 'Venue location (QR)', 0.39, 0.72, 0.22, 0.16, { sample: 'Sri Mahal, Sivakasi', color: '#5A1420' }),
+      ],
+    },
+    {
+      name: 'Envelope',
+      image: '/templates/wedding-envelope.svg',
+      fields: [
+        f('to', 'text', 'Guest name', 0.42, 0.42, 0.5, 0.1, { sample: 'Thiru. R. Kumar & Family', size: 3.8, color: '#5A1420', align: 'left' }),
+        f('address', 'text', 'Guest address', 0.42, 0.53, 0.5, 0.2, { sample: '12 Temple Street, Sivakasi 626123', font: 'poppins', size: 2.6, lines: 3, color: '#211114', align: 'left' }),
+      ],
+    },
   ],
 };
 const CALENDAR = {
@@ -72,7 +119,7 @@ export async function loadTemplate(code) {
     const { db, fs } = await getFirebase();
     const snap = await fs.getDoc(fs.doc(db, 'templates', String(code)));
     const t = snap.exists() ? snap.data() : null;
-    return t && t.image && Array.isArray(t.fields) ? t : sample;
+    return pagesOf(t).length ? t : sample;
   } catch {
     return sample;
   }
@@ -91,11 +138,11 @@ export async function deleteTemplate(code) {
 const token = () => Array.from(globalThis.crypto.getRandomValues(new Uint8Array(18)), (b) => 'abcdefghijklmnopqrstuvwxyz0123456789'[b % 36]).join('');
 
 /** Store a customer's details, photos and preview; returns the token kept on the cart line. */
-export async function savePersonalisation({ code, name, values, photos, preview }) {
+export async function savePersonalisation({ code, name, values, photos, preview, previews }) {
   if (!isFirebaseEnabled) return null;
   const id = token();
   const { db, fs } = await getFirebase();
-  await fs.setDoc(fs.doc(db, 'personalisations', id), { code, name, values, photos, preview, createdAt: fs.serverTimestamp() });
+  await fs.setDoc(fs.doc(db, 'personalisations', id), { code, name, values, photos, preview, ...(previews ? { previews } : {}), createdAt: fs.serverTimestamp() });
   return id;
 }
 
@@ -176,6 +223,14 @@ export async function renderPreview(template, values = {}, photos = {}, width = 
   await Promise.all(FONTS.map((f) => document.fonts?.load?.(`32px ${f.family}`).catch(() => null)));
   for (const f of template.fields) {
     const x = f.x * W; const y = f.y * H; const w = f.w * W; const h = f.h * H;
+    if (f.type === 'qr') {
+      const q = photos[f.id];
+      if (!q?.src) continue;
+      const img = await loadImage(q.src);
+      const side = Math.min(w, h);
+      ctx.drawImage(img, x + (w - side) / 2, y + (h - side) / 2, side, side);
+      continue;
+    }
     if (f.type === 'photo') {
       const p = photos[f.id];
       if (!p?.src) continue;
