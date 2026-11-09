@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FiUpload, FiTrash2, FiLink } from 'react-icons/fi';
+import { FiUpload, FiTrash2, FiLink, FiPlus } from 'react-icons/fi';
 import { compressImage } from '../utils/image';
 import { rawProducts, categories, categoryTamil, DISCOUNT_PERCENT } from '../data/products';
 import { useAdminData } from './AdminData';
 import { Button, Field, Toggle, inputClass } from './ui';
-import { buildDictionary, tamilFromEnglish, defaultDescription } from './productAuto';
+import { defaultDescription } from './productAuto';
 import { NewCategoryForm } from './CategoryManager';
 
 export const PRODUCT_CATEGORIES = categories.filter((c) => c !== 'All'); // built-in only, for defaults
@@ -18,14 +18,15 @@ function unitsFrom(list) {
   return Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([u]) => u);
 }
 const STATIC_UNITS = unitsFrom(rawProducts);
-const DEFAULT_UNIT = STATIC_UNITS[0] || 'pkt';
+const DEFAULT_UNIT = STATIC_UNITS[0] || 'card';
 
-/** New products start at 80% off MRP (Sivakasi wholesale rate); change it per product. */
-export const DEFAULT_NEW_DISCOUNT = 80;
+/** New designs start with no discount: the offer price is the price per card. */
+export const DEFAULT_NEW_DISCOUNT = 0;
 
 export const emptyProduct = (code = '') => ({
-  code, name: '', tamil: '', category: PRODUCT_CATEGORIES[0], brand: 'Zaro', per: `1 ${DEFAULT_UNIT.toUpperCase()}`, unit: DEFAULT_UNIT,
+  code, name: '', tamil: '', category: PRODUCT_CATEGORIES[0], brand: 'Zaro Digitz', per: `1 ${DEFAULT_UNIT}`, unit: DEFAULT_UNIT,
   mrp: '', offerPrice: '', image: '', active: true, sortOrder: 9999, description: '', discountPct: DEFAULT_NEW_DISCOUNT,
+  minQty: 100, qtyStep: 50, tiers: [], material: '', size: '', orientation: 'Portrait', style: 'Single card', printingNote: '', images: [],
 });
 
 const REVERSE_KEY = 'digitz-price-from-offer';
@@ -57,24 +58,9 @@ export default function ProductFields({ f, setF, codeEditable = true, showCatalo
   const [reverse, setReverse] = useState(readReverse);
   const toggleReverse = (v) => { setReverse(v); try { localStorage.setItem(REVERSE_KEY, v ? '1' : '0'); } catch { /* private mode */ } };
 
-  // Tamil name and description fill themselves from the English name until you edit them.
-  const dict = useMemo(() => buildDictionary(products), [products]);
-  // `_autoTamil` / `_autoDesc` remember what was filled in automatically (never saved).
-  const [tamilBusy, setTamilBusy] = useState(false);
-  const tamilIsAuto = !f.tamil || f.tamil === f._autoTamil;
+  // The description fills itself from the name and category until you edit it.
+  // `_autoDesc` remembers what was filled in automatically (never saved).
   const descIsAuto = !f.description || f.description === f._autoDesc;
-  useEffect(() => {
-    if (!tamilIsAuto || !String(f.name || '').trim()) return undefined;
-    let gone = false;
-    const t = setTimeout(() => {
-      setTamilBusy(true);
-      tamilFromEnglish(f.name, dict).then((ta) => {
-        if (gone) return;
-        setF((cur) => (cur && (!cur.tamil || cur.tamil === cur._autoTamil) ? { ...cur, tamil: ta, _autoTamil: ta } : cur));
-      }).finally(() => { if (!gone) setTamilBusy(false); });
-    }, 500);
-    return () => { gone = true; clearTimeout(t); };
-  }, [f.name, dict]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!descIsAuto) return;
     const d = defaultDescription(f);
@@ -133,8 +119,8 @@ export default function ProductFields({ f, setF, codeEditable = true, showCatalo
     setF({ ...f, unit, per });
   };
 
-  // The logo is only a placeholder, not a product photo.
-  const img = [f._imageData, f.image, previewImage].find((u) => u && !String(u).endsWith('/zaro-logo.png'));
+  // The placeholder is not a product photo.
+  const img = [f._imageData, f.image, previewImage].find((u) => u && !String(u).endsWith('/zaro-logo.png') && !String(u).endsWith('/card-placeholder.svg'));
   return (
     <div className="space-y-4">
       {showCatalogFields && (
@@ -144,7 +130,7 @@ export default function ProductFields({ f, setF, codeEditable = true, showCatalo
         </div>
       )}
       <Field label="Name *"><input className={inputClass} value={f.name} onChange={set('name')} autoFocus={autoFocusName} /></Field>
-      <Field label="Tamil name" hint={tamilBusy ? 'Writing the Tamil name…' : tamilIsAuto && f.tamil ? 'Filled from the English name. Edit it if needed.' : undefined}><input className={inputClass} value={f.tamil || ''} onChange={set('tamil')} lang="ta" placeholder="Fills in from the English name" /></Field>
+      <Field label="Tamil name (optional)"><input className={inputClass} value={f.tamil || ''} onChange={set('tamil')} lang="ta" /></Field>
       <Field label="Category" hint={categoryTamil[f.category]}>
         <select className={inputClass} value={f.category} onChange={(e) => { if (e.target.value === '__newcat') setAddingCategory(true); else setF({ ...f, category: e.target.value }); }}>
           {[...allCategories(), ...(allCategories().includes(f.category) ? [] : [f.category])].map((c) => <option key={c}>{c}</option>)}
@@ -195,7 +181,7 @@ export default function ProductFields({ f, setF, codeEditable = true, showCatalo
       <p className="text-xs text-zinc-500 -mt-2">
         {reverse
           ? (f.offerPrice !== '' && f.offerPrice != null ? `₹${Number(f.offerPrice).toLocaleString('en-IN')} ÷ (1 − ${pct || 0}%) = MRP ₹${Number(f.mrp || mrpFrom(f.offerPrice, pct || 0) || 0).toLocaleString('en-IN')}` : 'Enter the offer price; MRP = offer price ÷ (1 − discount).')
-          : (f.mrp !== '' && f.mrp != null ? `₹${Number(f.mrp).toLocaleString('en-IN')} − ${pct || 0}% = ₹${Number(f.offerPrice || offerFrom(f.mrp, pct || 0)).toLocaleString('en-IN')}` : `Enter MRP; the offer price is MRP minus the discount (new products start at ${DEFAULT_NEW_DISCOUNT}%).`)}
+          : (f.mrp !== '' && f.mrp != null ? `₹${Number(f.mrp).toLocaleString('en-IN')} − ${pct || 0}% = ₹${Number(f.offerPrice || offerFrom(f.mrp, pct || 0)).toLocaleString('en-IN')}` : `Enter the price per card as MRP and leave the discount at 0, or set a discount to show a struck-out price.`)}
       </p>
       <div>
         <span className="block text-[13px] font-medium text-zinc-700 mb-1.5">Photo</span>
@@ -212,18 +198,67 @@ export default function ProductFields({ f, setF, codeEditable = true, showCatalo
               {(f._imageData || f.image) && <Button variant="ghost" icon={FiTrash2} onClick={() => { setF({ ...f, _imageData: undefined, image: '' }); setImgBusy(''); }}>Remove</Button>}
               <Button variant="ghost" icon={FiLink} onClick={() => setShowLink((v) => !v)}>{showLink ? 'Hide link' : 'Use a link'}</Button>
             </div>
-            <p className="text-xs text-zinc-500">{imgBusy || 'JPG, PNG or a phone photo. It is resized and compressed automatically. Leave empty to use the built-in photo matching the name.'}</p>
+            <p className="text-xs text-zinc-500">{imgBusy || 'JPG, PNG or a phone photo. It is resized and compressed automatically. Leave empty to show a placeholder card.'}</p>
             {showLink && <input className={inputClass} value={f._imageData ? '' : f.image || ''} disabled={Boolean(f._imageData)} onChange={set('image')} placeholder="https://… (optional)" />}
           </div>
         </div>
       </div>
-      <Field label="Description (shown on the product page)" hint={descIsAuto && f.description ? 'Written from the name, category and pack. Edit it to make it your own.' : undefined}><textarea className={`${inputClass} h-auto min-h-[80px] py-2`} value={f.description || ''} onChange={set('description')} /></Field>
+      {showCatalogFields && <CardFields f={f} setF={setF} />}
+      <Field label="Description (shown on the product page)" hint={descIsAuto && f.description ? 'Written from the name and category. Edit it to make it your own.' : undefined}><textarea className={`${inputClass} h-auto min-h-[80px] py-2`} value={f.description || ''} onChange={set('description')} /></Field>
       {showCatalogFields && (
         <label className="flex items-center gap-3 text-sm text-zinc-700">
           <Toggle tone="green" checked={f.active !== false} onChange={(v) => setF({ ...f, active: v })} label="Visible on the website" />
           Visible on the website
         </label>
       )}
+    </div>
+  );
+}
+
+/** Card-specific fields: quantity rules, bulk price tiers, specs and extra photos (by link). */
+function CardFields({ f, setF }) {
+  const tiers = Array.isArray(f.tiers) ? f.tiers : [];
+  const images = Array.isArray(f.images) ? f.images : [];
+  const setTier = (i, k, v) => setF({ ...f, tiers: tiers.map((t, j) => (j === i ? { ...t, [k]: v === '' ? '' : Number(v) } : t)) });
+  const num = (k) => (e) => setF({ ...f, [k]: e.target.value === '' ? '' : Number(e.target.value) });
+  const txt = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  return (
+    <div className="rounded-xl ring-1 ring-zinc-200 p-4 space-y-4">
+      <div className="text-sm font-semibold text-zinc-900">Card details</div>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Minimum order" hint="Smallest quantity a customer can order"><input type="number" min="1" className={inputClass} value={f.minQty ?? ''} onChange={num('minQty')} placeholder="100" /></Field>
+        <Field label="Quantity step" hint="e.g. 50 → 100, 150, 200…"><input type="number" min="1" className={inputClass} value={f.qtyStep ?? ''} onChange={num('qtyStep')} placeholder="50" /></Field>
+      </div>
+      <div>
+        <span className="block text-[13px] font-medium text-zinc-700 mb-1.5">Bulk prices (optional)</span>
+        <div className="space-y-2">
+          {tiers.map((t, i) => (
+            <div key={i} className="flex items-center gap-2 text-sm">
+              <span className="text-zinc-500">From</span>
+              <input type="number" min="1" className={`${inputClass} w-24`} value={t.from ?? ''} onChange={(e) => setTier(i, 'from', e.target.value)} aria-label="From quantity" />
+              <span className="text-zinc-500">cards: ₹</span>
+              <input type="number" min="0" step="0.25" className={`${inputClass} w-24`} value={t.price ?? ''} onChange={(e) => setTier(i, 'price', e.target.value)} aria-label="Price per card" />
+              <span className="text-zinc-500">each</span>
+              <Button variant="ghost" icon={FiTrash2} onClick={() => setF({ ...f, tiers: tiers.filter((_, j) => j !== i) })} aria-label="Remove tier" />
+            </div>
+          ))}
+          <Button variant="secondary" size="sm" icon={FiPlus} onClick={() => setF({ ...f, tiers: [...tiers, { from: (tiers[tiers.length - 1]?.from || Number(f.minQty) || 100) * 2, price: '' }] })}>Add bulk price</Button>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Material"><input className={inputClass} value={f.material || ''} onChange={txt('material')} placeholder="Art board, 300 gsm" /></Field>
+        <Field label="Size"><input className={inputClass} value={f.size || ''} onChange={txt('size')} placeholder="5 x 7 in" /></Field>
+        <Field label="Orientation">
+          <select className={inputClass} value={f.orientation || ''} onChange={txt('orientation')}>
+            {['', 'Portrait', 'Landscape', 'Square'].map((o) => <option key={o} value={o}>{o || '—'}</option>)}
+          </select>
+        </Field>
+        <Field label="Style"><input className={inputClass} value={f.style || ''} onChange={txt('style')} placeholder="Single card / Gatefold / Box set" /></Field>
+      </div>
+      <Field label="Printing note (optional)"><input className={inputClass} value={f.printingNote || ''} onChange={txt('printingNote')} placeholder="Printing on one side included. Envelope printing ₹2 extra." /></Field>
+      <Field label="More photos (links, one per line)" hint="Shown in the product gallery after the main photo.">
+        <textarea className={`${inputClass} h-auto min-h-[64px] py-2`} value={images.join('\n')} onChange={(e) => setF({ ...f, images: e.target.value.split('\n').map((u) => u.trim()).filter(Boolean) })} placeholder="https://…" />
+      </Field>
     </div>
   );
 }

@@ -41,7 +41,7 @@ export default function ContactPage() {
   const contactInfo = [
     { icon: LuPhone, label: 'Call Us', value: '+91 7010935230, +91 6369619148', sub: 'Mon-Sat: 9AM - 7PM', color: 'from-blue-500 to-blue-600', href: 'tel:+917010935230' },
     { icon: LuMail, label: 'Email Us', value: 'zarocrackers@gmail.com', sub: 'We reply within 24 hours', color: 'from-red-500 to-red-600', href: 'mailto:zarocrackers@gmail.com' },
-    { icon: FaWhatsapp, label: 'WhatsApp', value: '+91 7010935230', sub: 'Quick responses', color: 'from-green-500 to-green-600', href: shopWhatsAppLink('Hi Zaro Digitz! I have a question about your crackers. Could you help me?', settings.whatsappNumber) },
+    { icon: FaWhatsapp, label: 'WhatsApp', value: '+91 7010935230', sub: 'Quick responses', color: 'from-green-500 to-green-600', href: shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards. Could you help me?', settings.whatsappNumber) },
     { icon: LuMapPin, label: 'Visit Us', value: 'Sivakasi to Sattur Bypass Road', sub: 'Sivakasi, Tamil Nadu - 626189', color: 'from-orange-500 to-primary', href: '#map' },
   ];
 
@@ -59,7 +59,7 @@ export default function ContactPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <span className="text-secondary font-bold text-sm uppercase tracking-widest">Get In Touch</span>
             <h1 className="font-display font-black text-5xl text-white mt-2">Contact <span className="gradient-text">Zaro Digitz</span></h1>
-            <p className="text-gray-400 mt-3 max-w-xl mx-auto">Call, WhatsApp or message our Sivakasi shop for wholesale rates, bulk orders and delivery questions. We respond within 24 hours.</p>
+            <p className="text-gray-400 mt-3 max-w-xl mx-auto">Call, WhatsApp or message us about card designs, prices, wording or delivery. We usually reply the same day.</p>
           </motion.div>
         </div>
       </section>
@@ -115,7 +115,7 @@ export default function ContactPage() {
                 />
               </div>
               <div className="mt-4 p-4 bg-bg rounded-xl border border-gray-100">
-                <div className="font-bold text-dark">ZARO Crackers</div>
+                <div className="font-bold text-dark">ZARO Digitz</div>
                 <div className="text-sm text-gray-500 mt-1">Sivakasi to Sattur Bypass Road,<br />Sivakasi, Tamil Nadu - 626189</div>
                 <div className="text-sm text-primary font-medium mt-2 flex items-center gap-1.5"><LuPhone aria-hidden="true" /> +91 7010935230 / +91 6369619148</div>
                 <div className="flex flex-wrap gap-2 mt-4">

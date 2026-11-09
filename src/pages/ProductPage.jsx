@@ -60,7 +60,6 @@ export default function ProductPage() {
     () => (product ? catalog.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4) : []),
     [catalog, product]
   );
-  useEffect(() => { setActive(0); setQty(null); }, [code]);
 
   if (!product) return <NotFoundPage />;
   // Old code-only links and renamed products go to the current address.

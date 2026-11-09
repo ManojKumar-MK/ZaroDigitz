@@ -24,7 +24,7 @@ const BANK_INFO = {
   upiIds: ['yourupi@bank'],
 };
 
-const BRAND_COLOR = [28, 188, 232];
+const BRAND_COLOR = [122, 31, 43]; // Zaro Digitz maroon
 const LOGO_COLORS = {
   cyan: [28, 188, 232],
   pink: [236, 0, 152],

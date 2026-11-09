@@ -49,6 +49,12 @@ function PriceListRoute() {
   return <PriceListPage key={slug || 'all'} />;
 }
 
+// Remount the product page per design so the gallery and quantity start fresh.
+function ProductRoute() {
+  const { code } = useParams();
+  return <ProductPage key={code} />;
+}
+
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -81,7 +87,7 @@ function AppLayout() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/cards" element={<PriceListRoute />} />
           <Route path="/cards/:slug" element={<PriceListRoute />} />
-          <Route path="/product/:code" element={<ProductPage />} />
+          <Route path="/product/:code" element={<ProductRoute />} />
           <Route path="/track" element={<TrackPage />} />
           <Route path="/invoice/:token" element={<Suspense fallback={<div className="max-w-4xl mx-auto px-4 py-12 text-gray-500">Loading invoice…</div>}><InvoicePage /></Suspense>} />
           <Route path="/cart" element={<><Seo title="Your Cart" path="/cart" noindex /><CartPage /></>} />

@@ -36,7 +36,9 @@ export const DEFAULT_SETTINGS = {
   updatedAt: null,
 };
 
-const PRODUCT_FIELDS = ['name', 'tamil', 'category', 'brand', 'per', 'unit', 'mrp', 'offerPrice', 'image', 'active', 'sortOrder', 'description', 'seoTitle', 'seoDescription'];
+const PRODUCT_FIELDS = ['name', 'tamil', 'category', 'brand', 'per', 'unit', 'mrp', 'offerPrice', 'image', 'active', 'sortOrder', 'description', 'seoTitle', 'seoDescription',
+  // cards: quantity rules, bulk prices, specs and extra photos
+  'minQty', 'qtyStep', 'tiers', 'material', 'size', 'orientation', 'style', 'printingNote', 'images'];
 
 /** Strip a product down to the fields stored in Firestore. */
 export function toProductDoc(product) {
@@ -47,8 +49,8 @@ export function toProductDoc(product) {
   doc.code = product.code;
   if (doc.active === undefined) doc.active = true;
   if (doc.sortOrder === undefined) doc.sortOrder = product.sno ?? product.id ?? 0;
-  // Auto-resolved /products/ paths are derived from the name at runtime; don't persist them.
-  if (typeof doc.image === 'string' && doc.image.startsWith('/products/')) doc.image = '';
+  // The placeholder is not a photo; don't persist it.
+  if (typeof doc.image === 'string' && doc.image.endsWith('/card-placeholder.svg')) doc.image = '';
   return doc;
 }
 

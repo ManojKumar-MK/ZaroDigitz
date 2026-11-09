@@ -59,9 +59,7 @@ export async function tamilFromEnglish(name, dict) {
 }
 
 /** A plain default description built from the product's own details. */
-export function defaultDescription({ name, category, per, brand }) {
+export function defaultDescription({ name, category }) {
   if (!String(name || '').trim()) return '';
-  const pack = per ? ` Sold per ${String(per).trim()}.` : '';
-  const by = brand && brand !== 'Zaro' ? ` Brand: ${brand}.` : '';
-  return `${String(name).trim()} from Zaro Digitz, Sivakasi. ${categoryBlurb(category)}${pack}${by} Delivered across India after full payment.`;
+  return `${String(name).trim()} by Zaro Digitz, Sivakasi. ${categoryBlurb(category)} Personalised with your names, dates and wording; we send a proof on WhatsApp and print after you approve it.`;
 }

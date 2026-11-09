@@ -25,7 +25,7 @@ export default function CategoryGrid({ products, limit }) {
             <div className="text-xs text-gray-500 mt-0.5" lang="ta">{categoryTamil[cat]}</div>
           )}
           <div className="text-xs text-gray-500 mt-2">
-            {counts[cat]} {counts[cat] === 1 ? 'product' : 'products'}
+            {counts[cat]} {counts[cat] === 1 ? 'design' : 'designs'}
           </div>
         </Link>
       ))}
