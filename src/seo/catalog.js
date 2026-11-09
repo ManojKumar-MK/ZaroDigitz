@@ -151,8 +151,7 @@ export function categoryMeta(category, items = []) {
 function productSnippet(p, price) {
   const per = String(p.per || 'card').replace(/^1\s+/, '');
   const pct = p.mrp && price != null && price < p.mrp ? Math.round((1 - price / p.mrp) * 100) : 0;
-  const min = Number(p.minQty) > 1 ? ` Min ${p.minQty}.` : '';
-  const head = price != null ? `${money(price)} per ${per}${pct ? ` (${pct}% off ${money(p.mrp)})` : ''}.${min}` : 'Ask for the price.';
+  const head = price != null ? `${money(price)} per ${per}${pct ? ` (${pct}% off ${money(p.mrp)})` : ''}.` : 'Ask for the price.';
   return fitDescription(
     `${head} ${p.name}, printed by Zaro Digitz, Sivakasi. Design approved on WhatsApp ${SHOP_PHONE}.`,
     `${head} ${p.name} from Zaro Digitz, Sivakasi. WhatsApp ${SHOP_PHONE}.`,
@@ -178,8 +177,8 @@ export const FAQS = [
     a: "Pick a design, choose the quantity and place the order. We then message you on WhatsApp to collect the names, dates, venue and wording, send a digital proof, and print once you approve it.",
   },
   {
-    q: "What is the minimum order?",
-    a: "Most wedding cards start at 100 cards and go up in steps of 50. Bigger orders get a lower price per card, shown on each design.",
+    q: "How do quantities and prices work?",
+    a: "Every design shows its price per piece. Add the quantity you need to the cart. For big orders we confirm the best price with you on WhatsApp or a call.",
   },
   {
     q: "Will I see the design before printing?",

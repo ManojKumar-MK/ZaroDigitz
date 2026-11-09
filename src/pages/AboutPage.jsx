@@ -17,7 +17,7 @@ export default function AboutPage() {
     { icon: LuFileCheck2, title: 'Proof before print', desc: 'Every order gets a digital proof on WhatsApp. We print only after you say yes.' },
     { icon: LuLanguages, title: 'Your language', desc: 'Tamil, English or both, with careful spelling and layout.' },
     { icon: LuStamp, title: 'Finishes that last', desc: 'Foil, embossing, laser cuts and good boards, so the card feels special in hand.' },
-    { icon: LuBadgeIndianRupee, title: 'Honest prices', desc: 'The price per card is on every design, and bulk prices are shown up front.' },
+    { icon: LuBadgeIndianRupee, title: 'Honest prices', desc: 'Every design shows its price per piece. Big orders get the best price on a quick call.' },
     { icon: LuPrinter, title: 'Printed in Sivakasi', desc: 'Sivakasi is known across India for printing. We work with experienced local presses.' },
     { icon: LuTruck, title: 'Delivered with care', desc: 'Packed flat and couriered across India, or ready for pickup at our shop.' },
   ];

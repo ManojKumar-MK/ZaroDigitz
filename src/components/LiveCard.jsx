@@ -27,6 +27,24 @@ export default function LiveCard({ mode = 'wedding', values = {}, className = ''
         aria-live="polite"
         aria-label={`${LIVE_MODES[mode].label} preview`}
       >
+        {mode === 'calendar' && (
+          <div className="bg-paper text-[#211114] shadow-none">
+            <div className="flex justify-center gap-6 py-2 bg-primary" aria-hidden="true">{[0, 1, 2, 3, 4, 5].map((i) => <span key={i} className="w-2.5 h-4 rounded-full bg-[#211114]/70" />)}</div>
+            <div className="px-6 pt-5 pb-4 text-center bg-[#FBF5EC]">
+              <Swap k={v.town} className="font-display font-bold text-5xl tracking-tight text-primary leading-none">{v.town}</Swap>
+              <p className="font-semibold mt-3">January</p>
+              <div className="grid grid-cols-7 gap-1 mt-2 text-[11px] tabular-nums" aria-hidden="true">
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <span key={i} className="font-bold text-primary">{d}</span>)}
+                {Array.from({ length: 35 }, (_, i) => { const day = i - 4; return <span key={i} className={day === 1 ? 'bg-secondary font-bold' : ''}>{day > 0 && day <= 31 ? day : ''}</span>; })}
+              </div>
+            </div>
+            <div className="px-6 py-4 bg-primary text-white text-center">
+              <Swap k={v.a} className="font-display font-bold text-xl leading-tight break-words">{v.a}</Swap>
+              <Swap k={v.b} className="text-sm text-[rgb(var(--accent-light-rgb))] mt-1">{v.b}</Swap>
+            </div>
+          </div>
+        )}
+
         {mode === 'wedding' && (
           <div className="aspect-[5/7] bg-primary text-[rgb(var(--accent-light-rgb))] p-3">
             <div className="h-full ring-2 ring-secondary ring-inset flex flex-col items-center justify-between py-8 px-5 text-center">

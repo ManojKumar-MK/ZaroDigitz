@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { FaWhatsapp } from 'react-icons/fa';
 import Seo from '../components/Seo';
+import LiveCard from '../components/LiveCard';
+import { LIVE_MODES, liveValues } from '../components/liveModes';
 import { faqSchema, getFaqs, categoryPath } from '../seo/catalog';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
@@ -11,16 +13,16 @@ import { getCatalogProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
 
 import { LuAward, LuCalendarDays, LuClock, LuContact, LuFileText, LuIdCard, LuLayers, LuMapPin, LuMegaphone, LuNavigation, LuNewspaper, LuNotebook, LuPackage, LuPhone, LuReceipt, LuSticker } from 'react-icons/lu';
-import { PhoneProofSketch, PrinterSketch, InviteCardSketch, EnvelopeSketch, ScrollSketch, GiftBoxSketch, AcrylicSketch, CalendarSketch, ThoranamSketch, KolamSketch } from '../components/Sketches';
+import { PhoneProofSketch, PrinterSketch, NotebookSketch, InviteCardSketch, EnvelopeSketch, ScrollSketch, GiftBoxSketch, AcrylicSketch, CalendarSketch, ThoranamSketch, KolamSketch } from '../components/Sketches';
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
 
 /* The things we make, drawn: the hero's stage cycles through them. */
 const STAGE = [
-  { Sketch: InviteCardSketch, caption: 'Folded cards with a kalash, foiled in gold' },
-  { Sketch: EnvelopeSketch, caption: 'Envelopes closed with a wax seal' },
-  { Sketch: ScrollSketch, caption: 'Royal scrolls with a silk tassel' },
-  { Sketch: GiftBoxSketch, caption: 'Keepsake boxes tied with ribbon' },
-  { Sketch: AcrylicSketch, caption: 'Clear acrylic with a mandala' },
+  { Sketch: CalendarSketch, caption: 'Desk and wall calendars with your name' },
+  { Sketch: NotebookSketch, caption: 'Diaries and notebooks with your logo' },
+  { Sketch: GiftBoxSketch, caption: 'New Year gift sets for your customers' },
+  { Sketch: InviteCardSketch, caption: 'Wedding cards, foiled in gold' },
+  { Sketch: PrinterSketch, caption: 'Printed in our studio, up to 13 × 19 in' },
 ];
 
 const rise = {
@@ -32,11 +34,6 @@ const Rise = ({ i = 0, className, children, as = 'div' }) => {
   return <M variants={rise} custom={i} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }} className={className}>{children}</M>;
 };
 
-const fmtDate = (v) => {
-  if (!v) return '';
-  const d = new Date(`${v}T00:00:00`);
-  return Number.isNaN(d.getTime()) ? v : d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-};
 
 /** Stripe of ink and paper bars, the card's only ornament (and the page's). */
 function Stripe({ tall = 'h-12' }) {
@@ -243,7 +240,9 @@ export default function HomePage() {
   const { settings } = useShopSettings();
   const [catalogProducts, setCatalogProducts] = useState(() => getCatalogProducts());
   // The live card: what the visitor types appears on the invitation as they type.
-  const [card, setCard] = useState({ bride: '', groom: '', date: '', town: '' });
+  // The live preview: a 2027 calendar first (the season's focus), then diary and wedding card.
+  const [mode, setMode] = useState('calendar');
+  const [live, setLive] = useState({});
 
   useEffect(() => {
     const sync = () => setCatalogProducts(getCatalogProducts());
@@ -253,16 +252,13 @@ export default function HomePage() {
   }, []);
 
   const priced = useMemo(() => catalogProducts.filter((p) => p.price != null), [catalogProducts]);
+  const yearly = useMemo(() => priced.filter((p) => /diar|calendar/i.test(p.category)), [priced]);
   const favourites = useMemo(() => [...priced].sort((a, b) => a.price - b.price).slice(0, 10), [priced]);
   const isCard = (p) => /wedding|invitation|scroll|acrylic|foil|box invitation/i.test(p.category);
   const printing = useMemo(() => priced.filter((p) => !isCard(p)).slice(0, 10), [priced]); // eslint-disable-line react-hooks/exhaustive-deps
   const budget = useMemo(() => priced.filter(isCard).sort((a, b) => a.price - b.price).slice(0, 10), [priced]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const bride = card.bride.trim() || 'Priya';
-  const groom = card.groom.trim() || 'Arjun';
-  const when = fmtDate(card.date) || 'Sunday, 24 January 2027';
-  const town = card.town.trim() || 'Sivakasi';
-  const proofHref = shopWhatsAppLink(`Hi Zaro Digitz! Please send me a proof for our wedding card.\nNames: ${bride} & ${groom}\nDate: ${when}\nPlace: ${town}`, settings.whatsappNumber);
+  const proofHref = shopWhatsAppLink(`Hi Zaro Digitz! ${LIVE_MODES[mode].proof(liveValues(mode, live))}`, settings.whatsappNumber);
 
 
   const field = 'w-full bg-white/10 text-white placeholder-white/60 px-4 py-3 text-base focus:outline-none focus:bg-white/15 focus-visible:ring-2 focus-visible:ring-secondary';
@@ -271,58 +267,44 @@ export default function HomePage() {
     <div className="bg-paper text-ink">
       <Seo path="/" jsonLd={faqSchema(getFaqs(settings))} />
 
-      {/* HERO: the invitation card, filled in by the visitor, beside the room */}
-      <section className="bg-primary-dark dark:bg-night p-3 sm:p-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:min-h-[calc(100svh-80px)]">
+      {/* HERO: the season's work, filled in by the visitor */}
+      <section className="bg-primary-dark dark:bg-night p-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:min-h-[calc(100svh-80px)]">
         <div className="bg-paper flex flex-col overflow-hidden">
           <Stripe />
           <div className="flex-1 flex flex-col items-center text-center px-6 sm:px-12 py-10 lg:py-12">
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} className="text-brand text-3xl leading-none" lang="ta" aria-hidden="true">உ</motion.p>
-            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="font-display font-bold tracking-tight text-brand text-[clamp(40px,4.6vw,64px)] leading-[1.02] mt-5 max-w-[14ch]">
-              Your names, printed in Sivakasi
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} className="text-brand font-semibold">New Year 2027 · now taking orders</motion.p>
+            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="font-display font-bold tracking-tight text-brand text-[clamp(38px,4.4vw,62px)] leading-[1.04] mt-4 max-w-[15ch]">
+              2027 calendars and diaries, with your name
             </motion.h1>
-            <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-lg text-ink mt-6 max-w-[40ch]">
-              Wedding and function invitations from Zaro Digitz. Choose a design, approve a proof on WhatsApp, and we print it.
+            <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-lg text-ink mt-5 max-w-[42ch]">
+              Wall and desk calendars, executive diaries and gift sets for shops, schools and companies, printed in our Sivakasi studio.
             </motion.p>
-
-            {/* The card itself, updating as the visitor types */}
-            <motion.div initial={{ opacity: 0, y: 24, rotate: -1.5 }} animate={{ opacity: 1, y: 0, rotate: -1.5 }} transition={{ duration: 0.8, delay: 0.3 }} whileHover={{ rotate: 0, y: -4 }} className="mt-10 w-full max-w-[340px] aspect-[5/7] bg-primary text-[rgb(var(--accent-light-rgb))] p-3" aria-live="polite" aria-label="Your invitation preview">
-              <div className="h-full ring-2 ring-secondary ring-inset flex flex-col items-center justify-between py-8 px-5">
-                <div>
-                  <p className="text-xl" lang="ta" aria-hidden="true">உ</p>
-                  <p className="text-sm mt-2" lang="ta">திருமண அழைப்பிதழ்</p>
-                  <p className="text-sm text-[rgb(var(--accent-light-rgb))]">Wedding invitation</p>
-                </div>
-                <div className="w-full">
-                  <AnimatePresence mode="wait">
-                    <motion.p key={bride} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="font-display font-bold text-3xl text-white break-words">{bride}</motion.p>
-                  </AnimatePresence>
-                  <p className="text-secondary text-lg my-1">&amp;</p>
-                  <AnimatePresence mode="wait">
-                    <motion.p key={groom} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="font-display font-bold text-3xl text-white break-words">{groom}</motion.p>
-                  </AnimatePresence>
-                </div>
-                <div className="text-sm">
-                  <p className="text-white">{when}</p>
-                  <p>{town}</p>
-                </div>
-              </div>
-            </motion.div>
+            <div className="mt-8 w-full flex justify-center">
+              <LiveCard mode={mode} values={live} />
+            </div>
           </div>
         </div>
 
         <div className="mt-3 lg:mt-0 flex flex-col gap-3">
           <Stage className="h-[48svh] lg:h-auto lg:flex-1" />
-          {/* The live thing: write your own card */}
+          {/* The live thing: put your own name on it */}
           <form className="bg-night text-white p-6 sm:p-8" onSubmit={(e) => { e.preventDefault(); window.open(proofHref, '_blank', 'noopener'); }}>
-            <h2 className="font-display font-bold text-2xl">Try your names on the card</h2>
-            <div className="grid grid-cols-2 gap-3 mt-5">
-              <label className="block"><span className="sr-only">Bride&apos;s name</span><input className={field} maxLength={24} placeholder="Bride's name" value={card.bride} onChange={(e) => setCard({ ...card, bride: e.target.value })} /></label>
-              <label className="block"><span className="sr-only">Groom&apos;s name</span><input className={field} maxLength={24} placeholder="Groom's name" value={card.groom} onChange={(e) => setCard({ ...card, groom: e.target.value })} /></label>
-              <label className="block"><span className="sr-only">Wedding date</span><input type="date" className={field} value={card.date} onChange={(e) => setCard({ ...card, date: e.target.value })} /></label>
-              <label className="block"><span className="sr-only">Town</span><input className={field} maxLength={30} placeholder="Town" value={card.town} onChange={(e) => setCard({ ...card, town: e.target.value })} /></label>
+            <div role="tablist" aria-label="Choose what to preview" className="flex flex-wrap gap-2">
+              {['calendar', 'diary', 'wedding'].map((m) => (
+                <button key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => { setMode(m); setLive({}); }} className={`h-10 px-4 font-semibold transition-colors ${mode === m ? 'bg-secondary text-[#211114]' : 'bg-white/10 hover:bg-white/20'}`}>{LIVE_MODES[m].label}</button>
+              ))}
+            </div>
+            <h2 className="font-display font-bold text-2xl mt-5">{LIVE_MODES[mode].title}</h2>
+            <div className="grid sm:grid-cols-2 gap-3 mt-4">
+              {LIVE_MODES[mode].fields.map((f) => (
+                <label key={f.key} className="block">
+                  <span className="sr-only">{f.label}</span>
+                  <input type={f.type || 'text'} className={field} maxLength={f.max} placeholder={f.label} value={live[f.key] || ''} onChange={(e) => setLive({ ...live, [f.key]: e.target.value })} />
+                </label>
+              ))}
             </div>
             <div className="flex flex-wrap gap-3 mt-5">
-              <Link to="/cards" className="on-light inline-flex items-center h-14 px-7 bg-secondary text-dark font-bold transition-transform hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">Choose a design</Link>
+              <Link to={mode === 'wedding' ? '/cards' : categoryPath('Diaries & Calendars')} className="on-light inline-flex items-center h-14 px-7 bg-secondary text-[#211114] font-bold transition-transform hover:-translate-y-0.5">{mode === 'wedding' ? 'Choose a design' : 'See calendars & diaries'}</Link>
               <button type="submit" className="inline-flex items-center gap-2 h-14 px-6 bg-white/10 hover:bg-white/20 font-semibold transition-colors"><FaWhatsapp /> Get this as a proof</button>
             </div>
           </form>
@@ -333,10 +315,52 @@ export default function HomePage() {
       <div className="bg-secondary text-[#211114] overflow-hidden py-4" aria-label="Our promises">
         <div className="marquee-wrapper">
           <span className="marquee-text text-lg font-semibold">
-            {['Free digital proof on WhatsApp', 'Tamil, English or both', 'Gold foil, emboss and laser cut', 'Printed in Sivakasi', 'Courier across India', 'Bulk prices from 100 cards'].map((t) => <span key={t} className="mx-8 inline-flex items-center gap-3"><span className="w-2.5 h-2.5 rotate-45 bg-primary" aria-hidden="true" />{t}</span>)}
+            {['Free digital proof on WhatsApp', 'Tamil, English or both', 'Gold foil, emboss and laser cut', 'Printed in Sivakasi', 'Courier across India', 'Best rate for big orders'].map((t) => <span key={t} className="mx-8 inline-flex items-center gap-3"><span className="w-2.5 h-2.5 rotate-45 bg-primary" aria-hidden="true" />{t}</span>)}
           </span>
         </div>
       </div>
+
+      {/* NEW YEAR 2027: the season's main work */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 lg:pt-32">
+        <div className="grid lg:grid-cols-12 gap-6 items-end">
+          <Rise as="h2" className="lg:col-span-7 font-display font-bold tracking-tight text-[clamp(32px,3.8vw,56px)] leading-tight">Calendars and diaries for 2027</Rise>
+          <Rise i={1} as="p" className="lg:col-span-5 text-lg">Your name and logo on something your customers use every day of the year. Printed and bound here, in small or large quantities.</Rise>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mt-10">
+          {[
+            { label: 'Wall calendars', note: '12 sheets or single page', Sketch: CalendarSketch },
+            { label: 'Desk calendars', note: 'Tent style, wire-bound', Sketch: CalendarSketch },
+            { label: 'Executive diaries', note: 'Dated, name embossed', Sketch: NotebookSketch },
+            { label: 'Pocket diaries', note: 'A6, logo on the cover', Sketch: NotebookSketch },
+            { label: 'Gift sets', note: 'Diary, calendar and pen', Sketch: GiftBoxSketch },
+          ].map(({ label, note, Sketch }, i) => (
+            <Rise key={label} i={i % 5}>
+              <Link to={categoryPath('Diaries & Calendars')} className="group block h-full bg-paper2 hover:bg-paper3 transition-colors p-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+                <div className="text-brand aspect-square"><Sketch className="w-full h-full transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-105" /></div>
+                <p className="font-display font-bold text-lg leading-snug mt-3">{label}</p>
+                <p className="text-[15px]">{note}</p>
+              </Link>
+            </Rise>
+          ))}
+        </div>
+        <div className="grid sm:grid-cols-3 gap-3 mt-3">
+          {[
+            ['Your brand on every page', 'Company name, logo, address and phone on each month or on the cover.'],
+            ['Clear prices, best rate for big orders', 'Every design shows its price per piece. For large quantities we confirm the best rate on WhatsApp or a call.'],
+            ['Order early in December', 'Send your logo and quantity now so they reach your customers before 1 January.'],
+          ].map(([t, d], i) => (
+            <Rise key={t} i={i} className="bg-night text-[#FBF5EC] p-6">
+              <p className="font-display font-bold text-lg text-[rgb(var(--accent-light-rgb))]">{t}</p>
+              <p className="mt-2 text-[15px] text-[#FBF5EC]/85">{d}</p>
+            </Rise>
+          ))}
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-16 grid grid-cols-[1fr_auto] items-end gap-y-2">
+        <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(28px,3vw,40px)] leading-tight">2027 calendars and diaries</Rise>
+        <Rail id="rail-yearly" items={yearly} />
+      </section>
 
       {/* FAVOURITES: designs people order most, gentlest prices first */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 lg:pt-32 grid grid-cols-[1fr_auto] items-end gap-y-2">
@@ -389,7 +413,7 @@ export default function HomePage() {
       {/* NUMBERS: the facts of the order */}
       <section className="bg-secondary text-[#211114]">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-14 grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {[[`${catalogProducts.length}+`, 'designs to start from'], ['100', 'cards minimum, in steps of 50'], ['1 day', 'to your WhatsApp proof'], ['7 days', 'typical printing time']].map(([n, l], i) => (
+          {[[`${catalogProducts.length}+`, 'designs to start from'], ['350 gsm', 'all media up to 13 × 19 in'], ['1 day', 'to your WhatsApp proof'], ['7 days', 'typical printing time']].map(([n, l], i) => (
             <Rise key={l} i={i}>
               <p className="font-display font-bold text-[clamp(40px,5vw,72px)] leading-none tabular-nums">{n}</p>
               <p className="text-lg mt-2">{l}</p>

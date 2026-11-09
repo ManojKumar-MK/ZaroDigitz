@@ -3,9 +3,9 @@
 
 export const SITE_URL = 'https://digitz.zarocrackers.com';
 export const SITE_NAME = 'Zaro Digitz';
-export const DEFAULT_TITLE = 'Zaro Digitz | Digital Colour Printing & Wedding Cards, Sivakasi';
+export const DEFAULT_TITLE = 'Zaro Digitz | 2027 Calendars, Diaries & Printing, Sivakasi';
 export const DEFAULT_DESCRIPTION =
-  'Digital colour printing in Sivakasi: wedding cards and invitations, visiting cards, stickers, flyers, brochures, bill books, letterheads, ID cards, certificates and notebooks. Call 97877 02336.';
+  '2027 calendars and diaries with your name and logo, plus digital colour printing in Sivakasi: wedding cards, visiting cards, flyers, bill books, ID cards and more. Call 97877 02336.';
 export const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
 export const LOGO_URL = `${SITE_URL}/zaro-logo.png`;
 /** Spellings people use for the brand; helps Google learn "zaro" is a name, not a typo of "zara". */

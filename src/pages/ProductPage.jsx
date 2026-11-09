@@ -19,7 +19,7 @@ import { absoluteUrl, breadcrumbSchema, SITE_URL, safeUrl } from '../seo/site';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { flyToCart } from '../utils/flyToCart';
-import { clampQty, priceForQty, qtyRules, tierRows } from '../utils/pricing';
+import { clampQty, priceForQty, qtyRules } from '../utils/pricing';
 
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
@@ -82,7 +82,6 @@ export default function ProductPage() {
   const { min, step } = qtyRules(product);
   const quantity = qty ?? min;
   const unitPrice = offer == null ? null : priceForQty({ ...product, price: offer }, quantity);
-  const tiers = tierRows({ ...product, price: offer });
   const unit = String(product.per || 'card').replace(/^1\s+/, '');
   const images = [...new Set([product.image, ...(product.images || [])].filter(Boolean))];
   if (!images.length) images.push(PLACEHOLDER_IMAGE);
@@ -92,7 +91,6 @@ export default function ProductPage() {
     ['Size', product.size],
     ['Orientation', product.orientation],
     ['Style', product.style],
-    ['Minimum order', `${min} ${min === 1 ? unit : `${unit}s`}`],
     ['Design code', product.code],
   ].filter(([, v]) => v && v !== '-');
   const crumbs = [
@@ -121,7 +119,6 @@ export default function ProductPage() {
             priceValidUntil: `${new Date().getFullYear()}-12-31`,
             availability: 'https://schema.org/InStock',
             itemCondition: 'https://schema.org/NewCondition',
-            eligibleQuantity: { '@type': 'QuantitativeValue', minValue: min },
             url: absoluteUrl(productPath(product)),
             seller: { '@id': `${SITE_URL}/#business` },
           },
@@ -231,29 +228,10 @@ export default function ProductPage() {
             </div>
             {offer != null && <p className="text-xs text-gray-500 mt-1">Prices include printing of your names and wording. Courier extra.</p>}
 
-            {tiers.length > 0 && (
-              <div className="mt-5 bg-amber-50/60 p-4">
-                <div className="text-sm font-bold text-dark mb-2">Bulk price per {unit}</div>
-                <table className="w-full text-sm">
-                  <tbody>
-                    {tiers.map((t) => {
-                      const on = unitPrice === t.price && quantity >= Number(t.range.split(/[–+]/)[0]);
-                      return (
-                        <tr key={t.range} className={on ? 'font-bold text-primary' : 'text-gray-700'}>
-                          <td className="py-1">{t.range} {unit}s</td>
-                          <td className="py-1 text-right">{money(t.price)}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                <p className="text-xs text-gray-500 mt-2">The lower price applies automatically in your cart.</p>
-              </div>
-            )}
 
             {offer != null && (
               <div className="mt-6">
-                <div className="text-sm text-gray-600 mb-2">Quantity <span className="text-gray-400">(min {min}{step > 1 ? `, in steps of ${step}` : ''})</span></div>
+                <div className="text-sm text-gray-600 mb-2">Quantity <span className="text-gray-400">(big orders: we confirm the best price on WhatsApp)</span></div>
                 <div className="flex flex-wrap items-center gap-4">
                   {stepper}
                   <div className="text-sm text-gray-600">Total <span className="font-bold text-dark text-lg">{money(unitPrice * quantity)}</span></div>

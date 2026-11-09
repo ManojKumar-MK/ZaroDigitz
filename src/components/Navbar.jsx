@@ -2,34 +2,34 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMinus, FiPlus } from 'react-icons/fi';
-import { LuChevronDown, LuHeart, LuMapPin, LuMenu, LuPartyPopper, LuPrinter, LuSearch, LuShoppingBag, LuX } from 'react-icons/lu';
+import { LuCalendarDays, LuChevronDown, LuHeart, LuMapPin, LuMenu, LuPrinter, LuSearch, LuShoppingBag, LuX } from 'react-icons/lu';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import { useCart } from '../context/CartContext';
 import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
 import { categoryPath, productPath } from '../seo/catalog';
 import { qtyRules } from '../utils/pricing';
-import { InviteCardSketch, ScrollSketch, NotebookSketch } from './Sketches';
+import { InviteCardSketch, NotebookSketch, CalendarSketch } from './Sketches';
 
 // Menu groups, in the order a visitor thinks about them.
 const MENUS = [
   {
-    label: 'Wedding Cards',
+    label: 'Calendars & Diaries',
+    icon: LuCalendarDays,
+    sketch: CalendarSketch,
+    items: ['Diaries & Calendars', 'School & College Notebooks', 'Return Gifts', 'Custom Printing'],
+  },
+  {
+    label: 'Invitations',
     icon: LuHeart,
     sketch: InviteCardSketch,
-    items: ['Hindu Wedding Cards', 'Muslim Wedding Cards', 'Christian Wedding Cards', 'Budget Wedding Cards', 'Scroll Invitations', 'Acrylic Invitations', 'Foil & Metallic Cards', 'Premium Box Invitations'],
+    items: ['Hindu Wedding Cards', 'Muslim Wedding Cards', 'Christian Wedding Cards', 'Budget Wedding Cards', 'Scroll Invitations', 'Acrylic Invitations', 'Foil & Metallic Cards', 'Premium Box Invitations', 'Birthday Invitations', 'House Warming Invitations', 'Ear Piercing Invitations', 'Baby Shower Invitations', 'Puberty Ceremony Invitations', 'Holy Communion Invitations'],
   },
   {
-    label: 'Other Invitations',
-    icon: LuPartyPopper,
-    sketch: ScrollSketch,
-    items: ['Birthday Invitations', 'House Warming Invitations', 'Ear Piercing Invitations', 'Baby Shower Invitations', 'Puberty Ceremony Invitations', 'Holy Communion Invitations', 'Return Gifts'],
-  },
-  {
-    label: 'Digital Printing',
+    label: 'Printing',
     icon: LuPrinter,
     sketch: NotebookSketch,
-    items: ['Visiting Cards & Stationery', 'Labels & Stickers', 'Flyers & Brochures', 'Bill Books & Receipt Books', 'Letterheads & Envelopes', 'ID Cards', 'Certificates', 'Synthetic & Texture Board Prints', 'School & College Notebooks', 'Diaries & Calendars', 'Sweet & Cake Boxes', 'Branding & Signage', 'Custom Printing'],
+    items: ['Visiting Cards & Stationery', 'Labels & Stickers', 'Flyers & Brochures', 'Bill Books & Receipt Books', 'Letterheads & Envelopes', 'ID Cards', 'Certificates', 'Synthetic & Texture Board Prints', 'Sweet & Cake Boxes', 'Branding & Signage'],
   },
 ];
 // Single-page sections sit beside the menus.
@@ -143,19 +143,19 @@ export default function Navbar() {
     <>
     <header className="sticky top-0 z-50">
       <nav className={`relative bg-paper dark:bg-paper2 text-ink transition-shadow duration-300 ${lifted ? 'shadow-[0_6px_24px_rgba(20,8,10,0.14)] dark:shadow-[0_6px_24px_rgba(0,0,0,0.5)]' : ''}`} onMouseLeave={() => setOpen(null)} aria-label="Main">
-        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 xl:px-12 h-20 flex items-center justify-between gap-6">
+        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 xl:px-12 h-20 grid grid-cols-[1fr_auto] xl:grid-cols-[auto_1fr_auto] items-center gap-4 xl:gap-8">
           <div className="flex items-center gap-2">
             <button type="button" aria-label="Open menu" className="xl:hidden w-11 h-11 -ml-2 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand" onClick={() => openPanel('menu')}><LuMenu size={22} /></button>
             <Link to="/" className="flex items-center gap-3 group">
               <img src="/zaro-logo-112.webp" width="52" height="52" alt="" className="w-12 h-12 sm:w-[52px] sm:h-[52px] object-contain transition-transform duration-500 group-hover:scale-105" />
               <span className="leading-tight">
-                <span className="block font-display font-bold text-lg sm:text-xl text-brand">ZARO Digitz</span>
-                <span className="hidden sm:block xl:hidden 2xl:block text-[13px] mt-0.5">Digital colour printing · Sivakasi</span>
+                <span className="block font-display font-bold text-lg sm:text-xl text-brand whitespace-nowrap">ZARO Digitz</span>
+                <span className="hidden sm:block xl:hidden 2xl:block text-[13px] mt-0.5 whitespace-nowrap">Digital colour printing · Sivakasi</span>
               </span>
             </Link>
           </div>
 
-          <ul className="hidden xl:flex items-center gap-0.5">
+          <ul className="hidden xl:flex items-center justify-center gap-0.5 whitespace-nowrap min-w-0">
             {MENUS.map((m) => (
               <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
                 <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`relative h-20 px-3.5 inline-flex items-center gap-2 text-[15px] font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
@@ -169,10 +169,10 @@ export default function Navbar() {
             ))}
           </ul>
 
-          <div className="flex items-center gap-1 xl:pl-2">
+          <div className="flex items-center justify-end gap-1 whitespace-nowrap">
             <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors"><LuSearch size={19} /></button>
             <ThemeToggle className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors" />
-            <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden xl:inline-flex items-center h-10 px-5 ml-3 order-last bg-primary text-white text-[15px] font-semibold transition-colors hover:bg-primary-dark">Get a quote</a>
+            <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden 2xl:inline-flex items-center h-10 px-5 ml-3 order-last bg-primary text-white text-[15px] font-semibold transition-colors hover:bg-primary-dark">Get a quote</a>
             <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors">
               <LuShoppingBag size={19} />
               {totalItems > 0 && <motion.span key={totalItems} initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-0.5 right-0.5 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center font-bold">{totalItems}</motion.span>}

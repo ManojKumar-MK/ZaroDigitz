@@ -1,6 +1,16 @@
 // Settings for the live preview (src/components/LiveCard.jsx): fields, proof message, which mode suits a category.
 
 export const LIVE_MODES = {
+  calendar: {
+    label: 'Calendar',
+    title: 'Try your name on a 2027 calendar',
+    fields: [
+      { key: 'a', label: 'Company or shop name', placeholder: 'Sri Murugan Traders', max: 30 },
+      { key: 'b', label: 'Phone or tagline', placeholder: '98765 43210 · Sivakasi', max: 34 },
+      { key: 'town', label: 'Year', placeholder: '2027', max: 6 },
+    ],
+    proof: (v) => `Please send me a proof for 2027 calendars.\nName: ${v.a}\nLine: ${v.b}\nYear: ${v.town}`,
+  },
   wedding: {
     label: 'Wedding card',
     title: 'Try your names on the card',
@@ -36,8 +46,9 @@ export const LIVE_MODES = {
 
 /** Which preview suits a category of product. */
 export function modeFor(category = '') {
+  if (/calendar/i.test(category)) return 'calendar';
   if (/notebook|bill|receipt|label|sticker|box|printing|stationery|visiting/i.test(category)) return 'notebook';
-  if (/diar|calendar/i.test(category)) return 'diary';
+  if (/diar/i.test(category)) return 'diary';
   return 'wedding';
 }
 

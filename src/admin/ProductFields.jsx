@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FiUpload, FiTrash2, FiLink, FiPlus } from 'react-icons/fi';
+import { FiUpload, FiTrash2, FiLink } from 'react-icons/fi';
 import { compressImage } from '../utils/image';
 import { rawProducts, categories, categoryTamil, DISCOUNT_PERCENT } from '../data/products';
 import { useAdminData } from './AdminData';
@@ -26,7 +26,7 @@ export const DEFAULT_NEW_DISCOUNT = 0;
 export const emptyProduct = (code = '') => ({
   code, name: '', tamil: '', category: PRODUCT_CATEGORIES[0], brand: 'Zaro Digitz', per: `1 ${DEFAULT_UNIT}`, unit: DEFAULT_UNIT,
   mrp: '', offerPrice: '', image: '', active: true, sortOrder: 9999, description: '', discountPct: DEFAULT_NEW_DISCOUNT,
-  minQty: 100, qtyStep: 50, tiers: [], material: '', size: '', orientation: 'Portrait', style: 'Single card', printingNote: '', images: [],
+  minQty: 1, qtyStep: 1, tiers: [], material: '', size: '', orientation: 'Portrait', style: 'Single card', printingNote: '', images: [],
 });
 
 const REVERSE_KEY = 'digitz-price-from-offer';
@@ -215,36 +215,13 @@ export default function ProductFields({ f, setF, codeEditable = true, showCatalo
   );
 }
 
-/** Card-specific fields: quantity rules, bulk price tiers, specs and extra photos (by link). */
+/** Design details: specs, a printing note and extra photos (by link). */
 function CardFields({ f, setF }) {
-  const tiers = Array.isArray(f.tiers) ? f.tiers : [];
   const images = Array.isArray(f.images) ? f.images : [];
-  const setTier = (i, k, v) => setF({ ...f, tiers: tiers.map((t, j) => (j === i ? { ...t, [k]: v === '' ? '' : Number(v) } : t)) });
-  const num = (k) => (e) => setF({ ...f, [k]: e.target.value === '' ? '' : Number(e.target.value) });
   const txt = (k) => (e) => setF({ ...f, [k]: e.target.value });
   return (
     <div className="rounded-xl ring-1 ring-zinc-200 p-4 space-y-4">
       <div className="text-sm font-semibold text-zinc-900">Card details</div>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Minimum order" hint="Smallest quantity a customer can order"><input type="number" min="1" className={inputClass} value={f.minQty ?? ''} onChange={num('minQty')} placeholder="100" /></Field>
-        <Field label="Quantity step" hint="e.g. 50 → 100, 150, 200…"><input type="number" min="1" className={inputClass} value={f.qtyStep ?? ''} onChange={num('qtyStep')} placeholder="50" /></Field>
-      </div>
-      <div>
-        <span className="block text-[13px] font-medium text-zinc-700 mb-1.5">Bulk prices (optional)</span>
-        <div className="space-y-2">
-          {tiers.map((t, i) => (
-            <div key={i} className="flex items-center gap-2 text-sm">
-              <span className="text-zinc-500">From</span>
-              <input type="number" min="1" className={`${inputClass} w-24`} value={t.from ?? ''} onChange={(e) => setTier(i, 'from', e.target.value)} aria-label="From quantity" />
-              <span className="text-zinc-500">cards: ₹</span>
-              <input type="number" min="0" step="0.25" className={`${inputClass} w-24`} value={t.price ?? ''} onChange={(e) => setTier(i, 'price', e.target.value)} aria-label="Price per card" />
-              <span className="text-zinc-500">each</span>
-              <Button variant="ghost" icon={FiTrash2} onClick={() => setF({ ...f, tiers: tiers.filter((_, j) => j !== i) })} aria-label="Remove tier" />
-            </div>
-          ))}
-          <Button variant="secondary" size="sm" icon={FiPlus} onClick={() => setF({ ...f, tiers: [...tiers, { from: (tiers[tiers.length - 1]?.from || Number(f.minQty) || 100) * 2, price: '' }] })}>Add bulk price</Button>
-        </div>
-      </div>
       <div className="grid grid-cols-2 gap-3">
         <Field label="Material"><input className={inputClass} value={f.material || ''} onChange={txt('material')} placeholder="Art board, 300 gsm" /></Field>
         <Field label="Size"><input className={inputClass} value={f.size || ''} onChange={txt('size')} placeholder="5 x 7 in" /></Field>

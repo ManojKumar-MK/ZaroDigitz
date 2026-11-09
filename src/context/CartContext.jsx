@@ -3,7 +3,7 @@ import { clampQty, priceForQty } from '../utils/pricing';
 
 const CartContext = createContext();
 
-// Cards are sold in batches: each line keeps its design's minimum and step (e.g. 100, 150,
+// Every line is simply price x quantity (any quantity from 1);
 // 200...) and its per-card price follows the quantity tiers. basePrice is the price before
 // tiers, so lowering the quantity raises the per-card price again.
 function line(item, quantity) {

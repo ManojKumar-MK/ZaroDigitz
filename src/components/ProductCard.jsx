@@ -4,17 +4,15 @@ import { LuShoppingBag } from 'react-icons/lu';
 import { productPath } from '../seo/catalog';
 import { flyToCart } from '../utils/flyToCart';
 import { useCart } from '../context/CartContext';
-import { qtyRules } from '../utils/pricing';
 import { PLACEHOLDER_IMAGE } from '../data/products';
 import { hasPhoto } from './sketchFor';
 import { CategorySketch } from './Sketches';
 
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
-/** A design in a grid or carousel: picture, name, price per piece, minimum, and one clear action. */
+/** A design in a grid or carousel: picture, name, price per piece and one clear action. */
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
-  const { min } = qtyRules(product);
   const unit = String(product.per || 'card').replace(/^1\s+/, '');
   return (
     <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group h-full flex flex-col bg-paper2">
@@ -41,15 +39,14 @@ export default function ProductCard({ product }) {
         </h3>
         <div className="flex items-baseline justify-between gap-3 mt-3 tabular-nums">
           <p><span className="text-xl font-bold text-brand">{money(product.price)}</span> <span className="text-sm">/ {unit}</span></p>
-          {min > 1 && <p className="text-sm">Min {min}</p>}
         </div>
         <motion.button
           type="button"
           whileTap={{ scale: 0.97 }}
-          onClick={(e) => { addItem({ ...product, quantity: min }); flyToCart(e.currentTarget.closest('.group')?.querySelector('img, svg') || e.currentTarget); }}
+          onClick={(e) => { addItem({ ...product, quantity: 1 }); flyToCart(e.currentTarget.closest('.group')?.querySelector('img, svg') || e.currentTarget); }}
           className="mt-4 h-11 w-full inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold transition-colors hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-secondary"
         >
-          <LuShoppingBag size={17} aria-hidden="true" /> Add {min > 1 ? min : ''} to cart
+          <LuShoppingBag size={17} aria-hidden="true" /> Add to cart
         </motion.button>
       </div>
     </motion.article>
