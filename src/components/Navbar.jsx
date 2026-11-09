@@ -8,7 +8,7 @@ import { useCart } from '../context/CartContext';
 import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
 import { categoryPath, productPath } from '../seo/catalog';
 import { qtyRules } from '../utils/pricing';
-import { InviteCardSketch, ScrollSketch, CalendarSketch } from './Sketches';
+import { InviteCardSketch, ScrollSketch } from './Sketches';
 
 // Menu groups, in the order a visitor thinks about them.
 const MENUS = [
@@ -20,15 +20,15 @@ const MENUS = [
   {
     label: 'Other Invitations',
     sketch: ScrollSketch,
-    items: ['Birthday Invitations', 'House Warming Invitations', 'Ear Piercing Invitations', 'Baby Shower Invitations', 'Puberty Ceremony Invitations', 'Holy Communion Invitations'],
-  },
-  {
-    label: 'Printing',
-    sketch: CalendarSketch,
-    items: ['Diaries & Calendars', 'Return Gifts', 'Visiting Cards & Stationery', 'Custom Printing'],
+    items: ['Birthday Invitations', 'House Warming Invitations', 'Ear Piercing Invitations', 'Baby Shower Invitations', 'Puberty Ceremony Invitations', 'Holy Communion Invitations', 'Visiting Cards & Stationery', 'Custom Printing'],
   },
 ];
-const LINKS = [{ to: '/track', label: 'Track Order' }, { to: '/contact', label: 'Visit Us' }];
+// Single-page sections sit beside the two menus.
+const LINKS = [
+  { to: categoryPath('Diaries & Calendars'), label: 'Diaries & Calendars' },
+  { to: categoryPath('Return Gifts'), label: 'Return Gifts' },
+  { to: '/contact', label: 'Visit Us' },
+];
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
 function SearchPanel({ onClose }) {
@@ -131,7 +131,7 @@ export default function Navbar() {
       <div className="bg-night text-[#F3E8D8] text-[13px] sm:text-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-9 flex items-center justify-center sm:justify-between gap-6">
           <span className="truncate">{settings.announcement || 'Free digital proof on WhatsApp before we print'}</span>
-          <span className="hidden sm:flex gap-6"><span>Courier across India</span><a href="tel:+917010935230" className="hover:text-secondary">+91 70109 35230</a></span>
+          <span className="hidden sm:flex gap-6"><Link to="/track" className="hover:text-secondary">Track your order</Link><a href="tel:+917010935230" className="hover:text-secondary">+91 70109 35230</a></span>
         </div>
       </div>
 
@@ -151,13 +151,13 @@ export default function Navbar() {
           <ul className="hidden lg:flex items-center gap-1">
             {MENUS.map((m) => (
               <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
-                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`h-[72px] px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
+                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`h-[72px] px-3 xl:px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
                   {m.label} <FiChevronDown className={`transition-transform ${open === m.label ? 'rotate-180' : ''}`} />
                 </button>
               </li>
             ))}
             {LINKS.map((l) => (
-              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-[72px] px-4 inline-flex items-center font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}>{l.label}</Link></li>
+              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-[72px] px-3 xl:px-4 inline-flex items-center font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}>{l.label}</Link></li>
             ))}
           </ul>
 
@@ -208,7 +208,7 @@ export default function Navbar() {
                     </ul>
                   </details>
                 ))}
-                {[{ to: '/cards', label: 'All designs' }, ...LINKS, { to: '/about', label: 'About us' }].map((l) => (
+                {[{ to: '/cards', label: 'All designs' }, ...LINKS, { to: '/track', label: 'Track order' }, { to: '/about', label: 'About us' }].map((l) => (
                   <Link key={l.to} to={l.to} onClick={close} className="flex items-center h-14 font-semibold text-lg hover:text-brand">{l.label}</Link>
                 ))}
               </div>

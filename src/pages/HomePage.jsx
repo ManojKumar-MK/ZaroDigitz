@@ -232,8 +232,14 @@ export default function HomePage() {
 
       {/* SHOWCASE: what we print, one plate at a time */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-        <Rise className="relative aspect-square overflow-hidden bg-dark">
-          <motion.img src="/world/letterpress.jpg" alt="A letterpress print on paper" width="1600" height="1600" loading="lazy" className="w-full h-full object-cover" whileHover={{ scale: 1.04 }} transition={{ duration: 0.8 }} />
+        <Rise className="relative aspect-square overflow-hidden bg-paper2 text-brand">
+          <AnimatePresence mode="wait">
+            <motion.div key={tab} initial={{ opacity: 0, rotate: -3 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 3 }} transition={{ duration: 0.5 }} className="absolute inset-0 p-10 sm:p-16">
+              {tab === 'Wedding' && <InviteCardSketch className="w-full h-full" />}
+              {tab === 'Functions' && <KolamSketch className="w-full h-full" />}
+              {tab === 'Printing' && <CalendarSketch className="w-full h-full" />}
+            </motion.div>
+          </AnimatePresence>
         </Rise>
         <div className="flex flex-col gap-10 lg:min-h-[520px] justify-between">
           <Rise i={1} as="div">
@@ -404,8 +410,8 @@ export default function HomePage() {
             </div>
           </div>
           <div className="lg:col-start-7 lg:col-span-6 relative">
-            <Rise className="aspect-[3/4] overflow-hidden"><img src="/world/nadaswaram.jpg" alt="Nadaswaram players at a Tamil wedding" width="1200" height="1600" loading="lazy" className="w-full h-full object-cover" /></Rise>
-            <Rise i={2} className="absolute -bottom-10 -left-6 lg:-left-10 w-[38%] aspect-square overflow-hidden ring-[10px] ring-night"><img src="/world/sivakasi.jpg" alt="Sivakasi railway station" width="600" height="600" loading="lazy" className="w-full h-full object-cover" /></Rise>
+            <Rise className="aspect-[3/4] bg-paper text-brand flex items-center justify-center p-10 lg:mt-40"><ScrollSketch className="w-full h-auto" /></Rise>
+            <Rise i={2} className="absolute -bottom-10 -left-4 lg:-left-10 w-[42%] aspect-square bg-secondary text-[#211114] p-5 ring-[10px] ring-night"><GiftBoxSketch className="w-full h-full" /></Rise>
           </div>
         </div>
       </section>

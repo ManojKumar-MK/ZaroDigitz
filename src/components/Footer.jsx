@@ -14,14 +14,6 @@ const menu = [
   ['/#faq', 'Questions'],
 ];
 
-// Open-licence pictures used on the site (see docs/image-credits.json).
-const CREDITS = [
-  ['Merry Go Round Letterpress Print', 'AlanKitching', 'CC BY 4.0', 'https://commons.wikimedia.org/w/index.php?curid=140212191', 'https://creativecommons.org/licenses/by/4.0/'],
-  ['Pipe organ Thaarai at a Tamil wedding', 'Magentic Manifestations', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/w/index.php?curid=144951948', 'https://creativecommons.org/licenses/by-sa/4.0/'],
-  ['A shrine decorated with marigold garlands', 'Alina Kakshapati', 'CC0', 'https://wordpress.org/photos/photo/3646a211f6/', 'https://creativecommons.org/publicdomain/zero/1.0/'],
-  ['Sivakasi Railway Station', 'Gowtham Sampath', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/w/index.php?curid=80389353', 'https://creativecommons.org/licenses/by-sa/4.0/'],
-];
-
 /** The back of the card: the stripe again, the press, and the menu set large. */
 export default function Footer() {
   const { settings } = useShopSettings();
@@ -81,14 +73,6 @@ export default function Footer() {
           </div>
 
           <div className="mt-auto pt-14 text-[13px] text-[#FBF5EC]/85 space-y-3">
-            <p>
-              Pictures:{' '}
-              {CREDITS.map(([title, by, lic, page, licUrl], i) => (
-                <span key={page}>
-                  <a href={page} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-secondary">{title}</a> by {by}, <a href={licUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-secondary">{lic}</a>{i < CREDITS.length - 1 ? '; ' : '.'}
-                </span>
-              ))}
-            </p>
             <p>© {new Date().getFullYear()} Zaro Digitz, Sivakasi · GSTIN {BUSINESS.gstin}</p>
           </div>
         </div>
