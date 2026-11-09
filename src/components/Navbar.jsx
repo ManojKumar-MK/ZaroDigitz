@@ -174,11 +174,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* The card's stripe runs along the bar's bottom edge */}
-        <div className="flex h-1 overflow-hidden" aria-hidden="true">
-          {Array.from({ length: 120 }, (_, i) => <span key={i} className={`shrink-0 w-7 ${i % 2 ? 'bg-secondary' : 'bg-primary'}`} />)}
-        </div>
-
         {/* Desktop mega menu */}
         <AnimatePresence>
           {open && (
