@@ -320,7 +320,7 @@ export default function ProductPage() {
 
       {/* Sticky add-to-cart bar on phones: it floats over the page, so it may cast a shadow. taste-skill-ignore */}
       {offer != null && (
-        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#FBF5EC] px-4 py-3 flex items-center gap-3 shadow-[0_-8px_24px_rgba(44,10,16,0.12)]">
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#FBF5EC] px-4 py-3 flex items-center gap-3 shadow-[0_-8px_24px_rgba(44,10,16,0.12)]" data-floating="taste-skill-ignore">
           <div className="min-w-0 flex-1">
             <div className="text-xs text-gray-500 truncate">{product.name}</div>
             <div className="font-bold text-primary">{money(unitPrice)} <span className="text-xs text-gray-400 font-normal">× {quantity}</span></div>

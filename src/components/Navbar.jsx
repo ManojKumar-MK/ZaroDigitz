@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { ThemeToggle } from '../theme/ThemeToggle';
@@ -25,18 +25,12 @@ const navLinks = [
 
 export default function Navbar() {
   const { settings } = useShopSettings();
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const { totalItems } = useCart();
   const location = useLocation();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  useEffect(() => setMobileOpen(false), [location]);
+  // The mobile menu stays open only on the page where it was opened, so it closes on navigation.
+  const [openOn, setOpenOn] = useState(null);
+  const mobileOpen = openOn === location.key;
+  const setMobileOpen = (fn) => setOpenOn((cur) => ((typeof fn === 'function' ? fn(cur === location.key) : fn) ? location.key : null));
 
   return (
     <header className="sticky top-0 z-50">
