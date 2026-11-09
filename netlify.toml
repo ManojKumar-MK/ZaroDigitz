@@ -1,0 +1,68 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  SECRETS_SCAN_OMIT_KEYS = "PORT,EMAIL_USER"
+
+[functions]
+  directory = "netlify/functions"
+
+# --- Canonical host: send both Netlify preview subdomains to the real domain ---
+[[redirects]]
+  from = "https://zarocrackers.netlify.app/*"
+  to = "https://www.zarocrackers.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://zarocracker.netlify.app/*"
+  to = "https://www.zarocrackers.com/:splat"
+  status = 301
+  force = true
+
+# --- Old file names ---
+[[redirects]]
+  from = "/2026-price-list.pdf"
+  to = "/sivakasi-crackers-price-list-2026.pdf"
+  status = 301
+
+# --- API functions ---
+[[redirects]]
+  from = "/api/send-invoice-email"
+  to = "/.netlify/functions/send-invoice-email"
+  status = 200
+
+[[redirects]]
+  from = "/api/send-invoice"
+  to = "/.netlify/functions/send-invoice"
+  status = 200
+
+# --- SPA fallback: must stay last so /about, /price-list etc. resolve instead of 404 ---
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# --- Caching: hashed build assets and product images are safe to cache for a year ---
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/products/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/zaro-logo.png"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

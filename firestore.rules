@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Who is an admin ───────────────────────────────────────────────────────
+    // Add shop staff emails here (they also need an Email/Password user in
+    // Firebase Authentication). Keep VITE_ADMIN_EMAILS in sync for the UI gate.
+    function adminEmails() {
+      return ['zarocrackers@gmail.com'];
+    }
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email.lower() in adminEmails();
+    }
+
+    function isValidNewOrder() {
+      let d = request.resource.data;
+      return d.keys().hasAll(['orderNumber', 'status', 'customer', 'items', 'grandTotal'])
+        && d.status == 'new'
+        && d.items is list && d.items.size() > 0 && d.items.size() <= 300
+        && d.customer is map
+        && d.customer.name is string && d.customer.name.size() <= 120
+        && d.customer.mobile is string && d.customer.mobile.size() <= 20
+        && d.grandTotal is number && d.grandTotal >= 0;
+    }
+
+    function isValidEnquiry() {
+      let d = request.resource.data;
+      return d.message is string && d.message.size() > 0 && d.message.size() <= 4000
+        && d.name is string && d.name.size() <= 120;
+    }
+
+    // ── Orders: anyone can place one, only admins can see or change them ─────
+    match /orders/{orderId} {
+      // Customers create 'new' orders with a sane shape; admins may also create
+      // (sample data, CSV imports of historical orders).
+      allow create: if isValidNewOrder() || isAdmin();
+      allow read, delete: if isAdmin();
+      // The storefront may only fill in the Telegram delivery result afterwards.
+      allow update: if isAdmin() || (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['telegram', 'updatedAt'])
+      );
+    }
+
+    // ── Enquiries from the contact form ──────────────────────────────────────
+    match /enquiries/{id} {
+      allow create: if isValidEnquiry();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Public order tracking: id = ORDERNUMBER-last4ofmobile ─────────────────
+    // Created by the storefront with the order; updated by admins (status, LR, photos).
+    match /tracking/{trackingId} {
+      allow read: if true;
+      allow create: if isAdmin() || (
+        request.resource.data.orderNumber is string
+        && request.resource.data.status == 'new'
+        && !('shipment' in request.resource.data)
+        && !('photos' in request.resource.data)
+      );
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Shareable invoice copies: unguessable id is the access control ───────
+    match /invoices/{token} {
+      allow get: if token.size() >= 20;
+      allow read: if isAdmin(); // list, for the copy to Hostinger
+      allow create: if token.size() >= 20
+        && request.resource.data.snapshot is map
+        && request.resource.data.snapshot.cart is list
+        && request.resource.data.snapshot.cart.size() <= 300;
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Imported customer list (admin only) ──────────────────────────────────
+    match /customers/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    // ── Catalog + settings: public read, admin write ──────────────────────────
+    match /products/{code} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    // Uploaded product photos (base64 data URL, compressed in the browser)
+    match /productImages/{code} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.data.dataUrl is string
+        && request.resource.data.dataUrl.size() < 1000000;
+    }
+    match /settings/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

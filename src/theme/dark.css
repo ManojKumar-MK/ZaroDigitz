@@ -1,0 +1,95 @@
+/*
+ * Dark theme layer. The UI is written with light utility classes; under html.dark
+ * these rules remap surfaces, text, borders and tints. Scoped to .store-root and
+ * .admin-root so each area can have its own palette.
+ */
+html.dark { color-scheme: dark; }
+html.dark body { background-color: #0b0b0e; color: #e4e4e7; }
+/* The wrappers themselves carry light classes (bg-zinc-50 / text-zinc-900); set their colours directly
+   so everything that inherits text colour flips too. */
+html.dark .admin-root { background-color: #0b0b0e; color: #f4f4f5; }
+html.dark .store-root { background-color: #0b0b0e; color: #e4e4e7; }
+
+/* ---------- shared: surfaces ---------- */
+html.dark :is(.store-root, .admin-root) :is(.bg-white) { background-color: #17171b; }
+html.dark :is(.store-root, .admin-root) :is(.bg-white\/90, .bg-white\/95) { background-color: rgb(23 23 27 / 0.92); }
+html.dark :is(.store-root, .admin-root) :is(.bg-zinc-50, .bg-gray-50, .bg-bg) { background-color: #0f0f12; }
+html.dark :is(.store-root, .admin-root) :is(.bg-zinc-50\/60, .bg-zinc-50\/95) { background-color: rgb(15 15 18 / 0.9); }
+html.dark :is(.store-root, .admin-root) :is(.bg-zinc-100, .bg-gray-100) { background-color: #26262c; }
+html.dark :is(.store-root, .admin-root) :is(.bg-zinc-200, .bg-gray-200) { background-color: #34343c; }
+html.dark :is(.store-root, .admin-root) :is(.bg-zinc-300) { background-color: #4a4a54; }
+html.dark :is(.store-root, .admin-root) :is(.hover\:bg-zinc-50, .hover\:bg-gray-50):hover { background-color: #1f1f25; }
+html.dark :is(.store-root, .admin-root) :is(.hover\:bg-zinc-100, .hover\:bg-gray-100):hover { background-color: #2a2a31; }
+html.dark :is(.store-root, .admin-root) :is(.hover\:bg-zinc-200, .hover\:bg-gray-200):hover { background-color: #3a3a43; }
+html.dark :is(.store-root, .admin-root) .hover\:bg-white:hover { background-color: #222228; }
+
+/* ---------- shared: text ---------- */
+html.dark :is(.store-root, .admin-root) :is(.text-zinc-900, .text-dark, .text-black) { color: #f4f4f5; }
+html.dark :is(.store-root, .admin-root) :is(.text-zinc-800) { color: #e4e4e7; }
+html.dark :is(.store-root, .admin-root) :is(.text-zinc-700, .text-gray-700) { color: #d4d4d8; }
+html.dark :is(.store-root, .admin-root) :is(.text-zinc-600, .text-gray-600) { color: #b4b4bc; }
+html.dark :is(.store-root, .admin-root) :is(.text-zinc-500, .text-gray-500) { color: #9b9ba5; }
+html.dark :is(.store-root, .admin-root) :is(.text-zinc-400, .text-gray-400) { color: #7c7c86; }
+html.dark :is(.store-root, .admin-root) :is(.text-zinc-300) { color: #5c5c66; }
+html.dark :is(.store-root, .admin-root) :is(.hover\:text-zinc-900, .hover\:text-dark):hover { color: #ffffff; }
+html.dark :is(.store-root, .admin-root) :is(.hover\:text-zinc-800, .hover\:text-zinc-700):hover { color: #e4e4e7; }
+html.dark :is(.store-root, .admin-root) ::placeholder { color: #6b6b75; }
+
+/* ---------- shared: borders, rings, dividers ---------- */
+html.dark :is(.store-root, .admin-root) :is(.border-zinc-100, .border-gray-100) { border-color: #24242a; }
+html.dark :is(.store-root, .admin-root) :is(.border-zinc-200, .border-gray-200) { border-color: #2e2e35; }
+html.dark :is(.store-root, .admin-root) :is(.border-zinc-300, .border-gray-300) { border-color: #3d3d46; }
+html.dark :is(.store-root, .admin-root) :is(.divide-zinc-100, .divide-gray-100) > :not([hidden]) ~ :not([hidden]) { border-color: #24242a; }
+html.dark :is(.store-root, .admin-root) :is(.ring-zinc-200, .ring-zinc-300) { --tw-ring-color: #34343c; }
+html.dark :is(.store-root, .admin-root) .ring-white { --tw-ring-color: #17171b; }
+html.dark :is(.store-root, .admin-root) .ring-zinc-500\/20 { --tw-ring-color: rgb(161 161 170 / 0.25); }
+
+/* ---------- shared: tinted status surfaces ---------- */
+html.dark :is(.store-root, .admin-root) :is(.bg-orange-50, .bg-orange-50\/40, .bg-orange-50\/50) { background-color: rgb(255 107 0 / 0.12); }
+html.dark :is(.store-root, .admin-root) .bg-orange-100 { background-color: rgb(255 107 0 / 0.2); }
+html.dark :is(.store-root, .admin-root) .hover\:bg-orange-50:hover { background-color: rgb(255 107 0 / 0.14); }
+html.dark :is(.store-root, .admin-root) :is(.bg-emerald-50, .bg-green-50, .bg-emerald-100, .bg-green-100) { background-color: rgb(16 185 129 / 0.14); }
+html.dark :is(.store-root, .admin-root) .hover\:bg-green-50:hover { background-color: rgb(16 185 129 / 0.16); }
+html.dark :is(.store-root, .admin-root) :is(.bg-red-50, .bg-red-100) { background-color: rgb(239 68 68 / 0.14); }
+html.dark :is(.store-root, .admin-root) .hover\:bg-red-50:hover { background-color: rgb(239 68 68 / 0.16); }
+html.dark :is(.store-root, .admin-root) :is(.bg-amber-50, .bg-amber-50\/30) { background-color: rgb(245 158 11 / 0.13); }
+html.dark :is(.store-root, .admin-root) :is(.bg-sky-50, .bg-blue-50) { background-color: rgb(14 165 233 / 0.14); }
+html.dark :is(.store-root, .admin-root) .bg-indigo-50 { background-color: rgb(99 102 241 / 0.16); }
+html.dark :is(.store-root, .admin-root) .bg-violet-50 { background-color: rgb(139 92 246 / 0.16); }
+html.dark :is(.store-root, .admin-root) :is(.text-emerald-700, .text-green-700) { color: #6ee7b7; }
+html.dark :is(.store-root, .admin-root) :is(.text-emerald-600, .text-green-600) { color: #34d399; }
+html.dark :is(.store-root, .admin-root) :is(.text-red-700, .text-red-600) { color: #fca5a5; }
+html.dark :is(.store-root, .admin-root) :is(.text-amber-900, .text-amber-800, .text-amber-700) { color: #fcd34d; }
+html.dark :is(.store-root, .admin-root) .text-amber-600 { color: #fbbf24; }
+html.dark :is(.store-root, .admin-root) :is(.text-sky-700, .text-sky-600, .text-blue-700, .text-blue-900) { color: #7dd3fc; }
+html.dark :is(.store-root, .admin-root) .text-indigo-700 { color: #a5b4fc; }
+html.dark :is(.store-root, .admin-root) :is(.text-violet-700, .text-violet-600) { color: #c4b5fd; }
+html.dark :is(.store-root, .admin-root) :is(.border-amber-200, .border-amber-300, .ring-amber-200) { border-color: rgb(245 158 11 / 0.35); --tw-ring-color: rgb(245 158 11 / 0.35); }
+html.dark :is(.store-root, .admin-root) :is(.border-green-200, .border-red-100, .border-blue-200, .border-orange-100, .ring-blue-200, .ring-red-200, .ring-orange-200) { border-color: #34343c; --tw-ring-color: #34343c; }
+
+/* Admin "total" block: dark surface in light mode, orange in dark mode */
+html.dark .admin-root .total-block { background-color: #7A1F2B; }
+html.dark .admin-root .total-block :is(.text-zinc-400) { color: rgb(255 255 255 / 0.8); }
+
+/* Admin dark-on-light buttons (Button variant="dark") stay readable */
+html.dark .admin-root .bg-zinc-900:not(.total-block) { background-color: #f4f4f5; color: #18181b; }
+
+/* Native form controls */
+html.dark :is(.store-root, .admin-root) :is(input, select, textarea) { background-color: #121216; color: #f4f4f5; }
+html.dark :is(.store-root, .admin-root) :is(input, select, textarea):disabled { background-color: #1b1b20; color: #7c7c86; }
+html.dark :is(.store-root, .admin-root) .shadow-sm { --tw-shadow-color: rgb(0 0 0 / 0.4); }
+
+/* Storefront specifics: product/table rows and the cards that sit on page backgrounds */
+html.dark .store-root .table-row:hover { background-color: #1c1c21; }
+html.dark .store-root .row-flash { animation: none; }
+
+/* Added/changed line highlight, tuned for dark surfaces */
+@keyframes rowFlashDark { 0% { background-color: rgb(16 185 129 / 0.28); } 100% { background-color: transparent; } }
+html.dark .admin-root .row-flash { animation: rowFlashDark 1.4s ease-out, rowIn .35s ease-out; }
+html.dark .admin-root .total-pop { color: inherit; }
+
+/* Elements that keep a light/yellow surface in dark mode (brand buttons, logo tiles):
+   keep their text dark and, for logo tiles, the white background. */
+html.dark :is(.store-root, .admin-root) .on-light,
+html.dark :is(.store-root, .admin-root) .on-light :is(.text-dark, .text-black, .text-zinc-900) { color: #111111; }
+html.dark :is(.store-root, .admin-root) .on-light.bg-white { background-color: #ffffff; }

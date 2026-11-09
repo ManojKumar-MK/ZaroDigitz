@@ -1,0 +1,89 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #7A1F2B;
+  --secondary: #D4AF37;
+  --dark: #1A0E10;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #FBF5EC;
+  color: #1A0E10;
+  margin: 0;
+}
+
+@layer utilities {
+  .text-shadow { text-shadow: 2px 2px 8px rgba(0,0,0,0.4); }
+  .glow-primary { box-shadow: 0 0 20px rgba(122,31,43,0.45); }
+  .glow-secondary { box-shadow: 0 0 20px rgba(212,175,55,0.5); }
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+}
+
+.marquee-wrapper { overflow: hidden; white-space: nowrap; }
+.marquee-text { display: inline-block; animation: marquee 25s linear infinite; }
+
+@keyframes marquee {
+  0% { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Sparkle */
+.sparkle {
+  position: absolute;
+  pointer-events: none;
+  animation: spark 1.5s ease-in-out infinite;
+}
+
+@keyframes spark {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.4; transform: scale(0.7) rotate(180deg); }
+}
+
+/* Scroll to top */
+.scroll-btn { transition: all 0.3s ease; }
+
+/* Card hover */
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(122,31,43,0.18);
+}
+
+/* Table row hover */
+tr.table-row:hover { background: rgba(122,31,43,0.05); }
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #E9C766, #D4AF37 45%, #B8862F);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hero background: deep wine with a soft gold glow */
+.hero-bg {
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(212,175,55,0.18), transparent 55%),
+    linear-gradient(135deg, #2C0A10 0%, #5A1420 45%, #7A1F2B 75%, #3A0D15 100%);
+  position: relative;
+}
+
+/* Admin: highlight a line that was just added / changed, and pop the running total */
+@keyframes rowFlash { 0% { background-color: #dcfce7; } 100% { background-color: transparent; } }
+@keyframes rowIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.row-flash { animation: rowFlash 1.4s ease-out, rowIn .35s ease-out; }
+@keyframes totalPop { 0% { transform: scale(1.18); color: #16a34a; } 100% { transform: scale(1); } }
+.total-pop { display: inline-block; animation: totalPop .5s ease-out; }
+
+/* Small keyboard-key hint used in the admin */
+.kbd { display: inline-block; min-width: 1.25rem; padding: 0 .3rem; border-radius: .3rem; background: #fff; box-shadow: inset 0 0 0 1px #e4e4e7, 0 1px 0 #e4e4e7; font: 600 10px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: #3f3f46; text-align: center; }
+html.dark .kbd { background: #26262c; box-shadow: inset 0 0 0 1px #3d3d46, 0 1px 0 #3d3d46; color: #e4e4e7; }

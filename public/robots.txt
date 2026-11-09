@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /cart
+Disallow: /checkout
+Disallow: /admin
+Disallow: /invoice/
+Disallow: /api/
+Disallow: /.netlify/
+
+Sitemap: https://digitz.zarocrackers.com/sitemap.xml
