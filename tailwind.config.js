@@ -22,7 +22,7 @@ export default {
         yellow: GOLD,
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
+        display: ['Poppins', 'Inter', 'sans-serif'],
         body: ['Inter', 'system-ui', 'sans-serif'],
       },
       fontWeight: {
