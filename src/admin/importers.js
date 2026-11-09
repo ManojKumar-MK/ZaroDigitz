@@ -172,7 +172,7 @@ export function parseCustomersImport(text) {
 export const ORDER_CSV_TEMPLATE = [
   'date,name,mobile,email,address,city,district,state,pincode,items,total,status,payment,notes,order_number',
   '2025-10-28,Arun Kumar,9876543210,,12 Main Road,Madurai,Madurai,Tamil Nadu,625001,"Ivory Lotus Foil Invite x300",7200,delivered,paid,Wedding Nov 2026,',
-  '2025-11-01,Priya Lakshmi,9123456780,priya@example.com,5 Temple Street,Sivakasi,Virudhunagar,Tamil Nadu,626189,"WIN WHEEL MAX x3",1200,delivered,paid,,',
+  '2025-11-01,Priya Lakshmi,9123456780,priya@example.com,5 Temple Street,Sivakasi,Virudhunagar,Tamil Nadu,626189,"Kolam Border Classic x500",4750,delivered,paid,,',
 ].join('\n');
 
 export const CUSTOMER_CSV_TEMPLATE = [

@@ -84,7 +84,7 @@ function ProductEditor({ product, all }) {
 
   const remove = async () => {
     const reset = product._source === 'synced';
-    if (!window.confirm(reset ? 'Undo all edits and go back to the built-in price list values?' : `Delete ${product.name}? It disappears from the website.`)) return;
+    if (!window.confirm(reset ? 'Undo all edits and go back to the built-in sample values?' : `Delete ${product.name}? It disappears from the website.`)) return;
     setBusy(true);
     try { await deleteProductDoc(product.code); toast(reset ? 'Back to built-in values' : 'Product deleted'); if (!reset) navigate('/admin/products'); }
     catch (e) { toast(e.message || 'Failed', 'error'); } finally { setBusy(false); }
@@ -161,7 +161,7 @@ function ProductEditor({ product, all }) {
                 </div>
               </div>
             </div>
-            <p className="text-xs text-zinc-500 mt-2">How it appears in the price list and product page.</p>
+            <p className="text-xs text-zinc-500 mt-2">How it appears in the design grid and product page.</p>
           </Card>
 
           {!isNew && (

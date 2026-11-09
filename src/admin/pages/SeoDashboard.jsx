@@ -21,15 +21,15 @@ const LEVEL = {
 };
 
 const SETUP = [
-  { key: 'searchConsole', label: 'Verify the site in Google Search Console', detail: 'Add a Domain property for zarocrackers.com and put the TXT record in GoDaddy DNS.', href: 'https://search.google.com/search-console' },
-  { key: 'sitemapSubmitted', label: 'Submit the sitemap in Search Console', detail: 'Sitemaps → enter sitemap.xml → Submit.', href: 'https://search.google.com/search-console/sitemaps?resource_id=sc-domain%3Azarocrackers.com' },
+  { key: 'searchConsole', label: 'Verify the site in Google Search Console', detail: 'Add a URL-prefix property for https://digitz.zarocrackers.com and put the TXT record in GoDaddy DNS.', href: 'https://search.google.com/search-console' },
+  { key: 'sitemapSubmitted', label: 'Submit the sitemap in Search Console', detail: 'Sitemaps → enter sitemap.xml → Submit.', href: 'https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fdigitz.zarocrackers.com%2F' },
   { key: 'businessProfile', label: 'Create and verify the Google Business Profile', detail: 'Name exactly “Zaro Digitz”, category Wedding invitation printer, the shop address and phone.', href: 'https://business.google.com' },
-  { key: 'mapsListing', label: 'Complete the Google Maps listing', detail: 'Today it shows category “Store”, no phone, hours, website or photos. In Business Profile set category Wedding invitation printer, phone +91 70109 35230, hours, website https://digitz.zarocrackers.com, 10+ photos, and the same address as the website.', href: 'https://business.google.com/locations' },
+  { key: 'mapsListing', label: 'Complete the Google Maps listing', detail: 'In Business Profile set category Wedding invitation printer, phone +91 70109 35230, hours, website https://digitz.zarocrackers.com, 10+ photos, and the same address as the website.', href: 'https://business.google.com/locations' },
   { key: 'ga4', label: 'Connect Google Analytics 4', detail: 'Paste the G- measurement ID in Settings.', to: '/admin/settings', auto: (s) => Boolean(s.ga4Id) },
   { key: 'bing', label: 'Add the site to Bing Webmaster Tools', detail: 'Import from Search Console in one click.', href: 'https://www.bing.com/webmasters' },
   { key: 'listings', label: 'List the shop on Justdial, IndiaMART, Facebook and Instagram', detail: 'Use the same name, address, phone and website everywhere.', href: 'https://www.justdial.com/Free-Listing' },
   { key: 'reviews', label: 'Collect 20 Google reviews', detail: 'On a delivered order press “Ask for review” to send the review link on WhatsApp. Delivered customers also see “Rate us on Google” on the tracking page.', href: googleBusinessLinks().reviews },
-  { key: 'indexed', label: 'Check the shop appears in Google', detail: 'Search site:zarocrackers.com. Listed pages are indexed.', href: 'https://www.google.com/search?q=site%3Azarocrackers.com' },
+  { key: 'indexed', label: 'Check the shop appears in Google', detail: 'Search site:digitz.zarocrackers.com. Listed pages are indexed.', href: 'https://www.google.com/search?q=site%3Adigitz.zarocrackers.com' },
 ];
 
 const scoreTone = (n) => (n >= 85 ? 'text-emerald-600' : n >= 60 ? 'text-amber-600' : 'text-red-600');
@@ -82,7 +82,7 @@ export default function SeoDashboard() {
         title="SEO"
         subtitle="How Google and WhatsApp see zarocrackers.com, what to fix, and the title of every page"
         actions={<>
-          <a href="https://search.google.com/search-console?resource_id=sc-domain%3Azarocrackers.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg text-sm font-medium bg-white hover:bg-zinc-50 text-zinc-800 ring-1 ring-inset ring-zinc-300 shadow-sm"><FiExternalLink size={15} /> Search Console</a>
+          <a href="https://search.google.com/search-console?resource_id=https%3A%2F%2Fdigitz.zarocrackers.com%2F" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg text-sm font-medium bg-white hover:bg-zinc-50 text-zinc-800 ring-1 ring-inset ring-zinc-300 shadow-sm"><FiExternalLink size={15} /> Search Console</a>
           <Button icon={FiUploadCloud} disabled={publishing} onClick={publish} title="Make the website use the latest changes now instead of within 10 minutes">{publishing ? 'Publishing…' : 'Publish now'}</Button>
         </>}
       />

@@ -1,16 +1,22 @@
-# React + Vite
+# Zaro Digitz
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Website and admin panel for **Zaro Digitz**, wedding cards and printing from Sivakasi
+(https://digitz.zarocrackers.com). Started as a copy of the Zaro Crackers site; the two
+share no data.
 
-Currently, two official plugins are available:
+- `src/` is the React storefront plus the admin panel at `/admin` (Vite, Tailwind, framer-motion).
+- `server.js` and `server/` are the Express website server: SEO pages, sitemap, `/api/catalog`, and the Telegram order alert, which also saves each order.
+- `api/` is the data API (`digitz-api.zarocrackers.com`): Express + MySQL with a Firestore-compatible document store.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Run locally
 
-## React Compiler
+```bash
+npm install && (cd api && npm install)
+npm run dev        # website on http://localhost:4173, server on :3001
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Point the site at a local API with `VITE_DATA_API_URL` / `DATA_API_URL`.
 
-## Expanding the ESLint configuration
+## Deploy
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+See [docs/DEPLOY.md](docs/DEPLOY.md).

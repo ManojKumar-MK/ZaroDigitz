@@ -38,12 +38,12 @@ function nextCode(catalog) {
  * onAdd(product) receives a product object with a stable `id`.
  */
 /**
- * "ladoo x5", "ladoo*5", "5x ladoo", "5 * ladoo" -> { term: 'ladoo', qty: 5 }.
+ * "kolam x200", "kolam*200", "200x kolam", "200 * kolam" -> { term: 'kolam', qty: 200 }.
  * Plain numbers inside names ("10 cm", "240 shot") are left alone.
  */
 export function parseQuery(raw) {
   const text = String(raw || '').trim();
-  // trailing: needs a space before x ("ladoo x5"), or a * ("ladoo*5"); keeps names like "4X5" intact
+  // trailing: needs a space before x ("kolam x200"), or a * ("kolam*200"); keeps names like "4X5" intact
   let m = text.match(/^(.*\S)(?:\s+[x×]|\s*\*)\s*(\d{1,4})$/i);
   if (m) return { term: m[1].trim(), qty: Math.max(1, Number(m[2])) };
   m = text.match(/^(\d{1,4})\s*[x×*]\s+(.+)$/i) || text.match(/^(\d{1,4})[x×*](\S.*)$/i);
@@ -155,7 +155,7 @@ export default function ProductPicker({ catalog, onAdd, onStepTop, topLine, auto
           <input
             ref={inputRef}
             className={inputClass}
-            placeholder="Type a product or code, Enter to add  (ladoo x5 adds 5)"
+            placeholder="Type a product or code, Enter to add  (kolam x200 adds 5)"
             value={q}
             autoFocus={autoFocus}
             onChange={(e) => { setQ(e.target.value); setHl(0); }}
@@ -195,7 +195,7 @@ export default function ProductPicker({ catalog, onAdd, onStepTop, topLine, auto
       <p className="hidden sm:flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[11px] text-zinc-500">
         <span><kbd className="kbd">↑</kbd> <kbd className="kbd">↓</kbd> choose</span>
         <span><kbd className="kbd">Enter</kbd> add</span>
-        <span><kbd className="kbd">ladoo x5</kbd> add 5</span>
+        <span><kbd className="kbd">kolam x200</kbd> add 200</span>
         <span><kbd className="kbd">111</kbd> product code</span>
         {topLine && <span><kbd className="kbd">+</kbd> <kbd className="kbd">−</kbd> change {topLine.name.length > 18 ? `${topLine.name.slice(0, 18)}…` : topLine.name} (box empty)</span>}
         <span><kbd className="kbd">/</kbd> jump here</span>
