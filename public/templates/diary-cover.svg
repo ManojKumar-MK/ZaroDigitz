@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <!-- Original Zaro Digitz sample: executive diary cover with gold corners. Year, company and name are added on top. -->
+  <rect width="1000" height="1400" fill="#211114"/>
+  <rect x="860" width="40" height="1400" fill="#7A1F2B"/>
+  <g fill="none" stroke="#C9A032" stroke-width="4">
+    <path d="M70 70 L190 70 M70 70 L70 190 M90 90 L150 90 M90 90 L90 150"/>
+    <path d="M810 70 L690 70 M810 70 L810 190 M790 90 L730 90 M790 90 L790 150"/>
+    <path d="M70 1330 L190 1330 M70 1330 L70 1210 M90 1310 L150 1310 M90 1310 L90 1250"/>
+    <path d="M810 1330 L690 1330 M810 1330 L810 1210 M790 1310 L730 1310 M790 1310 L790 1250"/>
+  </g>
+  <path d="M370 700 L570 700" stroke="#C9A032" stroke-width="3"/>
+</svg>

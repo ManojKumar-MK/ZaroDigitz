@@ -29,7 +29,7 @@ export default function BrandColorsCard() {
 
   return (
     <Card title="Brand colours">
-      <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-4">One palette for the website, this admin panel and printed invoices. Pick a ready-made palette or set your own; the preview updates as you choose.</p>
+      <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-4">Pick a palette. The website, this admin and printed invoices all use it.</p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {PRESETS.map((p) => {
@@ -47,7 +47,9 @@ export default function BrandColorsCard() {
         })}
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-4 mt-6">
+      <details className="mt-5">
+        <summary className="cursor-pointer text-sm font-medium text-zinc-600 dark:text-zinc-300">Use my own colours</summary>
+      <div className="grid sm:grid-cols-3 gap-4 mt-4">
         {[['primary', 'Main colour', 'Buttons, prices, headings'], ['accent', 'Accent', 'Gold details, highlights, sketches'], ['night', 'Dark background', 'Footer, admin sidebar, dark sections']].map(([key, label, hint]) => (
           <Field key={key} label={label} hint={hint}>
             <div className="flex items-center gap-3">
@@ -57,6 +59,7 @@ export default function BrandColorsCard() {
           </Field>
         ))}
       </div>
+      </details>
 
       {/* A strip of the real components in the chosen colours */}
       <div className="mt-6 rounded-xl overflow-hidden ring-1 ring-zinc-200 dark:ring-zinc-800">

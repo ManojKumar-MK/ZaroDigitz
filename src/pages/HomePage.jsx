@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } fr
 import { FaWhatsapp } from 'react-icons/fa';
 import Seo from '../components/Seo';
 import LiveCard from '../components/LiveCard';
+import GoogleReviews from '../components/GoogleReviews';
 import { LIVE_MODES, liveValues } from '../components/liveModes';
 import { faqSchema, getFaqs, categoryPath } from '../seo/catalog';
 import { useShopSettings } from '../context/ShopSettingsContext';
@@ -430,6 +431,9 @@ export default function HomePage() {
         <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Budget-friendly wedding cards</Rise>
         <Rail id="rail-budget" items={budget} />
       </section>
+
+      {/* REVIEWS: real Google reviews (hidden until there are some) */}
+      <GoogleReviews />
 
       {/* FAQ beside the photographs */}
       <section id="faq" className="scroll-mt-28 bg-night text-white py-24 lg:pt-0 lg:pb-40 overflow-hidden">

@@ -35,15 +35,46 @@ export function newField(type) {
   return { ...base, label: 'Name', sample: 'Priya' };
 }
 
+// Built-in sample templates (original Zaro Digitz artwork in /public/templates). A design uses
+// its sample until the admin saves a layout of its own.
+const f = (id, type, label, x, y, w, h, extra = {}) => ({ id, type, label, x, y, w, h, sample: '', font: 'playfair', size: 5, color: '#F3DFA2', align: 'center', max: 40, lines: 1, lang: 'en', ...extra });
+const WEDDING = {
+  image: '/templates/wedding-classic.svg',
+  fields: [
+    f('bride', 'text', "Bride's name", 0.15, 0.40, 0.7, 0.09, { sample: 'Priya', font: 'greatvibes', size: 9, color: '#FFFFFF', max: 24 }),
+    f('groom', 'text', "Groom's name", 0.15, 0.565, 0.7, 0.09, { sample: 'Arjun', font: 'greatvibes', size: 9, color: '#FFFFFF', max: 24 }),
+    f('date', 'date', 'Wedding date', 0.15, 0.665, 0.7, 0.05, { font: 'poppins', size: 3.4 }),
+    f('venue', 'text', 'Venue', 0.15, 0.74, 0.7, 0.12, { sample: 'Sri Mahal, Sivakasi', size: 3.6, lines: 3, max: 120 }),
+  ],
+};
+const CALENDAR = {
+  image: '/templates/calendar-2027.svg',
+  fields: [
+    f('company', 'text', 'Company or shop name', 0.06, 0.74, 0.88, 0.12, { sample: 'Sri Murugan Traders', size: 5.2, color: '#FFFFFF', bold: true }),
+    f('phone', 'text', 'Phone and address line', 0.06, 0.87, 0.88, 0.08, { sample: '98765 43210 · Main Road, Sivakasi', font: 'poppins', size: 2.4, max: 60 }),
+  ],
+};
+const DIARY = {
+  image: '/templates/diary-cover.svg',
+  fields: [
+    f('year', 'text', 'Year', 0.1, 0.3, 0.76, 0.1, { sample: '2027', font: 'cinzel', size: 12, color: '#E9C766', max: 6 }),
+    f('company', 'text', 'Company name', 0.1, 0.43, 0.76, 0.07, { sample: 'Sri Murugan Traders', font: 'cinzel', size: 4.2, color: '#E9C766' }),
+    f('name', 'text', 'Name to emboss', 0.1, 0.52, 0.76, 0.06, { sample: 'R. Karthik', size: 3.6, color: '#F3DFA2', max: 30 }),
+  ],
+};
+export const SAMPLE_TEMPLATES = { 'ZD-001': WEDDING, 'ZD-002': WEDDING, 'ZD-008': WEDDING, 'ZD-013': CALENDAR, 'ZD-028': CALENDAR, 'ZD-021': DIARY, 'ZD-029': DIARY };
+
 export async function loadTemplate(code) {
-  if (!isFirebaseEnabled || !code) return null;
+  if (!code) return null;
+  const sample = SAMPLE_TEMPLATES[String(code)] || null;
+  if (!isFirebaseEnabled) return sample;
   try {
     const { db, fs } = await getFirebase();
     const snap = await fs.getDoc(fs.doc(db, 'templates', String(code)));
     const t = snap.exists() ? snap.data() : null;
-    return t && t.image && Array.isArray(t.fields) ? t : null;
+    return t && t.image && Array.isArray(t.fields) ? t : sample;
   } catch {
-    return null;
+    return sample;
   }
 }
 
