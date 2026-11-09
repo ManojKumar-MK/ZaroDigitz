@@ -42,14 +42,14 @@ export default function ContactPage() {
     { icon: LuPhone, label: 'Call Us', value: '+91 7010935230, +91 6369619148', sub: 'Mon-Sat: 9AM - 7PM', color: 'from-blue-500 to-blue-600', href: 'tel:+917010935230' },
     { icon: LuMail, label: 'Email Us', value: 'zarocrackers@gmail.com', sub: 'We reply within 24 hours', color: 'from-red-500 to-red-600', href: 'mailto:zarocrackers@gmail.com' },
     { icon: FaWhatsapp, label: 'WhatsApp', value: '+91 7010935230', sub: 'Quick responses', color: 'from-green-500 to-green-600', href: shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards. Could you help me?', settings.whatsappNumber) },
-    { icon: LuMapPin, label: 'Visit Us', value: 'Sivakasi to Sattur Bypass Road', sub: 'Sivakasi, Tamil Nadu - 626189', color: 'from-orange-500 to-primary', href: '#map' },
+    { icon: LuMapPin, label: 'Visit Us', value: 'No. 3U, Maruthu Pandiyar Mettu Street', sub: 'Sivakasi, Tamil Nadu - 626123', color: 'from-orange-500 to-primary', href: '#map' },
   ];
 
   return (
     <div>
       <Seo
         title={staticPage('/contact').title}
-        description="Contact Zaro Digitz, Sivakasi. Call or WhatsApp +91 70109 35230, email zarocrackers@gmail.com, or visit us at Sivakasi to Sattur Bypass Road, Sivakasi 626189."
+        description="Contact Zaro Digitz, Sivakasi. Call or WhatsApp +91 70109 35230, or visit us at No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123."
         path="/contact"
         jsonLd={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Contact Us', path: '/contact' }])}
       />
@@ -116,7 +116,7 @@ export default function ContactPage() {
               </div>
               <div className="mt-4 p-4 bg-bg rounded-xl border border-gray-100">
                 <div className="font-bold text-dark">ZARO Digitz</div>
-                <div className="text-sm text-gray-500 mt-1">Sivakasi to Sattur Bypass Road,<br />Sivakasi, Tamil Nadu - 626189</div>
+                <div className="text-sm text-gray-500 mt-1">No. 3U, Maruthu Pandiyar Mettu Street,<br />Sivakasi, Tamil Nadu - 626123</div>
                 <div className="text-sm text-primary font-medium mt-2 flex items-center gap-1.5"><LuPhone aria-hidden="true" /> +91 7010935230 / +91 6369619148</div>
                 <div className="flex flex-wrap gap-2 mt-4">
                   <a href={g.directions} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors bg-dark text-white hover:bg-black"><LuNavigation aria-hidden="true" /> Get directions</a>

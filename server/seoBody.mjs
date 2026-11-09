@@ -25,7 +25,7 @@ const priceLine = (p) => {
 const productList = (items) => `<ul>${items.map((p) => `<li>${a(productPath(p), p.name)} – ${priceLine(p)}</li>`).join('')}</ul>`;
 const categoryLinks = (visible) => `<ul>${SHOP_CATEGORIES.map((c) => { const n = visible.filter((p) => p.category === c).length; return n ? `<li>${a(categoryPath(c), c)} (${n})</li>` : ''; }).join('')}</ul>`;
 const CSS = '<style>[data-ssr] h1{font-size:2rem;line-height:1.2;font-weight:800;color:#fff;margin:.75rem 0}[data-ssr] h2{font-size:1.25rem;font-weight:700;color:#fff;margin:1.5rem 0 .5rem}[data-ssr] h3{font-weight:600;margin:1rem 0 .25rem}[data-ssr] a{color:#fbbf24}[data-ssr] p{margin:.5rem 0}[data-ssr] ul{margin:.5rem 0;padding-left:1.25rem;list-style:disc}[data-ssr] nav{font-size:.875rem;margin:.25rem 0}</style>';
-const wrap = (inner) => `${CSS}<div data-ssr="true" style="${STYLE}">${NAV}<main>${inner}</main><footer><p>${esc(SITE_NAME)}, Sivakasi to Sattur Bypass Road, Sivakasi, Tamil Nadu 626189 · Call or WhatsApp +91 70109 35230</p></footer></div>`;
+const wrap = (inner) => `${CSS}<div data-ssr="true" style="${STYLE}">${NAV}<main>${inner}</main><footer><p>${esc(SITE_NAME)}, No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi, Tamil Nadu 626123 · Call or WhatsApp +91 70109 35230</p></footer></div>`;
 
 /** HTML for the page body, or '' when the page has no server content. */
 export function bodyFor(path, { products, settings }) {

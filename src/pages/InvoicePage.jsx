@@ -63,7 +63,7 @@ export default function InvoicePage() {
               </a>
             </div>
             <iframe title="Invoice PDF" src={state.url} className="w-full h-[75vh] rounded-2xl border border-gray-200 bg-white" />
-            <p className="text-xs text-gray-400 mt-3 text-center">Zaro Digitz · Sivakasi to Sattur Bypass Road, Sivakasi 626189 · <Link to="/" className="text-primary hover:underline">digitz.zarocrackers.com</Link></p>
+            <p className="text-xs text-gray-400 mt-3 text-center">Zaro Digitz · No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123 · <Link to="/" className="text-primary hover:underline">digitz.zarocrackers.com</Link></p>
           </>
         )}
       </div>

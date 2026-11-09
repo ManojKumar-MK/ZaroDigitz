@@ -7,7 +7,7 @@ import autoTable from 'jspdf-autotable';
  * ------------------------------------------------------------------ */
 const COMPANY = {
   name: 'ZARO Digitz',
-  addressLines: ['Sivakasi to Sattur Bypass Road', 'Sivakasi, Tamil Nadu - 626189'],
+  addressLines: ['No. 3U, Maruthu Pandiyar Mettu Street', 'Sivakasi, Tamil Nadu - 626123', 'GSTIN 33AAEFZ1822D1ZK'],
   phone: '+91 70109 35230',
   email: 'zarocrackers@gmail.com',
 };

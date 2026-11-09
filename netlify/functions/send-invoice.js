@@ -56,8 +56,8 @@ function generateInvoicePdf(order, invoiceNumber) {
   doc.text('ZARO DIGITZ', 40, 36);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
-  doc.text('Sivakasi to Sattur Bypass Road', 40, 54);
-  doc.text('Sivakasi, Tamil Nadu - 626189', 40, 66);
+  doc.text('No. 3U, Maruthu Pandiyar Mettu Street', 40, 54);
+  doc.text('Sivakasi, Tamil Nadu - 626123 · GSTIN 33AAEFZ1822D1ZK', 40, 66);
   doc.text('Phone: +91 70109 35230  |  Email: zarocrackers@gmail.com', 40, 78);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);

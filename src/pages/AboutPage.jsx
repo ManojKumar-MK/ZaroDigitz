@@ -57,7 +57,7 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>The invitation is the first thing your guests see of your celebration. Zaro Digitz was started in Sivakasi to make that first impression easy to get right: good designs, clear prices, and a simple way to order from anywhere.</p>
-                <p>We are part of the Zaro family of businesses in Sivakasi, on the Sivakasi to Sattur Bypass Road. Sivakasi has long been one of India&apos;s printing centres, and we work with local presses to print every card carefully.</p>
+                <p>Our office and print unit are on Maruthu Pandiyar Mettu Street, Sivakasi. Sivakasi has long been one of India&apos;s printing centres, and we work with local presses to print every card carefully.</p>
                 <p>You choose a design online, we prepare a proof with your details on WhatsApp, and we print only after you approve it.</p>
               </div>
             </motion.div>

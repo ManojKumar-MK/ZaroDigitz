@@ -193,7 +193,7 @@ export const FAQS = [
   },
   {
     q: "Where is Zaro Digitz located?",
-    a: "Zaro Digitz is in Sivakasi, Tamil Nadu: Sivakasi to Sattur Bypass Road, Sivakasi 626189. Call or WhatsApp 70109 35230.",
+    a: "Zaro Digitz is in Sivakasi, Tamil Nadu: No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123. Call or WhatsApp 70109 35230.",
   },
 ];
 

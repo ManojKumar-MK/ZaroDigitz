@@ -20,22 +20,24 @@ export const BUSINESS = {
   whatsapp: 'https://wa.me/917010935230',
   instagram: '',
   address: {
-    streetAddress: 'Sivakasi to Sattur Bypass Road',
+    streetAddress: 'No. 3U, Maruthu Pandiyar Mettu Street',
     addressLocality: 'Sivakasi',
     addressRegion: 'Tamil Nadu',
-    postalCode: '626189',
+    postalCode: '626123',
     addressCountry: 'IN',
   },
-  // Same premises as Zaro Digitz until Zaro Digitz has its own Google Business Profile
-  // (then set its place id / cid here or in Admin → Settings).
-  geo: { latitude: 9.4532852, longitude: 77.802417 },
-  googlePlaceId: 'ChIJTRUNBWTPBjsRJhBHyqhSIEk',
-  googleCid: '5269302448925118502',
+  // Shop pin (Maruthu Pandiyar Mettu Street, Sivakasi 626123). Set the Google Business
+  // Profile's place id / cid here or in Admin → Settings once it is connected; until then
+  // map links use these coordinates.
+  geo: { latitude: 9.45367, longitude: 77.79937 },
+  googlePlaceId: '',
+  googleCid: '',
+  gstin: '33AAEFZ1822D1ZK',
   openingHours: [
     { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '09:00', closes: '22:00' },
     { days: ['Sunday'], opens: '10:00', closes: '20:00' },
   ],
-  foundingYear: '2026',
+  foundingYear: '2025',
 };
 
 /**
@@ -43,14 +45,17 @@ export const BUSINESS = {
  * (googlePlaceId / googleCid) if the listing ever changes.
  */
 export function googleBusinessLinks(settings = {}) {
-  const placeId = String(settings.googlePlaceId || BUSINESS.googlePlaceId).trim();
-  const cid = String(settings.googleCid || BUSINESS.googleCid).trim();
+  const placeId = String(settings.googlePlaceId || BUSINESS.googlePlaceId || '').trim();
+  const cid = String(settings.googleCid || BUSINESS.googleCid || '').trim();
+  const ll = `${BUSINESS.geo.latitude},${BUSINESS.geo.longitude}`;
+  const maps = cid ? `https://maps.google.com/?cid=${cid}` : `https://maps.google.com/?q=${ll}`;
   return {
-    maps: `https://maps.google.com/?cid=${cid}`,
-    review: `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`,
-    reviews: `https://search.google.com/local/reviews?placeid=${encodeURIComponent(placeId)}`,
-    directions: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${SITE_NAME}, Sivakasi`)}&destination_place_id=${encodeURIComponent(placeId)}`,
-    embed: `https://maps.google.com/maps?hl=en&z=16&output=embed&cid=${cid}`,
+    maps,
+    // Review links need the profile's place id; until it is set they open the map pin.
+    review: placeId ? `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}` : maps,
+    reviews: placeId ? `https://search.google.com/local/reviews?placeid=${encodeURIComponent(placeId)}` : maps,
+    directions: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(ll)}${placeId ? `&destination_place_id=${encodeURIComponent(placeId)}` : ''}`,
+    embed: cid ? `https://maps.google.com/maps?hl=en&z=16&output=embed&cid=${cid}` : `https://maps.google.com/maps?hl=en&z=16&output=embed&q=${ll}`,
   };
 }
 

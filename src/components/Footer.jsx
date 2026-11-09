@@ -91,7 +91,7 @@ export default function Footer() {
             <li className="flex items-start gap-3 text-sm">
               <LuMapPin className="text-secondary mt-0.5 flex-shrink-0" size={18} />
               <div>
-                <a href={googleBusinessLinks(settings).maps} target="_blank" rel="noopener noreferrer" className="hover:text-white">Sivakasi to Sattur Bypass Road,<br />Sivakasi, Tamil Nadu - 626189</a>
+                <a href={googleBusinessLinks(settings).maps} target="_blank" rel="noopener noreferrer" className="hover:text-white">No. 3U, Maruthu Pandiyar Mettu Street,<br />Sivakasi, Tamil Nadu - 626123</a>
               </div>
             </li>
             <li className="flex items-start gap-3 text-sm">

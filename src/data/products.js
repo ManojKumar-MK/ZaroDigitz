@@ -19,7 +19,7 @@ export function setDiscountPercent(value) {
 export const SHOP = {
   name: "Zaro Digitz",
   tagline: "Wedding Cards & Printing",
-  address: "Sivakasi to Sattur Bypass Road, Sivakasi - 626189",
+  address: "No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi - 626123",
   email: "zarocrackers@gmail.com",
   website: "digitz.zarocrackers.com",
   phones: ["70109 35230", "63696 19148"],
