@@ -8,14 +8,18 @@ import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
 import { qtyRules } from '../utils/pricing';
+import ProductCard from '../components/ProductCard';
+import { hasPhoto } from '../components/sketchFor';
+import { CategorySketch, InviteCardSketch, EnvelopeSketch, ScrollSketch, GiftBoxSketch, AcrylicSketch, CalendarSketch, ThoranamSketch, KolamSketch } from '../components/Sketches';
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
 
 /* Pictures of the world around the shop (open licences, credited in the footer). */
 const STAGE = [
-  { src: '/world/kolam.jpg', alt: 'Women drawing a kolam outside a temple in Chennai' },
+  { src: '/world/mehndi.jpg', alt: 'A bride’s hands painted with mehndi' },
   { src: '/world/marigold.jpg', alt: 'A shrine decorated with marigold garlands' },
+  { src: '/world/sealed-letter.jpg', alt: 'A folded letter closed with a red wax seal' },
+  { src: '/world/henna.jpg', alt: 'Henna on open palms with gold bangles' },
   { src: '/world/nadaswaram.jpg', alt: 'Nadaswaram players at a Tamil wedding' },
-  { src: '/world/offset-press.jpg', alt: 'Offset printing presses in an Indian print works' },
 ];
 
 const rise = {
@@ -72,6 +76,45 @@ function Stage({ className = '' }) {
   );
 }
 
+/** A row of designs that scrolls sideways, with arrows and a "3 / 10" counter. */
+function Rail({ items }) {
+  const [at, setAt] = useState(0);
+  const scroller = (el) => el && (el.onscroll = () => {
+    const w = el.firstElementChild?.offsetWidth || 1;
+    setAt(Math.min(items.length - 1, Math.round(el.scrollLeft / (w + 16))));
+  });
+  const move = (dir) => {
+    const el = document.getElementById('fav-rail');
+    const w = el?.firstElementChild?.offsetWidth || 280;
+    el?.scrollBy({ left: dir * (w + 16), behavior: 'smooth' });
+  };
+  return (
+    <>
+      <div className="flex items-center gap-3">
+        <span className="tabular-nums text-lg" aria-live="polite">{at + 1} / {items.length}</span>
+        <button type="button" aria-label="Previous designs" onClick={() => move(-1)} className="w-12 h-12 bg-paper2 hover:bg-paper3 text-xl transition-colors">←</button>
+        <button type="button" aria-label="Next designs" onClick={() => move(1)} className="w-12 h-12 bg-paper2 hover:bg-paper3 text-xl transition-colors">→</button>
+      </div>
+      <div id="fav-rail" ref={scroller} className="col-span-full flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none mt-8 -mx-4 px-4 sm:-mx-8 sm:px-8">
+        {items.map((p) => (
+          <div key={p.code} className="snap-start shrink-0 w-[72%] sm:w-[42%] lg:w-[23%]"><ProductCard product={p} /></div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+const TRADITIONS = [
+  { name: 'Hindu Wedding Cards', note: 'Kalash, kolam and temple borders', Sketch: InviteCardSketch },
+  { name: 'Muslim Wedding Cards', note: 'Nikah and walima', Sketch: EnvelopeSketch },
+  { name: 'Christian Wedding Cards', note: 'Church weddings', Sketch: InviteCardSketch },
+  { name: 'Scroll Invitations', note: 'Rolled, tied and boxed', Sketch: ScrollSketch },
+  { name: 'Acrylic Invitations', note: 'Clear, frosted, foiled', Sketch: AcrylicSketch },
+  { name: 'Premium Box Invitations', note: 'Keepsakes for close family', Sketch: GiftBoxSketch },
+  { name: 'Diaries & Calendars', note: 'For shops and offices', Sketch: CalendarSketch },
+  { name: 'House Warming Invitations', note: 'Griha pravesam', Sketch: KolamSketch },
+];
+
 export default function HomePage() {
   const { settings } = useShopSettings();
   const [catalogProducts, setCatalogProducts] = useState(() => getCatalogProducts());
@@ -92,6 +135,7 @@ export default function HomePage() {
     priced.forEach((p) => { if (!by.has(p.category)) by.set(p.category, []); by.get(p.category).push(p); });
     return [...by.entries()].map(([name, items]) => ({ name, items: items.sort((a, b) => a.price - b.price) }));
   }, [priced]);
+  const favourites = useMemo(() => [...priced].sort((a, b) => a.price - b.price).slice(0, 10), [priced]);
   const tiles = useMemo(() => [...priced].sort((a, b) => (b.sortOrder ?? b.id ?? 0) - (a.sortOrder ?? a.id ?? 0)).slice(0, 8), [priced]);
 
   const bride = card.bride.trim() || 'Priya';
@@ -109,19 +153,19 @@ export default function HomePage() {
   const field = 'w-full bg-white/10 text-white placeholder-white/60 px-4 py-3 text-base focus:outline-none focus:bg-white/15 focus-visible:ring-2 focus-visible:ring-secondary';
 
   return (
-    <div className="bg-bg text-dark">
+    <div className="bg-paper text-ink">
       <Seo path="/" jsonLd={faqSchema(getFaqs(settings))} />
 
       {/* HERO: the invitation card, filled in by the visitor, beside the room */}
-      <section className="bg-[#5A1420] p-3 sm:p-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:min-h-[calc(100svh-104px)]">
-        <div className="bg-[#FBF5EC] flex flex-col overflow-hidden">
+      <section className="bg-[#5A1420] dark:bg-night p-3 sm:p-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:min-h-[calc(100svh-104px)]">
+        <div className="bg-paper flex flex-col overflow-hidden">
           <Stripe />
           <div className="flex-1 flex flex-col items-center text-center px-6 sm:px-12 py-10 lg:py-12">
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} className="text-primary text-3xl leading-none" lang="ta" aria-hidden="true">உ</motion.p>
-            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="font-display font-bold tracking-tight text-primary text-[clamp(40px,4.6vw,64px)] leading-[1.02] mt-5 max-w-[14ch]">
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} className="text-brand text-3xl leading-none" lang="ta" aria-hidden="true">உ</motion.p>
+            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} className="font-display font-bold tracking-tight text-brand text-[clamp(40px,4.6vw,64px)] leading-[1.02] mt-5 max-w-[14ch]">
               Your names, printed in Sivakasi
             </motion.h1>
-            <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-lg text-dark mt-6 max-w-[40ch]">
+            <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-lg text-ink mt-6 max-w-[40ch]">
               Wedding and function invitations from Zaro Digitz. Choose a design, approve a proof on WhatsApp, and we print it.
             </motion.p>
 
@@ -154,7 +198,7 @@ export default function HomePage() {
         <div className="mt-3 lg:mt-0 flex flex-col gap-3">
           <Stage className="h-[48svh] lg:h-auto lg:flex-1" />
           {/* The live thing: write your own card */}
-          <form className="bg-[#2C0A10] text-white p-6 sm:p-8" onSubmit={(e) => { e.preventDefault(); window.open(proofHref, '_blank', 'noopener'); }}>
+          <form className="bg-night text-white p-6 sm:p-8" onSubmit={(e) => { e.preventDefault(); window.open(proofHref, '_blank', 'noopener'); }}>
             <h2 className="font-display font-bold text-2xl">Try your names on the card</h2>
             <div className="grid grid-cols-2 gap-3 mt-5">
               <label className="block"><span className="sr-only">Bride&apos;s name</span><input className={field} maxLength={24} placeholder="Bride's name" value={card.bride} onChange={(e) => setCard({ ...card, bride: e.target.value })} /></label>
@@ -170,8 +214,23 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* BENEFITS: the four promises, moving slowly */}
+      <div className="bg-secondary text-[#211114] overflow-hidden py-4" aria-label="Our promises">
+        <div className="marquee-wrapper">
+          <span className="marquee-text text-lg font-semibold">
+            {['Free digital proof on WhatsApp', 'Tamil, English or both', 'Gold foil, emboss and laser cut', 'Printed in Sivakasi', 'Courier across India', 'Bulk prices from 100 cards'].map((t) => <span key={t} className="mx-8">✦ {t}</span>)}
+          </span>
+        </div>
+      </div>
+
+      {/* FAVOURITES: designs people order most, gentlest prices first */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 lg:pt-32 grid grid-cols-[1fr_auto] items-end gap-y-2">
+        <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Customer favourites</Rise>
+        <Rail items={favourites} />
+      </section>
+
       {/* SHOWCASE: what we print, one plate at a time */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-40 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <Rise className="relative aspect-square overflow-hidden bg-dark">
           <motion.img src="/world/letterpress.jpg" alt="A letterpress print on paper" width="1600" height="1600" loading="lazy" className="w-full h-full object-cover" whileHover={{ scale: 1.04 }} transition={{ duration: 0.8 }} />
         </Rise>
@@ -179,7 +238,7 @@ export default function HomePage() {
           <Rise i={1} as="div">
             <div role="tablist" aria-label="What we print" className="flex gap-6 text-lg">
               {['Wedding', 'Functions', 'Printing'].map((t) => (
-                <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={`pb-1 font-semibold transition-colors ${tab === t ? 'text-primary border-b-4 border-secondary' : 'text-dark/70 hover:text-dark'}`}>{t}</button>
+                <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={`pb-1 font-semibold transition-colors ${tab === t ? 'text-brand border-b-4 border-secondary' : 'text-ink/70 hover:text-ink'}`}>{t}</button>
               ))}
             </div>
           </Rise>
@@ -191,30 +250,46 @@ export default function HomePage() {
           </AnimatePresence>
           <Rise i={2} className="grid grid-cols-2">
             <Link to={showcase.to} className="h-[72px] px-5 flex items-center bg-primary text-white font-semibold hover:bg-[#5A1420] transition-colors">See the designs</Link>
-            <Link to={categoryPath(showcase.cat)} className="h-[72px] px-5 flex items-center bg-[#F1E3CF] text-dark font-semibold hover:bg-[#EAD6BC] transition-colors">{showcase.cat}</Link>
+            <Link to={categoryPath(showcase.cat)} className="h-[72px] px-5 flex items-center bg-paper2 text-ink font-semibold hover:bg-paper3 transition-colors">{showcase.cat}</Link>
           </Rise>
         </div>
       </section>
 
+      {/* TRADITIONS: every kind of card, drawn */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 pb-24 lg:pb-32">
+        <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Browse by tradition and style</Rise>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-10">
+          {TRADITIONS.map(({ name, note, Sketch }, i) => (
+            <Rise key={name} i={i % 4}>
+              <Link to={categoryPath(name)} className="group block bg-paper2 hover:bg-paper3 transition-colors p-5 h-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
+                <div className="text-brand aspect-square"><Sketch className="w-full h-full transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-105" /></div>
+                <p className="font-display font-bold text-lg leading-snug mt-3">{name}</p>
+                <p className="text-[15px]">{note}</p>
+              </Link>
+            </Rise>
+          ))}
+        </div>
+      </section>
+
       {/* PRICES: one giant word, then every category as a bar that opens */}
-      <section className="bg-[#F1E3CF] py-24 lg:py-40">
+      <section className="bg-paper2 py-24 lg:py-32">
         <div className="max-w-[640px] mx-auto px-4 [container-type:inline-size]">
-          <Rise as="h2" className="font-display font-bold uppercase text-primary leading-[0.8] tracking-tight text-[25cqw]">Prices</Rise>
+          <Rise as="h2" className="font-display font-bold uppercase text-brand leading-[0.8] tracking-tight text-[25cqw]">Prices</Rise>
           <Rise i={1} as="p" className="text-lg mt-6">Price per card, printing of your names and wording included. Bigger orders cost less per card; each design shows its bulk price.</Rise>
           <div className="mt-8 flex flex-col gap-1.5">
             {groups.map((g, gi) => (
               <Rise key={g.name} i={Math.min(gi, 6)}>
-                <details open={gi === 0} className="group bg-[#FBF5EC]">
-                  <summary className="h-14 px-5 flex items-center justify-between cursor-pointer list-none font-semibold hover:bg-white transition-colors">
+                <details open={gi === 0} className="group bg-paper">
+                  <summary className="h-14 px-5 flex items-center justify-between cursor-pointer list-none font-semibold hover:bg-paper3 transition-colors">
                     <span>{g.name}</span>
-                    <span className="text-primary text-2xl leading-none transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                    <span className="text-brand text-2xl leading-none transition-transform group-open:rotate-45" aria-hidden="true">+</span>
                   </summary>
                   <ul className="px-5 pb-5 pt-1 space-y-3.5">
                     {g.items.map((p) => (
                       <li key={p.code}>
-                        <Link to={productPath(p)} className="flex justify-between gap-4 hover:text-primary transition-colors">
+                        <Link to={productPath(p)} className="flex justify-between gap-4 hover:text-brand transition-colors">
                           <span>{p.name}</span>
-                          <span className="tabular-nums font-semibold whitespace-nowrap">{money(p.price)} <span className="font-normal text-dark/70">/ {String(p.per || 'card').replace(/^1\s+/, '')}</span></span>
+                          <span className="tabular-nums font-semibold whitespace-nowrap">{money(p.price)} <span className="font-normal text-ink/70">/ {String(p.per || 'card').replace(/^1\s+/, '')}</span></span>
                         </Link>
                       </li>
                     ))}
@@ -226,14 +301,26 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* NUMBERS: the facts of the order */}
+      <section className="bg-secondary text-[#211114]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-14 grid grid-cols-2 lg:grid-cols-4 gap-8">
+          {[[`${catalogProducts.length}+`, 'designs to start from'], ['100', 'cards minimum, in steps of 50'], ['1 day', 'to your WhatsApp proof'], ['7 days', 'typical printing time']].map(([n, l], i) => (
+            <Rise key={l} i={i}>
+              <p className="font-display font-bold text-[clamp(40px,5vw,72px)] leading-none tabular-nums">{n}</p>
+              <p className="text-lg mt-2">{l}</p>
+            </Rise>
+          ))}
+        </div>
+      </section>
+
       {/* HOW IT WORKS: printed as a receipt slip */}
-      <section className="bg-primary text-white py-24 lg:py-40">
+      <section className="bg-primary dark:bg-[#3A0E16] text-white py-24 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-12 gap-12">
           <div className="lg:col-span-5">
             <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(40px,4.4vw,68px)] leading-[1.02]">From your phone to the press</Rise>
             <Rise i={1} as="p" className="text-lg mt-6 max-w-[30ch] text-white/90">Nothing is printed until you have seen your own card, with your own names, and said yes.</Rise>
           </div>
-          <Rise i={2} className="lg:col-start-7 lg:col-span-5 w-full max-w-[480px] bg-[#FBF5EC] text-dark p-7 pb-16 [clip-path:polygon(0_0,100%_0,100%_calc(100%-14px),95%_100%,90%_calc(100%-14px),85%_100%,80%_calc(100%-14px),75%_100%,70%_calc(100%-14px),65%_100%,60%_calc(100%-14px),55%_100%,50%_calc(100%-14px),45%_100%,40%_calc(100%-14px),35%_100%,30%_calc(100%-14px),25%_100%,20%_calc(100%-14px),15%_100%,10%_calc(100%-14px),5%_100%,0_calc(100%-14px))]">
+          <Rise i={2} className="lg:col-start-7 lg:col-span-5 w-full max-w-[480px] bg-paper text-ink p-7 pb-16 [clip-path:polygon(0_0,100%_0,100%_calc(100%-14px),95%_100%,90%_calc(100%-14px),85%_100%,80%_calc(100%-14px),75%_100%,70%_calc(100%-14px),65%_100%,60%_calc(100%-14px),55%_100%,50%_calc(100%-14px),45%_100%,40%_calc(100%-14px),35%_100%,30%_calc(100%-14px),25%_100%,20%_calc(100%-14px),15%_100%,10%_calc(100%-14px),5%_100%,0_calc(100%-14px))]">
             <h3 className="font-display font-bold text-2xl">Zaro Digitz, Sivakasi</h3>
             {[
               ['Today', [['Choose a design and quantity', '5 min'], ['Place the order online', '2 min']]],
@@ -245,13 +332,13 @@ export default function HomePage() {
                 {rows.map(([a, b]) => (
                   <div key={a} className="flex items-baseline gap-2 mt-2.5 tabular-nums">
                     <span>{a}</span>
-                    <span className="flex-1 border-b-[3px] border-dotted border-dark/40 translate-y-[-4px]" aria-hidden="true" />
+                    <span className="flex-1 border-b-[3px] border-dotted border-ink/40 translate-y-[-4px]" aria-hidden="true" />
                     <span className="text-right">{b}</span>
                   </div>
                 ))}
               </div>
             ))}
-            <div className="mt-8 -mx-7 h-11 px-7 bg-dark text-[#FBF5EC] flex items-center justify-between font-semibold">
+            <div className="mt-8 -mx-7 h-11 px-7 bg-ink text-paper flex items-center justify-between font-semibold">
               <span>Your cards, in your hands</span><span className="tabular-nums">about a week</span>
             </div>
           </Rise>
@@ -259,19 +346,21 @@ export default function HomePage() {
       </section>
 
       {/* DESIGNS: each one a print with its swing tag */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-40">
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
           <Rise as="h2" className="font-display font-bold tracking-tight text-[32px] leading-tight">Designs to start from</Rise>
-          <Rise i={1}><Link to="/cards" className="text-lg font-semibold text-primary underline underline-offset-4 decoration-2 hover:decoration-secondary">All designs</Link></Rise>
+          <Rise i={1}><Link to="/cards" className="text-lg font-semibold text-brand underline underline-offset-4 decoration-2 hover:decoration-secondary">All designs</Link></Rise>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-7">
           {tiles.map((p, i) => {
-            const pair = [['bg-primary', 'text-white'], ['bg-[#C9A032]', 'text-dark'], ['bg-dark', 'text-[#F3DFA2]'], ['bg-[#F1E3CF]', 'text-dark']][i % 4];
+            const pair = [['bg-primary', 'text-white'], ['bg-[#C9A032]', 'text-[#211114]'], ['bg-[#211114]', 'text-[#F3DFA2]'], ['bg-paper2', 'text-ink']][i % 4];
             return (
               <Rise key={p.code} i={i % 4}>
                 <Link to={productPath(p)} className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
-                  <div className="aspect-[4/5] overflow-hidden bg-[#F1E3CF]">
-                    <img src={p.image || PLACEHOLDER_IMAGE} alt={p.name} width="400" height="500" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }} />
+                  <div className="aspect-[4/5] overflow-hidden bg-paper2 text-brand">
+                    {hasPhoto(p)
+                      ? <img src={p.image} alt={p.name} width="400" height="500" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }} />
+                      : <CategorySketch category={p.category} className="w-full h-full p-6 transition-transform duration-700 group-hover:scale-105 group-hover:-rotate-2" />}
                   </div>
                   <div className={`${pair[0]} ${pair[1]} p-3 min-h-[92px] text-[13px] tabular-nums flex flex-col justify-between`}>
                     <div className="flex justify-between font-semibold text-sm"><span>{money(p.price)}</span><span>min {qtyRules(p).min}</span><span className="hidden sm:inline">{p.size || '—'}</span></div>
@@ -286,7 +375,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ beside the photographs */}
-      <section id="faq" className="bg-[#2C0A10] text-white py-24 lg:pt-0 lg:pb-40 overflow-hidden">
+      <section id="faq" className="bg-night text-white py-24 lg:pt-0 lg:pb-40 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-12 gap-12">
           <div className="lg:col-span-5 lg:pt-40">
             <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(30px,3vw,44px)] leading-tight">Before you order</Rise>
@@ -315,13 +404,49 @@ export default function HomePage() {
           </div>
           <div className="lg:col-start-7 lg:col-span-6 relative">
             <Rise className="aspect-[3/4] overflow-hidden"><img src="/world/nadaswaram.jpg" alt="Nadaswaram players at a Tamil wedding" width="1200" height="1600" loading="lazy" className="w-full h-full object-cover" /></Rise>
-            <Rise i={2} className="absolute -bottom-10 -left-6 lg:-left-10 w-[38%] aspect-square overflow-hidden ring-[10px] ring-[#2C0A10]"><img src="/world/sivakasi.jpg" alt="Sivakasi railway station" width="600" height="600" loading="lazy" className="w-full h-full object-cover" /></Rise>
+            <Rise i={2} className="absolute -bottom-10 -left-6 lg:-left-10 w-[38%] aspect-square overflow-hidden ring-[10px] ring-night"><img src="/world/sivakasi.jpg" alt="Sivakasi railway station" width="600" height="600" loading="lazy" className="w-full h-full object-cover" /></Rise>
           </div>
         </div>
       </section>
 
+      {/* VISIT: the studio on Maruthu Pandiyar Mettu Street */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32 grid lg:grid-cols-2 gap-10 items-stretch">
+        <div className="flex flex-col justify-between gap-8">
+          <div>
+            <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Visit our Sivakasi studio</Rise>
+            <Rise i={1} as="p" className="text-lg mt-5 max-w-[40ch]">See paper, foil and finishes in your hand, look through sample cards and sit with us to set your wording.</Rise>
+            <Rise i={2} className="mt-8 text-lg space-y-1">
+              <p className="font-semibold">{BUSINESS.address.streetAddress}</p>
+              <p>Sivakasi, Virudhunagar, Tamil Nadu {BUSINESS.address.postalCode}</p>
+              <p>Monday to Saturday 9 am – 10 pm · Sunday 10 am – 8 pm</p>
+            </Rise>
+          </div>
+          <Rise i={3} className="flex flex-wrap gap-3">
+            <a href={googleBusinessLinks(settings).directions} target="_blank" rel="noopener noreferrer" className="inline-flex items-center h-14 px-7 bg-primary text-white font-bold hover:bg-[#5A1420] transition-colors">Get directions</a>
+            <a href="tel:+917010935230" className="inline-flex items-center h-14 px-7 bg-paper2 hover:bg-paper3 font-semibold transition-colors">Call before you come</a>
+          </Rise>
+        </div>
+        <Rise i={1} className="min-h-[360px] bg-paper2">
+          <iframe title="Map to Zaro Digitz, Sivakasi" src={googleBusinessLinks(settings).embed} className="w-full h-full min-h-[360px] grayscale-[30%]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+        </Rise>
+      </section>
+
+      {/* WHATSAPP: talk to a person */}
+      <section className="bg-paper2">
+        <ThoranamSketch className="w-full h-auto text-brand" count={14} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-20 grid lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-7">
+            <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Not sure which card? Ask us</Rise>
+            <Rise i={1} as="p" className="text-lg mt-4 max-w-[46ch]">Send your event date, guest count and a colour you like. We reply with three designs and their prices, usually within the hour.</Rise>
+          </div>
+          <Rise i={2} className="lg:col-span-5 lg:justify-self-end">
+            <a href={shopWhatsAppLink('Hi Zaro Digitz! My event date is ___, about ___ guests. Can you suggest three designs?', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 h-16 px-8 bg-[#1F7A4D] text-white text-lg font-bold hover:-translate-y-0.5 transition-transform"><FaWhatsapp size={22} /> Chat on WhatsApp</a>
+          </Rise>
+        </div>
+      </section>
+
       {/* CLOSE: the idea again, inverted */}
-      <section className="bg-dark text-[#FBF5EC] min-h-[80svh] lg:min-h-[90svh] flex flex-col justify-between px-4 sm:px-8 py-20">
+      <section className="bg-[#211114] dark:bg-black text-[#FBF5EC] min-h-[80svh] lg:min-h-[90svh] flex flex-col justify-between px-4 sm:px-8 py-20">
         <Rise as="p" className="font-display font-bold tracking-tight leading-[0.92] text-[15vw] lg:text-[10vw] max-w-[12ch]" aria-hidden="true">Your names, on paper</Rise>
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mt-16">
           <Rise i={1} as="p" className="text-xl max-w-[34ch]">Pick a design today and your proof can be on your phone tomorrow.</Rise>

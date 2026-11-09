@@ -44,7 +44,7 @@ export default function QuickEnquiry({ subject, title = 'Need the best price or 
   }
 
   return (
-    <form onSubmit={submit} className="bg-[#F1E3CF] p-5 sm:p-6" aria-label="Price enquiry">
+    <form onSubmit={submit} className="bg-paper2 p-5 sm:p-6" aria-label="Price enquiry">
       <h2 className="font-display font-bold text-xl text-dark">{title}</h2>
       <p className="text-sm text-gray-500 mt-1">Leave your number and we will call you back, or chat on WhatsApp now.</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">

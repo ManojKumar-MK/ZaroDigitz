@@ -20,6 +20,13 @@ export default {
         orange: { 50: '#FBF3F4', 100: '#F6E3E5', 200: '#EBC3C8', 300: '#DA97A0', 400: '#C2626F', 500: '#A23A48', 600: '#8A2A37', 700: '#7A1F2B', 800: '#5F1822', 900: '#4A131B', 950: '#2C0A10' },
         amber: GOLD,
         yellow: GOLD,
+        // Theme tokens for the storefront: they switch together in dark mode (src/index.css).
+        paper: 'rgb(var(--paper) / <alpha-value>)',
+        paper2: 'rgb(var(--paper2) / <alpha-value>)',
+        paper3: 'rgb(var(--paper3) / <alpha-value>)',
+        ink: 'rgb(var(--ink) / <alpha-value>)',
+        brand: 'rgb(var(--brand) / <alpha-value>)',
+        night: 'rgb(var(--night) / <alpha-value>)',
       },
       fontFamily: {
         display: ['Poppins', 'Inter', 'sans-serif'],

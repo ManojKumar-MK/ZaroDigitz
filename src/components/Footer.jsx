@@ -15,9 +15,10 @@ const menu = [
 
 // Open-licence pictures used on the site (see docs/image-credits.json).
 const CREDITS = [
-  ['Offset printers in Sambad Press, Bhubaneswar', 'Subhashish Panigrahi', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Offset_printers_in_Sambad_Press_in_Bhubaneswar,_Odisha,_India.jpg', 'https://creativecommons.org/licenses/by-sa/4.0'],
+  ['Mehndi hands', 'Sutha Kamal', 'CC BY-SA 2.0', 'https://commons.wikimedia.org/w/index.php?curid=174835915', 'https://creativecommons.org/licenses/by-sa/2.0/'],
+  ['Henna', 'Melissa Gupta', 'CC BY-SA 2.0', 'https://commons.wikimedia.org/w/index.php?curid=3408847', 'https://creativecommons.org/licenses/by-sa/2.0/'],
+  ['Unbroken wax seal folded letter', 'rawpixel', 'CC0', 'https://www.rawpixel.com/image/8717910/photo-image-vintage-public-domain-letter', 'https://creativecommons.org/publicdomain/zero/1.0/'],
   ['Merry Go Round Letterpress Print', 'AlanKitching', 'CC BY 4.0', 'https://commons.wikimedia.org/w/index.php?curid=140212191', 'https://creativecommons.org/licenses/by/4.0/'],
-  ['Women drawing a kolam outside the Mylapore Temple', 'McKay Savage', 'CC BY 2.0', 'https://commons.wikimedia.org/w/index.php?curid=23467740', 'https://creativecommons.org/licenses/by/2.0/'],
   ['Pipe organ Thaarai at a Tamil wedding', 'Magentic Manifestations', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/w/index.php?curid=144951948', 'https://creativecommons.org/licenses/by-sa/4.0/'],
   ['A shrine decorated with marigold garlands', 'Alina Kakshapati', 'CC0', 'https://wordpress.org/photos/photo/3646a211f6/', 'https://creativecommons.org/publicdomain/zero/1.0/'],
   ['Sivakasi Railway Station', 'Gowtham Sampath', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/w/index.php?curid=80389353', 'https://creativecommons.org/licenses/by-sa/4.0/'],
@@ -28,14 +29,14 @@ export default function Footer() {
   const { settings } = useShopSettings();
   const a = BUSINESS.address;
   return (
-    <footer className="bg-[#2C0A10] text-[#FBF5EC]">
+    <footer className="bg-night text-[#FBF5EC]">
       <div className="flex h-2 overflow-hidden" aria-hidden="true">
-        {Array.from({ length: 120 }, (_, i) => <span key={i} className={`shrink-0 w-7 ${i % 2 ? 'bg-[#FBF5EC]' : 'bg-[#C9A032]'}`} />)}
+        {Array.from({ length: 120 }, (_, i) => <span key={i} className={`shrink-0 w-7 ${i % 2 ? 'bg-paper' : 'bg-[#C9A032]'}`} />)}
       </div>
 
       <div className="lg:grid lg:grid-cols-2 lg:min-h-[100svh]">
         <div className="relative h-[50svh] lg:h-auto overflow-hidden">
-          <img src="/world/offset-press.jpg" alt="Offset printing presses with paper rolls" width="1600" height="1200" loading="lazy" className="absolute inset-0 w-full h-full object-cover object-left scale-110" />
+          <img src="/world/sealed-letter.jpg" alt="A folded letter closed with a red wax seal" width="1600" height="1100" loading="lazy" className="absolute inset-0 w-full h-full object-cover scale-125" />
         </div>
 
         <div className="px-4 sm:px-10 lg:px-16 py-16 lg:py-20 flex flex-col">

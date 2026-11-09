@@ -1,151 +1,221 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiShoppingBag, FiMenu, FiX, FiSearch, FiChevronDown, FiMinus, FiPlus } from 'react-icons/fi';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { ThemeToggle } from '../theme/ThemeToggle';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiShoppingCart, FiMenu, FiX, FiGrid } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
-import { LuBadgeCheck, LuHeart, LuPenLine, LuShoppingCart, LuSparkles } from 'react-icons/lu';
+import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
+import { categoryPath, productPath } from '../seo/catalog';
+import { qtyRules } from '../utils/pricing';
+import { InviteCardSketch, ScrollSketch, CalendarSketch } from './Sketches';
 
-const BRAND_COLORS = {
-  maroon: '#7A1F2B',
-  wine: '#5A1420',
-  gold: '#D4AF37',
-  ivory: '#FBF5EC',
-  black: '#1A0E10',
-};
-
-const navLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/about', label: 'About Us' },
-  { to: '/cards', label: 'Wedding Cards' },
-  { to: '/contact', label: 'Contact Us' },
-  { to: '/track', label: 'Track Order' },
+// Menu groups, in the order a visitor thinks about them.
+const MENUS = [
+  {
+    label: 'Wedding Cards',
+    sketch: InviteCardSketch,
+    items: ['Hindu Wedding Cards', 'Muslim Wedding Cards', 'Christian Wedding Cards', 'Budget Wedding Cards', 'Scroll Invitations', 'Acrylic Invitations', 'Foil & Metallic Cards', 'Premium Box Invitations'],
+  },
+  {
+    label: 'Other Invitations',
+    sketch: ScrollSketch,
+    items: ['Birthday Invitations', 'House Warming Invitations', 'Ear Piercing Invitations', 'Baby Shower Invitations', 'Puberty Ceremony Invitations', 'Holy Communion Invitations'],
+  },
+  {
+    label: 'Printing',
+    sketch: CalendarSketch,
+    items: ['Diaries & Calendars', 'Return Gifts', 'Visiting Cards & Stationery', 'Custom Printing'],
+  },
 ];
+const LINKS = [{ to: '/track', label: 'Track Order' }, { to: '/contact', label: 'Visit Us' }];
+const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+
+function SearchPanel({ onClose }) {
+  const [q, setQ] = useState('');
+  const products = useMemo(() => getCatalogProducts(), []);
+  const term = q.trim().toLowerCase();
+  const results = term ? products.filter((p) => [p.name, p.code, p.category].some((v) => String(v).toLowerCase().includes(term))).slice(0, 8) : [];
+  const cats = term ? MENUS.flatMap((m) => m.items).filter((c) => c.toLowerCase().includes(term)).slice(0, 4) : [];
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60" onClick={onClose}>
+      <motion.div initial={{ y: -24 }} animate={{ y: 0 }} exit={{ y: -24 }} className="bg-paper text-ink px-4 sm:px-8 py-6 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Search designs">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-3 bg-paper2 px-4">
+            <FiSearch className="shrink-0" />
+            <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search designs, codes or occasions" aria-label="Search" className="flex-1 h-14 bg-transparent text-lg focus:outline-none placeholder:text-ink/50" />
+            <button type="button" onClick={onClose} aria-label="Close search" className="p-2 hover:text-brand"><FiX size={20} /></button>
+          </div>
+          {cats.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {cats.map((c) => <Link key={c} to={categoryPath(c)} onClick={onClose} className="px-4 py-2 bg-paper2 hover:bg-paper3 font-medium">{c}</Link>)}
+            </div>
+          )}
+          <ul className="mt-4 grid sm:grid-cols-2 gap-2">
+            {results.map((p) => (
+              <li key={p.code}>
+                <Link to={productPath(p)} onClick={onClose} className="flex items-center gap-3 p-2 hover:bg-paper2">
+                  <img src={p.image || PLACEHOLDER_IMAGE} alt="" className="w-12 h-14 object-cover bg-paper2" />
+                  <span className="min-w-0"><span className="block font-semibold truncate">{p.name}</span><span className="text-sm">{money(p.price)} per card · {p.category}</span></span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {term && !results.length && !cats.length && <p className="mt-4">Nothing found for “{q}”. Try “foil”, “scroll” or a design code like ZD-001.</p>}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/** Slide-out cart: change quantities in steps, see the total, go to checkout. */
+function CartDrawer({ onClose }) {
+  const { cart, updateQuantity, removeItem, totalAmount } = useCart();
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60" onClick={onClose}>
+      <motion.aside initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute right-0 top-0 h-full w-full max-w-md bg-paper text-ink flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Your cart">
+        <div className="flex items-center justify-between px-6 h-16 bg-paper2">
+          <h2 className="font-display font-bold text-xl">Your cart</h2>
+          <button type="button" onClick={onClose} aria-label="Close cart" className="p-2 hover:text-brand"><FiX size={22} /></button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+          {!cart.length && <p className="py-10 text-center">Your cart is empty. Pick a design to start.</p>}
+          {cart.map((item) => {
+            const { min, step } = qtyRules(item);
+            return (
+              <div key={item.id} className="flex gap-4">
+                <img src={item.image || PLACEHOLDER_IMAGE} alt="" className="w-16 h-20 object-cover bg-paper2 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold truncate">{item.name}</p>
+                  <p className="text-sm">{money(item.price)} per card</p>
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="inline-flex items-center bg-paper2">
+                      <button type="button" aria-label="Fewer" onClick={() => (item.quantity <= min ? removeItem(item.id) : updateQuantity(item.id, item.quantity - step))} className="w-9 h-9 flex items-center justify-center hover:text-brand"><FiMinus /></button>
+                      <span className="w-12 text-center font-semibold tabular-nums">{item.quantity}</span>
+                      <button type="button" aria-label="More" onClick={() => updateQuantity(item.id, item.quantity + step)} className="w-9 h-9 flex items-center justify-center hover:text-brand"><FiPlus /></button>
+                    </div>
+                    <span className="font-bold tabular-nums">{money(item.price * item.quantity)}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {cart.length > 0 && (
+          <div className="px-6 py-5 bg-paper2 space-y-3">
+            <div className="flex justify-between text-lg"><span>Subtotal</span><span className="font-bold tabular-nums">{money(totalAmount)}</span></div>
+            <p className="text-sm">Courier charges and your proof are confirmed on WhatsApp.</p>
+            <Link to="/checkout" onClick={onClose} className="flex items-center justify-center h-14 bg-primary text-white font-bold hover:bg-[#5A1420] transition-colors">Checkout</Link>
+            <Link to="/cart" onClick={onClose} className="block text-center font-semibold underline underline-offset-4">View cart</Link>
+          </div>
+        )}
+      </motion.aside>
+    </motion.div>
+  );
+}
 
 export default function Navbar() {
   const { settings } = useShopSettings();
   const { totalItems } = useCart();
   const location = useLocation();
-  // The mobile menu stays open only on the page where it was opened, so it closes on navigation.
-  const [openOn, setOpenOn] = useState(null);
-  const mobileOpen = openOn === location.key;
-  const setMobileOpen = (fn) => setOpenOn((cur) => ((typeof fn === 'function' ? fn(cur === location.key) : fn) ? location.key : null));
+  const [open, setOpen] = useState(null); // which desktop menu is open
+  const [panel, setPanel] = useState(null); // 'search' | 'cart' | 'menu'
+  // Panels close on navigation: they belong to the page they were opened on.
+  const [openedOn, setOpenedOn] = useState(location.key);
+  const show = openedOn === location.key ? panel : null;
+  const openPanel = (p) => { setOpenedOn(location.key); setPanel(p); };
+  const close = () => setPanel(null);
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Offer Bar */}
-      <div className="text-[#F3DFA2] py-2 overflow-hidden" style={{ backgroundColor: BRAND_COLORS.black }}>
-        <div className="marquee-wrapper">
-            <span className="marquee-text text-sm font-medium tracking-wide">
-            {settings.announcement ? settings.announcement : (<>
-            <LuHeart className="inline-block align-[-0.15em]" aria-hidden="true" /> Wedding cards printed in Sivakasi — Hindu, Muslim & Christian designs &nbsp;&nbsp;&nbsp; <LuPenLine className="inline-block align-[-0.15em]" aria-hidden="true" /> Free digital proof on WhatsApp before printing &nbsp;&nbsp;&nbsp; <LuSparkles className="inline-block align-[-0.15em]" aria-hidden="true" /> Foil, scroll, acrylic & box invitations &nbsp;&nbsp;&nbsp; <LuBadgeCheck className="inline-block align-[-0.15em]" aria-hidden="true" /> Call / WhatsApp: +91 70109 35230 &nbsp;&nbsp;&nbsp;
-            </>)}
-          </span>
+      <div className="bg-night text-[#F3E8D8] text-[13px] sm:text-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-9 flex items-center justify-center sm:justify-between gap-6">
+          <span className="truncate">{settings.announcement || 'Free digital proof on WhatsApp before we print'}</span>
+          <span className="hidden sm:flex gap-6"><span>Courier across India</span><a href="tel:+917010935230" className="hover:text-secondary">+91 70109 35230</a></span>
         </div>
       </div>
 
-      {/* Main Nav */}
-      <nav style={{ backgroundColor: BRAND_COLORS.wine }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
+      <nav className="bg-paper text-ink" onMouseLeave={() => setOpen(null)} aria-label="Main">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-[72px] flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <button type="button" aria-label="Open menu" className="lg:hidden p-2 -ml-2 hover:text-brand" onClick={() => openPanel('menu')}><FiMenu size={22} /></button>
             <Link to="/" className="flex items-center gap-3 group">
-              <img
-                src="/zaro-logo-112.webp"
-                width="48"
-                height="48"
-                alt="ZARO Digitz logo"
-                className="w-12 h-12 object-cover rounded-full group-hover:scale-110 transition-transform"
-              />
-              <div>
-                <div className="font-display font-bold text-white text-lg leading-tight">ZARO Digitz</div>
-                <div className="text-[13px] font-medium" style={{ color: BRAND_COLORS.gold }}>Wedding cards &amp; printing</div>
-              </div>
+              <img src="/zaro-logo-112.webp" width="44" height="44" alt="" className="w-11 h-11 rounded-full object-cover transition-transform group-hover:rotate-6" />
+              <span className="leading-tight">
+                <span className="block font-display font-bold text-lg sm:text-xl text-brand">ZARO Digitz</span>
+                <span className="hidden sm:block text-[13px]">Wedding cards &amp; printing · Sivakasi</span>
+              </span>
             </Link>
+          </div>
 
-            {/* Desktop Links */}
-            <div className="hidden md:flex items-center gap-1">
-              {navLinks.map(link => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className="relative px-4 py-2 text-[15px] font-medium transition-colors group"
-                  style={{
-                    color: location.pathname === link.to ? BRAND_COLORS.gold : '#E9DCCB',
-                  }}
-                >
-                  {link.label}
-                  {location.pathname === link.to && (
-                    <motion.div layoutId="nav-underline" className="absolute bottom-0 left-4 right-4 h-[3px]" style={{ backgroundColor: BRAND_COLORS.gold }} />
-                  )}
-                  <span className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors" />
-                </Link>
-              ))}
-            </div>
+          <ul className="hidden lg:flex items-center gap-1">
+            {MENUS.map((m) => (
+              <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
+                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`h-[72px] px-4 inline-flex items-center gap-1.5 font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
+                  {m.label} <FiChevronDown className={`transition-transform ${open === m.label ? 'rotate-180' : ''}`} />
+                </button>
+              </li>
+            ))}
+            {LINKS.map((l) => (
+              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-[72px] px-4 inline-flex items-center font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}>{l.label}</Link></li>
+            ))}
+          </ul>
 
-            {/* Cart + Mobile */}
-            <div className="flex items-center gap-3">
-              <Link
-                to="/cards"
-                className="on-light hidden sm:inline-flex items-center gap-2 h-11 px-5 text-[15px] font-semibold text-black transition-transform hover:-translate-y-0.5"
-                style={{ backgroundColor: BRAND_COLORS.gold }}
-              >
-                <FiGrid size={16} /> Browse Designs
-              </Link>
-              <ThemeToggle className="p-2 text-gray-300 hover:text-white transition-colors" />
-              <Link to="/cart" data-cart-target="nav" aria-label={`Cart, ${totalItems} items`} className="relative p-2 text-gray-300 hover:text-white transition-colors">
-                <FiShoppingCart size={22} />
-                {totalItems > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }} animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center font-bold"
-                  >
-                    {totalItems}
-                  </motion.span>
-                )}
-              </Link>
-              <button
-                type="button"
-                aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-                aria-expanded={mobileOpen}
-                className="md:hidden p-2 text-gray-300 hover:text-white"
-                onClick={() => setMobileOpen(o => !o)}
-              >
-                {mobileOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-              </button>
-            </div>
+          <div className="flex items-center gap-1">
+            <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="p-2.5 hover:text-brand transition-colors"><FiSearch size={21} /></button>
+            <ThemeToggle className="p-2.5 hover:text-brand transition-colors" />
+            <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative p-2.5 hover:text-brand transition-colors">
+              <FiShoppingBag size={21} />
+              {totalItems > 0 && <motion.span key={totalItems} initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-0.5 right-0.5 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center font-bold">{totalItems}</motion.span>}
+            </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Desktop mega menu */}
         <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="md:hidden bg-dark overflow-hidden"
-            >
-              <div className="px-4 py-4 space-y-1">
-                {navLinks.map(link => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className={`block px-4 py-3 rounded-lg font-medium text-sm transition-colors
-                      ${location.pathname === link.to ? 'bg-primary/20 text-secondary' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                <Link to="/cart" className="block px-4 py-3 rounded-lg text-gray-300 hover:bg-white/5 text-sm font-medium">
-                  <LuShoppingCart className="inline-block align-[-0.15em]" aria-hidden="true" /> Cart ({totalItems} items)
-                </Link>
-              </div>
+          {open && (
+            <motion.div key={open} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="hidden lg:block absolute inset-x-0 bg-paper2 text-ink shadow-xl">
+              {MENUS.filter((m) => m.label === open).map((m) => (
+                <div key={m.label} className="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-8">
+                  <ul className="col-span-8 grid grid-cols-2 gap-x-10 gap-y-3">
+                    {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={() => setOpen(null)} className="text-lg hover:text-brand hover:translate-x-1 inline-block transition-transform">{c}</Link></li>)}
+                    <li className="col-span-2 mt-3"><Link to="/cards" onClick={() => setOpen(null)} className="font-semibold text-brand underline underline-offset-4">See every design</Link></li>
+                  </ul>
+                  <div className="col-span-4 text-brand"><m.sketch className="w-full max-w-[220px] ml-auto" /></div>
+                </div>
+              ))}
             </motion.div>
           )}
         </AnimatePresence>
       </nav>
+
+      <AnimatePresence>
+        {show === 'search' && <SearchPanel key="search" onClose={close} />}
+        {show === 'cart' && <CartDrawer key="cart" onClose={close} />}
+        {show === 'menu' && (
+          <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60 lg:hidden" onClick={close}>
+            <motion.aside initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute left-0 top-0 h-full w-[86%] max-w-sm bg-paper text-ink overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Menu">
+              <div className="flex items-center justify-between px-5 h-16 bg-paper2">
+                <span className="font-display font-bold text-lg text-brand">ZARO Digitz</span>
+                <button type="button" onClick={close} aria-label="Close menu" className="p-2"><FiX size={22} /></button>
+              </div>
+              <div className="px-5 py-4">
+                {MENUS.map((m) => (
+                  <details key={m.label} className="group">
+                    <summary className="flex items-center justify-between h-14 font-semibold text-lg cursor-pointer list-none">{m.label}<FiChevronDown className="group-open:rotate-180 transition-transform" /></summary>
+                    <ul className="pb-3 pl-3 space-y-2.5">
+                      {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={close} className="block hover:text-brand">{c}</Link></li>)}
+                    </ul>
+                  </details>
+                ))}
+                {[{ to: '/cards', label: 'All designs' }, ...LINKS, { to: '/about', label: 'About us' }].map((l) => (
+                  <Link key={l.to} to={l.to} onClick={close} className="flex items-center h-14 font-semibold text-lg hover:text-brand">{l.label}</Link>
+                ))}
+              </div>
+            </motion.aside>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

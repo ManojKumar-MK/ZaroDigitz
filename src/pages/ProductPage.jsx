@@ -23,8 +23,8 @@ const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDi
 function InfoSection({ title, children, open: startOpen = false }) {
   const [open, setOpen] = useState(startOpen);
   return (
-    <div className="bg-[#F1E3CF] mb-1.5">
-      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="w-full flex items-center justify-between py-4 px-5 text-left font-display font-bold text-dark hover:bg-[#EAD6BC] transition-colors">
+    <div className="bg-paper2 mb-1.5">
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="w-full flex items-center justify-between py-4 px-5 text-left font-display font-bold text-dark hover:bg-paper3 transition-colors">
         {title}
         <FiChevronDown className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
@@ -165,7 +165,7 @@ export default function ProductPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-[#FBF5EC] p-5 sm:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-paper p-5 sm:p-8">
           {/* Gallery */}
           <div>
             <button type="button" onClick={() => setZoom(true)} aria-label="Open larger image" className="w-full rounded-2xl bg-orange-50/60 border border-gray-100 flex items-center justify-center p-4 min-h-[320px] cursor-zoom-in">
@@ -320,7 +320,7 @@ export default function ProductPage() {
 
       {/* Sticky add-to-cart bar on phones: it floats over the page, so it may cast a shadow. taste-skill-ignore */}
       {offer != null && (
-        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#FBF5EC] px-4 py-3 flex items-center gap-3 shadow-[0_-8px_24px_rgba(44,10,16,0.12)]" data-floating="taste-skill-ignore">
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-paper px-4 py-3 flex items-center gap-3 shadow-[0_-8px_24px_rgba(44,10,16,0.12)]" data-floating="taste-skill-ignore">
           <div className="min-w-0 flex-1">
             <div className="text-xs text-gray-500 truncate">{product.name}</div>
             <div className="font-bold text-primary">{money(unitPrice)} <span className="text-xs text-gray-400 font-normal">× {quantity}</span></div>

@@ -8,7 +8,7 @@ html.dark body { background-color: #0b0b0e; color: #e4e4e7; }
 /* The wrappers themselves carry light classes (bg-zinc-50 / text-zinc-900); set their colours directly
    so everything that inherits text colour flips too. */
 html.dark .admin-root { background-color: #0b0b0e; color: #f4f4f5; }
-html.dark .store-root { background-color: #0b0b0e; color: #e4e4e7; }
+html.dark .store-root { background-color: rgb(var(--paper)); color: rgb(var(--ink)); }
 
 /* ---------- shared: surfaces ---------- */
 html.dark :is(.store-root, .admin-root) :is(.bg-white) { background-color: #17171b; }
@@ -93,3 +93,10 @@ html.dark .admin-root .total-pop { color: inherit; }
 html.dark :is(.store-root, .admin-root) .on-light,
 html.dark :is(.store-root, .admin-root) .on-light :is(.text-dark, .text-black, .text-zinc-900) { color: #111111; }
 html.dark :is(.store-root, .admin-root) .on-light.bg-white { background-color: #ffffff; }
+
+/* ---------- storefront (Zaro Digitz): maroon text turns warm gold on dark surfaces ---------- */
+html.dark .store-root :is(.text-primary, .hover\:text-primary:hover) { color: rgb(var(--brand)); }
+html.dark .store-root .bg-bg { background-color: rgb(var(--paper)); }
+html.dark .store-root .bg-white { background-color: rgb(var(--paper2)); }
+html.dark .store-root :is(.bg-orange-50, .bg-amber-50) { background-color: rgb(var(--paper2)); }
+html.dark .store-root :is(.border-gray-100, .border-gray-200, .border-amber-100, .border-amber-200) { border-color: rgb(var(--paper3)); }
