@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
-import { FiGrid, FiShoppingBag, FiPlus, FiPackage, FiUsers, FiBarChart2, FiMessageSquare, FiSettings, FiGlobe, FiExternalLink, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { LuLayoutDashboard, LuClipboardList, LuPlus, LuPalette, LuLayers, LuUsers, LuChartLine, LuMessageSquareText, LuSettings, LuGlobe, LuExternalLink, LuLogOut, LuMenu, LuX } from 'react-icons/lu';
 import { signOutAdmin } from '../firebase/auth';
 import { useAdminData } from './AdminData';
 import { ThemeSegmented, ThemeToggle } from '../theme/ThemeToggle';
 
+// The studio's working day, in the order it happens.
 const SECTIONS = [
-  { items: [{ to: '/admin', label: 'Dashboard', icon: FiGrid, end: true }] },
-  { title: 'Sales', items: [{ to: '/admin/orders', label: 'Orders', icon: FiShoppingBag, badge: 'new' }, { to: '/admin/customers', label: 'Customers', icon: FiUsers }, { to: '/admin/enquiries', label: 'Enquiries', icon: FiMessageSquare, badge: 'enquiries' }] },
-  { title: 'Catalog', items: [{ to: '/admin/products', label: 'Products', icon: FiPackage }] },
-  { title: 'Insights', items: [{ to: '/admin/analytics', label: 'Analytics', icon: FiBarChart2 }, { to: '/admin/seo', label: 'SEO', icon: FiGlobe }] },
-  { items: [{ to: '/admin/settings', label: 'Settings', icon: FiSettings }] },
+  { title: 'Studio', items: [{ to: '/admin', label: 'Today', icon: LuLayoutDashboard, end: true }] },
+  { title: 'Orders', items: [{ to: '/admin/orders', label: 'Orders', icon: LuClipboardList, badge: 'new' }, { to: '/admin/enquiries', label: 'Enquiries', icon: LuMessageSquareText, badge: 'enquiries' }, { to: '/admin/customers', label: 'Customers', icon: LuUsers }] },
+  { title: 'Designs', items: [{ to: '/admin/products', label: 'Designs & prices', icon: LuPalette }, { to: '/admin/templates', label: 'Personalise templates', icon: LuLayers }] },
+  { title: 'Growth', items: [{ to: '/admin/analytics', label: 'Sales report', icon: LuChartLine }, { to: '/admin/seo', label: 'Google & SEO', icon: LuGlobe }] },
+  { items: [{ to: '/admin/settings', label: 'Settings', icon: LuSettings }] },
 ];
 
 export default function AdminLayout({ user }) {
@@ -25,24 +26,24 @@ export default function AdminLayout({ user }) {
 
   const sidebar = (
     <div className="flex flex-col h-full">
-      <div className="px-4 h-16 flex items-center gap-3 border-b border-zinc-100">
-        <img src="/zaro-logo.png" alt="" className="w-8 h-8 rounded-full" />
+      <div className="px-5 pt-6 pb-5 flex items-center gap-3">
+        <img src="/zaro-logo-112.webp" alt="" className="w-11 h-11 object-contain" />
         <div className="min-w-0">
-          <div className="text-sm font-semibold text-zinc-900 leading-tight">Zaro Digitz</div>
-          <div className="text-xs text-zinc-500">Admin</div>
+          <div className="font-display font-bold text-lg leading-tight text-[#F3DFA2]">ZARO Digitz</div>
+          <div className="text-[13px] text-[#FBF5EC]/70">Print studio</div>
         </div>
       </div>
 
-      <div className="px-3 pt-4">
-        <Link to="/admin/orders/new" onClick={() => setOpen(false)} className="flex items-center justify-center gap-2 h-9 rounded-lg bg-primary hover:bg-orange-600 text-white text-sm font-medium shadow-sm">
-          <FiPlus size={16} /> New order
+      <div className="px-4">
+        <Link to="/admin/orders/new" onClick={() => setOpen(false)} className="flex items-center justify-center gap-2 h-11 bg-[#C9A032] hover:bg-[#DFB548] text-[#211114] text-sm font-bold transition-colors">
+          <LuPlus size={18} /> New order
         </Link>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+      <nav className="flex-1 overflow-y-auto px-3 py-5 space-y-5">
         {SECTIONS.map((sec, i) => (
           <div key={i}>
-            {sec.title && <div className="px-2 mb-1.5 text-[11px] font-medium uppercase tracking-wider text-zinc-400">{sec.title}</div>}
+            {sec.title && <div className="px-3 mb-1.5 text-[13px] font-semibold text-[#FBF5EC]/50">{sec.title}</div>}
             <ul className="space-y-0.5">
               {sec.items.map((it) => {
                 const Icon = it.icon;
@@ -55,12 +56,12 @@ export default function AdminLayout({ user }) {
                       onClick={() => setOpen(false)}
                       className={({ isActive }) => {
                         const active = forceActive ?? isActive;
-                        return `group flex items-center gap-2.5 h-9 px-2.5 rounded-lg text-sm font-medium transition-colors ${active ? 'bg-orange-50 text-primary' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'}`;
+                        return `relative flex items-center gap-3 h-10 px-3 text-[14px] font-medium transition-colors ${active ? 'bg-white/10 text-white before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#C9A032]' : 'text-[#FBF5EC]/75 hover:bg-white/5 hover:text-white'}`;
                       }}
                     >
-                      <Icon size={17} className="shrink-0" />
+                      <Icon size={18} className="shrink-0" />
                       <span className="flex-1">{it.label}</span>
-                      {it.badge && counts[it.badge] > 0 && <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-primary text-white text-[11px] font-semibold flex items-center justify-center tabular-nums">{counts[it.badge]}</span>}
+                      {it.badge && counts[it.badge] > 0 && <span className="min-w-[22px] h-[22px] px-1.5 rounded-full bg-[#C9A032] text-[#211114] text-[12px] font-bold flex items-center justify-center tabular-nums">{counts[it.badge]}</span>}
                     </NavLink>
                   </li>
                 );
@@ -70,32 +71,32 @@ export default function AdminLayout({ user }) {
         ))}
       </nav>
 
-      <div className="border-t border-zinc-100 p-3 space-y-0.5">
+      <div className="p-4 space-y-1 bg-black/15">
         <ThemeSegmented className="mb-2" />
-        <a href="/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 h-9 px-2.5 rounded-lg text-sm text-zinc-600 hover:bg-zinc-100"><FiExternalLink size={16} /> View store</a>
-        <button type="button" onClick={() => signOutAdmin()} className="w-full flex items-center gap-2.5 h-9 px-2.5 rounded-lg text-sm text-zinc-600 hover:bg-zinc-100"><FiLogOut size={16} /> Sign out</button>
-        <div className="px-2.5 pt-1 text-xs text-zinc-400 truncate" title={user.email}>{user.email}</div>
+        <a href="/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 h-9 px-3 text-sm text-[#FBF5EC]/80 hover:bg-white/5"><LuExternalLink size={16} /> Open the website</a>
+        <button type="button" onClick={() => signOutAdmin()} className="w-full flex items-center gap-3 h-9 px-3 text-sm text-[#FBF5EC]/80 hover:bg-white/5"><LuLogOut size={16} /> Sign out</button>
+        <div className="px-3 pt-1 text-xs text-[#FBF5EC]/50 truncate" title={user.email}>{user.email}</div>
       </div>
     </div>
   );
 
   return (
-    <div className="admin-root min-h-screen bg-zinc-50 flex font-body text-zinc-900">
-      <aside className={`fixed lg:sticky top-0 inset-y-0 left-0 z-50 w-60 h-screen bg-white border-r border-zinc-200 transform transition-transform lg:transform-none ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <button type="button" onClick={() => setOpen(false)} aria-label="Close menu" className="lg:hidden absolute top-4 right-3 w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100"><FiX /></button>
+    <div className="admin-root min-h-screen bg-[#F6F0E7] dark:bg-[#0f0b0c] flex font-body text-zinc-900">
+      <aside className={`fixed lg:sticky top-0 inset-y-0 left-0 z-50 w-64 h-screen bg-[#2C0A10] text-[#FBF5EC] transform transition-transform lg:transform-none ${open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <button type="button" onClick={() => setOpen(false)} aria-label="Close menu" className="lg:hidden absolute top-5 right-3 w-9 h-9 flex items-center justify-center text-[#FBF5EC]/70 hover:bg-white/10"><LuX /></button>
         {sidebar}
       </aside>
-      {open && <div className="fixed inset-0 z-40 bg-zinc-900/30 lg:hidden" onClick={() => setOpen(false)} />}
+      {open && <div className="fixed inset-0 z-40 bg-black/40 lg:hidden" onClick={() => setOpen(false)} />}
 
       <div className="flex-1 min-w-0">
-        <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-zinc-200 h-14 px-4 flex items-center gap-3">
-          <button type="button" onClick={() => setOpen(true)} aria-label="Open menu" className="w-9 h-9 -ml-2 flex items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100"><FiMenu size={20} /></button>
-          <img src="/zaro-logo.png" alt="" className="w-7 h-7 rounded-full" />
-          <span className="text-sm font-semibold flex-1">Zaro Admin</span>
-          <ThemeToggle size={18} className="w-9 h-9 -mr-2 flex items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100" />
+        <header className="lg:hidden sticky top-0 z-30 bg-[#2C0A10] text-[#FBF5EC] h-14 px-4 flex items-center gap-3">
+          <button type="button" onClick={() => setOpen(true)} aria-label="Open menu" className="w-10 h-10 -ml-2 flex items-center justify-center hover:bg-white/10"><LuMenu size={20} /></button>
+          <img src="/zaro-logo-112.webp" alt="" className="w-8 h-8 object-contain" />
+          <span className="font-display font-bold flex-1 text-[#F3DFA2]">ZARO Digitz</span>
+          <ThemeToggle size={18} className="w-10 h-10 -mr-2 flex items-center justify-center hover:bg-white/10" />
         </header>
-        {error && <div className="mx-4 lg:mx-8 mt-4 rounded-lg bg-red-50 ring-1 ring-red-200 text-red-700 text-sm px-4 py-3">Couldn't load live data: {error}</div>}
-        <main className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 max-w-7xl mx-auto">
+        {error && <div className="mx-4 lg:mx-10 mt-4 rounded-lg bg-red-50 ring-1 ring-red-200 text-red-700 text-sm px-4 py-3">Couldn&apos;t load live data: {error}</div>}
+        <main className="px-4 sm:px-6 lg:px-10 py-6 lg:py-10 max-w-7xl mx-auto">
           <Outlet />
         </main>
       </div>

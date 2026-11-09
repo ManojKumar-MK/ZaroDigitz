@@ -24,8 +24,8 @@ export default function Dashboard() {
 
   const live = orders.filter((o) => o.status !== 'cancelled');
   const attention = [
-    { label: 'New orders to confirm', count: statuses.new || 0, icon: FiAlertCircle, to: '/admin/orders?status=new', tone: 'text-sky-600 bg-sky-50' },
-    { label: 'Waiting more than 48 hours', count: live.filter((o) => ['new', 'confirmed', 'packed'].includes(o.status) && hoursSince(o) > 48).length, icon: FiClock, to: '/admin/orders?status=confirmed', tone: 'text-amber-600 bg-amber-50' },
+    { label: 'New orders: send the proof', count: statuses.new || 0, icon: FiAlertCircle, to: '/admin/orders?status=new', tone: 'text-sky-600 bg-sky-50' },
+    { label: 'In progress for over 48 hours', count: live.filter((o) => ['new', 'confirmed', 'packed'].includes(o.status) && hoursSince(o) > 48).length, icon: FiClock, to: '/admin/orders?status=confirmed', tone: 'text-amber-600 bg-amber-50' },
     { label: 'Unpaid or advance only', count: live.filter((o) => ['unpaid', 'advance', undefined].includes(o.paymentStatus)).length, icon: FiCreditCard, to: '/admin/orders?payment=unpaid', tone: 'text-zinc-600 bg-zinc-100' },
     { label: 'Open enquiries', count: openEnq, icon: FiMessageSquare, to: '/admin/enquiries', tone: 'text-violet-600 bg-violet-50' },
   ];

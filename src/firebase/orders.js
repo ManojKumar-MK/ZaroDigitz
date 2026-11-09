@@ -18,9 +18,9 @@ export const STATUS_DESCRIPTIONS = {
 
 export const STATUS_LABELS = {
   new: 'New',
-  confirmed: 'Confirmed',
-  packed: 'Packed',
-  shipped: 'Shipped',
+  confirmed: 'Proof approved',
+  packed: 'Printed & packed',
+  shipped: 'Dispatched',
   delivered: 'Delivered',
   cancelled: 'Cancelled',
 };

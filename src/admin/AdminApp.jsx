@@ -19,6 +19,7 @@ import Analytics from './pages/Analytics';
 import Enquiries from './pages/Enquiries';
 import Settings from './pages/Settings';
 import SeoDashboard from './pages/SeoDashboard';
+import Templates from './pages/Templates';
 import { FiWifiOff } from 'react-icons/fi';
 
 function NotConfigured() {
@@ -69,6 +70,7 @@ export default function AdminApp() {
           <Route path="analytics" element={<Analytics />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="seo" element={<SeoDashboard />} />
+          <Route path="templates" element={<Templates />} />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
