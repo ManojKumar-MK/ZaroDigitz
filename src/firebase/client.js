@@ -2,7 +2,11 @@
 // absent the site behaves exactly as before (static catalog, Telegram-only orders).
 // The SDK is loaded lazily so the storefront bundle does not pay for it up front.
 
-const env = import.meta.env ?? {}; // undefined under plain Node (scripts/tests)
+import publicConfig from './publicConfig.js';
+
+const viteEnv = import.meta.env ?? {}; // undefined under plain Node (scripts/tests)
+// Build-time VITE_* variables win; the committed public config fills the gaps.
+const env = { ...publicConfig, ...Object.fromEntries(Object.entries(viteEnv).filter(([, v]) => v !== undefined && v !== '')) };
 
 const config = {
   apiKey: env.VITE_FIREBASE_API_KEY,
