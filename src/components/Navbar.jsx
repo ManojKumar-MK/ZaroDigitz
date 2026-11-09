@@ -158,7 +158,7 @@ export default function Navbar() {
           <ul className="hidden xl:flex items-center justify-center gap-0.5 whitespace-nowrap min-w-0">
             {MENUS.map((m) => (
               <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
-                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(open === m.label ? null : m.label)} className={`relative h-20 px-3.5 inline-flex items-center gap-2 text-[15px] font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
+                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(m.label)} className={`relative h-20 px-3.5 inline-flex items-center gap-2 text-[15px] font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
                   <m.icon size={17} className="text-brand/80" aria-hidden="true" />{m.label}<LuChevronDown size={15} className={`opacity-70 transition-transform ${open === m.label ? 'rotate-180' : ''}`} aria-hidden="true" />
                   {open === m.label && <motion.span layoutId="nav-open" className="absolute left-3.5 right-3.5 bottom-0 h-[3px] bg-secondary" />}
                 </button>
@@ -189,7 +189,7 @@ export default function Navbar() {
                   <p className="col-span-12 -mb-3 inline-flex items-center gap-2 font-display font-bold text-xl text-brand"><m.icon size={22} aria-hidden="true" />{m.label}</p>
                   <ul className={`col-span-8 grid ${m.items.length > 8 ? 'grid-cols-3' : 'grid-cols-2'} gap-x-10 gap-y-3`}>
                     {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={() => setOpen(null)} className="text-lg hover:text-brand hover:translate-x-1 inline-block transition-transform">{c}</Link></li>)}
-                    <li className="col-span-2 mt-3"><Link to="/cards" onClick={() => setOpen(null)} className="font-semibold text-brand underline underline-offset-4">See every design</Link></li>
+                    <li className="col-span-full mt-3"><Link to="/cards" onClick={() => setOpen(null)} className="font-semibold text-brand underline underline-offset-4">See every design</Link></li>
                   </ul>
                   <div className="col-span-4 text-brand"><m.sketch className="w-full max-w-[220px] ml-auto" /></div>
                 </div>

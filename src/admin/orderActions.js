@@ -1,18 +1,22 @@
 import { generateInvoicePDF } from '../utils/generateInvoicePDF';
 
 /** Print the invoice PDF in its exact format via a hidden iframe. */
+/**
+ * Print an order's invoice: opens it in a new tab (the browser's PDF viewer has Print and
+ * Save). The tab is opened straight away, inside the click, so pop-up blockers allow it.
+ */
 export async function printInvoice(order) {
-  const { doc } = await generateInvoicePDF(order.snapshot, order.invoiceNumber || order.orderNumber);
-  const url = URL.createObjectURL(doc.output('blob'));
-  const frame = document.createElement('iframe');
-  frame.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
-  frame.src = url;
-  document.body.appendChild(frame);
-  frame.onload = () => {
-    try { frame.contentWindow.focus(); frame.contentWindow.print(); }
-    catch { window.open(url, '_blank'); }
-    setTimeout(() => { document.body.removeChild(frame); URL.revokeObjectURL(url); }, 60000);
-  };
+  const win = window.open('', '_blank');
+  if (win) win.document.write('<p style="font:16px sans-serif;padding:24px">Preparing the invoice…</p>');
+  try {
+    const { doc } = await generateInvoicePDF(order.snapshot, order.invoiceNumber || order.orderNumber);
+    const url = URL.createObjectURL(doc.output('blob'));
+    if (win) win.location.href = url;
+    else window.location.assign(url);
+  } catch (e) {
+    if (win) win.document.body.innerHTML = `<p style="font:16px sans-serif;padding:24px">Could not make the invoice: ${String(e?.message || e)}</p>`;
+    throw e;
+  }
 }
 
 export const FLOW = ['new', 'confirmed', 'packed', 'shipped', 'delivered'];
