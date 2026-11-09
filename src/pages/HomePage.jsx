@@ -206,10 +206,6 @@ function Timeline() {
           })}
         </ol>
 
-        <Rise className="mt-16 bg-secondary text-[#211114] p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-          <p className="text-lg font-semibold max-w-[52ch]">In a hurry? Small digital runs can often be printed the same day. Message us with what you need.</p>
-          <a href={shopWhatsAppLink('Hi Zaro Digitz! I have an urgent printing order:')} target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 h-14 px-7 bg-[#211114] text-[#FBF5EC] font-bold transition-transform hover:-translate-y-0.5"><FaWhatsapp size={20} aria-hidden="true" /> Ask on WhatsApp</a>
-        </Rise>
       </div>
     </section>
   );
@@ -248,7 +244,6 @@ export default function HomePage() {
   const [catalogProducts, setCatalogProducts] = useState(() => getCatalogProducts());
   // The live card: what the visitor types appears on the invitation as they type.
   const [card, setCard] = useState({ bride: '', groom: '', date: '', town: '' });
-  const [tab, setTab] = useState('Wedding');
 
   useEffect(() => {
     const sync = () => setCatalogProducts(getCatalogProducts());
@@ -269,11 +264,6 @@ export default function HomePage() {
   const town = card.town.trim() || 'Sivakasi';
   const proofHref = shopWhatsAppLink(`Hi Zaro Digitz! Please send me a proof for our wedding card.\nNames: ${bride} & ${groom}\nDate: ${when}\nPlace: ${town}`, settings.whatsappNumber);
 
-  const showcase = {
-    Wedding: { title: 'Wedding cards', text: 'Hindu, Muslim and Christian invitations, from a simple single card to scrolls, acrylic and keepsake boxes, in Tamil, English or both.', to: '/cards', cat: 'Hindu Wedding Cards' },
-    Functions: { title: 'Function cards', text: 'Birthdays, house warmings, ear piercing, valaikappu and puberty ceremonies, each printed with your family names and the venue.', to: categoryPath('House Warming Invitations'), cat: 'Birthday Invitations' },
-    Printing: { title: 'Printing', text: 'Calendars, diaries, return gifts, visiting cards and bill books, printed on the same presses as our invitations.', to: categoryPath('Diaries & Calendars'), cat: 'Diaries & Calendars' },
-  }[tab];
 
   const field = 'w-full bg-white/10 text-white placeholder-white/60 px-4 py-3 text-base focus:outline-none focus:bg-white/15 focus-visible:ring-2 focus-visible:ring-secondary';
 
@@ -354,38 +344,6 @@ export default function HomePage() {
         <Rail id="rail-favourites" items={favourites} />
       </section>
 
-      {/* SHOWCASE: what we print, one plate at a time */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-        <Rise className="relative aspect-square overflow-hidden bg-paper2 text-brand">
-          <AnimatePresence mode="wait">
-            <motion.div key={tab} initial={{ opacity: 0, rotate: -3 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 3 }} transition={{ duration: 0.5 }} className="absolute inset-0 p-10 sm:p-16">
-              {tab === 'Wedding' && <InviteCardSketch className="w-full h-full" />}
-              {tab === 'Functions' && <KolamSketch className="w-full h-full" />}
-              {tab === 'Printing' && <CalendarSketch className="w-full h-full" />}
-            </motion.div>
-          </AnimatePresence>
-        </Rise>
-        <div className="flex flex-col gap-10 lg:min-h-[520px] justify-between">
-          <Rise i={1} as="div">
-            <div role="tablist" aria-label="What we print" className="flex gap-6 text-lg">
-              {['Wedding', 'Functions', 'Printing'].map((t) => (
-                <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={`pb-1 font-semibold transition-colors ${tab === t ? 'text-brand border-b-4 border-secondary' : 'text-ink/70 hover:text-ink'}`}>{t}</button>
-              ))}
-            </div>
-          </Rise>
-          <AnimatePresence mode="wait">
-            <motion.div key={tab} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}>
-              <h2 className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">{showcase.title}</h2>
-              <p className="text-lg mt-6 max-w-[38ch]">{showcase.text}</p>
-            </motion.div>
-          </AnimatePresence>
-          <Rise i={2} className="grid grid-cols-2">
-            <Link to={showcase.to} className="h-[72px] px-5 flex items-center bg-primary text-white font-semibold hover:bg-[#5A1420] transition-colors">See the designs</Link>
-            <Link to={categoryPath(showcase.cat)} className="h-[72px] px-5 flex items-center bg-paper2 text-ink font-semibold hover:bg-paper3 transition-colors">{showcase.cat}</Link>
-          </Rise>
-        </div>
-      </section>
-
       {/* SERVICES: everything on the shop sign, one tap away */}
       <section className="bg-night text-[#FBF5EC] py-24 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -454,11 +412,6 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-12 gap-12">
           <div className="lg:col-span-5 lg:pt-40">
             <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(30px,3vw,44px)] leading-tight">Before you order</Rise>
-            <Rise i={1} className="mt-6 space-y-1 text-lg text-white/90">
-              <p>{BUSINESS.address.streetAddress}, Sivakasi {BUSINESS.address.postalCode}</p>
-              <p>Monday to Saturday, 9 am to 10 pm</p>
-              <p>Call or WhatsApp <a href="tel:+919787702336" className="underline underline-offset-4 hover:text-secondary">+91 97877 02336</a></p>
-            </Rise>
             <div className="mt-10 space-y-7">
               {getFaqs(settings).slice(0, 6).map((f, i) => (
                 <Rise key={f.q} i={Math.min(i, 5)}>
@@ -471,9 +424,6 @@ export default function HomePage() {
                   </details>
                 </Rise>
               ))}
-            </div>
-            <div className="flex flex-wrap items-center gap-6 mt-12">
-              <a href={shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="on-light inline-flex items-center gap-2 h-14 px-7 bg-secondary text-dark font-bold transition-transform hover:-translate-y-0.5"><FaWhatsapp /> Ask us on WhatsApp</a>
             </div>
           </div>
           <div className="lg:col-start-7 lg:col-span-6 relative">
@@ -506,10 +456,9 @@ export default function HomePage() {
                 <p>Sunday, 10 am – 8 pm</p>
               </div>
             </div>
-            <div className="grid sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-2 mt-auto">
+            <div className="grid grid-cols-2 gap-2 mt-auto">
               <a href={googleBusinessLinks(settings).directions} target="_blank" rel="noopener noreferrer" className="on-light inline-flex items-center justify-center gap-2 h-14 bg-secondary text-[#211114] font-bold transition-transform hover:-translate-y-0.5"><LuNavigation size={18} aria-hidden="true" /> Directions</a>
               <a href="tel:+919787702336" className="inline-flex items-center justify-center gap-2 h-14 bg-white/10 hover:bg-white/20 font-semibold transition-colors"><LuPhone size={18} aria-hidden="true" /> Call</a>
-              <a href={shopWhatsAppLink('Hi Zaro Digitz! Please share your shop location.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 h-14 bg-white/10 hover:bg-white/20 font-semibold transition-colors"><FaWhatsapp size={18} aria-hidden="true" /> Location</a>
             </div>
           </Rise>
           <Rise i={1} className="lg:col-span-7 min-h-[380px] bg-paper2">
@@ -518,28 +467,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* WHATSAPP: talk to a person */}
-      <section className="bg-paper2">
-        <ThoranamSketch className="w-full h-auto text-brand" count={14} />
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-20 grid lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-7">
-            <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Not sure which card? Ask us</Rise>
-            <Rise i={1} as="p" className="text-lg mt-4 max-w-[46ch]">Send your event date, guest count and a colour you like. We reply with three designs and their prices, usually within the hour.</Rise>
-          </div>
-          <Rise i={2} className="lg:col-span-5 lg:justify-self-end">
-            <a href={shopWhatsAppLink('Hi Zaro Digitz! My event date is ___, about ___ guests. Can you suggest three designs?', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 h-16 px-8 bg-[#1F7A4D] text-white text-lg font-bold hover:-translate-y-0.5 transition-transform"><FaWhatsapp size={22} /> Chat on WhatsApp</a>
-          </Rise>
-        </div>
-      </section>
-
-      {/* CLOSE: the idea again, inverted */}
-      <section className="bg-[#211114] dark:bg-black text-[#FBF5EC] min-h-[80svh] lg:min-h-[90svh] flex flex-col justify-between px-4 sm:px-8 py-20">
-        <Rise as="p" className="font-display font-bold tracking-tight leading-[0.92] text-[15vw] lg:text-[10vw] max-w-[12ch]" aria-hidden="true">Your names, on paper</Rise>
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mt-16">
-          <Rise i={1} as="p" className="text-xl max-w-[34ch]">Pick a design today and your proof can be on your phone tomorrow.</Rise>
-          <Rise i={2}><Link to="/cards" className="on-light w-full lg:w-auto inline-flex items-center justify-center h-14 px-10 bg-secondary text-dark font-bold text-lg transition-transform hover:-translate-y-0.5">Choose a design</Link></Rise>
-        </div>
-      </section>
     </div>
   );
 }
