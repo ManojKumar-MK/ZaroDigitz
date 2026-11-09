@@ -41,6 +41,7 @@ import ContactPage from './pages/ContactPage';
 import Seo from './components/Seo';
 import ProductPage from './pages/ProductPage';
 import NotFoundPage from './pages/NotFoundPage';
+import SavedPage from './pages/SavedPage';
 const InvoicePage = lazyWithRetry(() => import('./pages/InvoicePage'), 'invoice');
 
 // Remount the price list when the category changes so search/pagination state resets.
@@ -94,6 +95,7 @@ function AppLayout() {
           <Route path="/cart" element={<><Seo title="Your Cart" path="/cart" noindex /><CartPage /></>} />
           <Route path="/checkout" element={<><Seo title="Checkout" path="/checkout" noindex /><Suspense fallback={<div className="max-w-6xl mx-auto px-4 py-12 text-gray-500 flex items-center gap-3"><span className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" /> Loading checkout…</div>}><CheckoutPage /></Suspense></>} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/saved" element={<SavedPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         </ErrorBoundary>

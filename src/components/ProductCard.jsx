@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { LuShoppingBag } from 'react-icons/lu';
+import { LuHeart, LuShoppingBag } from 'react-icons/lu';
+import { toggleSaved, useSaved } from '../utils/favourites';
 import { productPath } from '../seo/catalog';
 import { flyToCart } from '../utils/flyToCart';
 import { useCart } from '../context/CartContext';
@@ -11,11 +12,12 @@ import { CategorySketch } from './Sketches';
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
 /** A design in a grid or carousel: picture, name, price per piece and one clear action. */
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, previewText = '' }) {
   const { addItem } = useCart();
+  const saved = useSaved().includes(product.code);
   const unit = String(product.per || 'card').replace(/^1\s+/, '');
   return (
-    <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group h-full flex flex-col bg-paper2">
+    <motion.article whileHover={{ y: -6 }} transition={{ duration: 0.25 }} className="group relative h-full flex flex-col bg-paper2">
       <Link to={productPath(product)} className="relative block aspect-[4/5] overflow-hidden bg-paper3/60 text-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary">
         {hasPhoto(product) ? (
           <img
@@ -30,8 +32,24 @@ export default function ProductCard({ product }) {
             <CategorySketch category={product.category} className="w-full h-full transition-transform duration-700 group-hover:scale-[1.06] group-hover:-rotate-2" />
           </div>
         )}
-        <span className="absolute left-4 top-4 text-[13px] font-semibold text-ink/80">{product.category}</span>
+        <span className="absolute left-4 top-4 right-14 text-[13px] font-semibold text-ink/80 truncate">{product.category}</span>
+        {/* "Try your names on every design": the shopper's names set across the design */}
+        {previewText && (
+          <motion.span key={previewText} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="absolute inset-x-[12%] bottom-[16%] text-center font-['Great_Vibes',cursive] text-[clamp(20px,2.2vw,30px)] leading-tight text-primary bg-paper/85 px-2 py-1 break-words">
+            {previewText}
+          </motion.span>
+        )}
       </Link>
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.85 }}
+        onClick={() => toggleSaved(product.code)}
+        aria-pressed={saved}
+        aria-label={saved ? `Remove ${product.name} from saved` : `Save ${product.name}`}
+        className={`absolute right-3 top-3 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${saved ? 'bg-primary text-white' : 'bg-paper/90 text-ink hover:text-primary'}`}
+      >
+        <LuHeart size={18} fill={saved ? 'currentColor' : 'none'} aria-hidden="true" />
+      </motion.button>
 
       <div className="flex-1 flex flex-col p-4 sm:p-5">
         <h3 className="font-display font-semibold text-[17px] leading-snug min-h-[2.6em] line-clamp-2">

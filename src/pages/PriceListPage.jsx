@@ -36,6 +36,9 @@ export default function PriceListPage() {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('featured');
   const [maxPrice, setMaxPrice] = useState('');
+  // "Try your names on every design": shown across every tile in the grid
+  const [names, setNames] = useState(() => { try { return sessionStorage.getItem('digitz-try-names') || ''; } catch { return ''; } });
+  const setTryNames = (v) => { setNames(v); try { sessionStorage.setItem('digitz-try-names', v); } catch { /* ignore */ } };
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -162,6 +165,13 @@ export default function PriceListPage() {
           })}
         </div>
 
+        {/* Try your names on every design */}
+        <div className="mt-6 bg-night text-[#FBF5EC] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3">
+          <label htmlFor="try-names" className="font-display font-bold text-lg shrink-0">Try your names on every design</label>
+          <input id="try-names" value={names} onChange={(e) => setTryNames(e.target.value.slice(0, 40))} placeholder="e.g. Priya & Arjun, or your company name" className="flex-1 h-12 px-4 bg-white/10 text-white placeholder-white/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary" />
+          {names && <button type="button" onClick={() => setTryNames('')} className="h-12 px-4 bg-white/10 hover:bg-white/20 font-semibold">Clear</button>}
+        </div>
+
         {/* Toolbar */}
         <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mt-6 mb-6">
           <div className="relative md:w-80">
@@ -197,12 +207,21 @@ export default function PriceListPage() {
           </div>
         </div>
 
+        {/* Results and active filters */}
+        <div className="flex flex-wrap items-center gap-2 mb-5 text-[15px]" aria-live="polite">
+          <span className="font-semibold mr-2">{filtered.length} {filtered.length === 1 ? 'design' : 'designs'}</span>
+          {routeCategory && <button type="button" onClick={() => navigate('/cards')} className="inline-flex items-center gap-2 h-9 px-3 bg-paper2 hover:bg-paper3">{routeCategory} <span aria-hidden="true">×</span><span className="sr-only">Remove filter</span></button>}
+          {search.trim() && <button type="button" onClick={() => update(() => setSearch(''))} className="inline-flex items-center gap-2 h-9 px-3 bg-paper2 hover:bg-paper3">“{search.trim()}” <span aria-hidden="true">×</span><span className="sr-only">Remove search</span></button>}
+          {maxPrice && <button type="button" onClick={() => update(() => setMaxPrice(''))} className="inline-flex items-center gap-2 h-9 px-3 bg-paper2 hover:bg-paper3">Up to ₹{maxPrice} <span aria-hidden="true">×</span><span className="sr-only">Remove price limit</span></button>}
+          {(routeCategory || search.trim() || maxPrice) && <button type="button" onClick={() => { setSearch(''); setMaxPrice(''); setPage(1); if (routeCategory) navigate('/cards'); }} className="h-9 px-3 font-semibold text-brand underline underline-offset-4">Clear all</button>}
+        </div>
+
         {/* Grid */}
         {shown.length ? (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {shown.map((product, i) => (
               <motion.div key={product.id ?? product.code} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 8) * 0.04 }}>
-                <ProductCard product={product} />
+                <ProductCard product={product} previewText={names.trim()} />
               </motion.div>
             ))}
           </div>

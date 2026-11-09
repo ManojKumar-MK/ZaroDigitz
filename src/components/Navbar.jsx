@@ -6,6 +6,7 @@ import { LuCalendarDays, LuChevronDown, LuHeart, LuMapPin, LuMenu, LuPrinter, Lu
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { useCart } from '../context/CartContext';
 import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
+import { useSaved } from '../utils/favourites';
 import { categoryPath, productPath } from '../seo/catalog';
 import { qtyRules } from '../utils/pricing';
 import { InviteCardSketch, NotebookSketch, CalendarSketch } from './Sketches';
@@ -121,6 +122,7 @@ function CartDrawer({ onClose }) {
 export default function Navbar() {
   const { settings } = useShopSettings();
   const { totalItems } = useCart();
+  const saved = useSaved();
   const location = useLocation();
   const [open, setOpen] = useState(null); // which desktop menu is open
   const [panel, setPanel] = useState(null); // 'search' | 'cart' | 'menu'
@@ -171,6 +173,10 @@ export default function Navbar() {
           <div className="flex items-center justify-end gap-1 whitespace-nowrap">
             <button type="button" aria-label="Search designs" onClick={() => openPanel('search')} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors"><LuSearch size={19} /></button>
             <a href={`https://wa.me/${String(settings.whatsappNumber || '919787702336').replace(/\D/g, '')}?text=${encodeURIComponent('Hi Zaro Digitz! I would like a quote for printing.')}`} target="_blank" rel="noopener noreferrer" className="hidden 2xl:inline-flex items-center h-10 px-5 ml-3 order-last bg-primary text-white text-[15px] font-semibold transition-colors hover:bg-primary-dark">Get a quote</a>
+            <Link to="/saved" aria-label={`Saved designs, ${saved.length}`} className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors">
+              <LuHeart size={19} />
+              {saved.length > 0 && <span className="absolute top-0.5 right-0.5 w-5 h-5 bg-secondary text-[#211114] text-xs rounded-full flex items-center justify-center font-bold">{saved.length}</span>}
+            </Link>
             <button type="button" data-cart-target="nav" aria-label={`Cart, ${totalItems} designs`} onClick={() => openPanel('cart')} className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand transition-colors">
               <LuShoppingBag size={19} />
               {totalItems > 0 && <motion.span key={totalItems} initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-0.5 right-0.5 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center font-bold">{totalItems}</motion.span>}
