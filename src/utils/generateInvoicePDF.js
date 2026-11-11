@@ -174,7 +174,7 @@ export async function generateInvoicePDF(order, invoiceNumberOverride) {
     const mrp = item.mrp ?? item.price;
     const total = item.price * item.quantity;
     // Personalised items list what the customer filled in under the name.
-    const details = (item.personalisation?.summary || []).map((d) => `${d.label}: ${d.value}`).join('\n');
+    const details = [...Object.entries(item.options || {}).map(([k, v]) => `${k}: ${v}`), ...(item.personalisation?.summary || []).map((d) => `${d.label}: ${d.value}`)].join('\n');
     return [i + 1, details ? `${item.name}\n${details}` : item.name, item.quantity, rupee(mrp), rupee(item.price), rupee(total)];
   });
 

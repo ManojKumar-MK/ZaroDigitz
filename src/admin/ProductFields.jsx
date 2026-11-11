@@ -238,10 +238,52 @@ function CardFields({ f, setF }) {
         </Field>
         <Field label="Style"><input className={inputClass} value={f.style || ''} onChange={txt('style')} placeholder="Single card / Gatefold / Box set" /></Field>
       </div>
+      <OptionsEditor f={f} setF={setF} />
       <Field label="Printing note (optional)"><input className={inputClass} value={f.printingNote || ''} onChange={txt('printingNote')} placeholder="Printing on one side included. Envelope printing ₹2 extra." /></Field>
       <Field label="More photos (links, one per line)" hint="Shown in the product gallery after the main photo.">
         <textarea className={`${inputClass} h-auto min-h-[64px] py-2`} value={images.join('\n')} onChange={(e) => setF({ ...f, images: e.target.value.split('\n').map((u) => u.trim()).filter(Boolean) })} placeholder="https://…" />
       </Field>
+    </div>
+  );
+}
+
+/**
+ * Configure & price: option groups the customer picks on the product page (Paper, Printed side,
+ * Finish…). Each choice can add to the price per piece. A switch shows or hides them on the site.
+ */
+function OptionsEditor({ f, setF }) {
+  const groups = Array.isArray(f.options) ? f.options : [];
+  const setGroups = (next) => setF({ ...f, options: next });
+  const setGroup = (gi, patch) => setGroups(groups.map((g, i) => (i === gi ? { ...g, ...patch } : g)));
+  const setChoice = (gi, ci, patch) => setGroup(gi, { choices: groups[gi].choices.map((c, j) => (j === ci ? { ...c, ...patch } : c)) });
+  return (
+    <div className="rounded-lg ring-1 ring-zinc-200 dark:ring-zinc-700 p-3 space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Options (Configure &amp; price)</span>
+        <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+          <Toggle size="sm" tone="green" checked={f.showOptions !== false} onChange={(v) => setF({ ...f, showOptions: v })} label="Show options on the website" />
+          Show on website
+        </label>
+      </div>
+      {groups.map((g, gi) => (
+        <div key={gi} className="rounded-lg bg-zinc-50 dark:bg-zinc-800/60 p-3 space-y-2">
+          <div className="flex gap-2">
+            <input className={inputClass} value={g.name} onChange={(e) => setGroup(gi, { name: e.target.value })} placeholder="Option name, e.g. Paper" aria-label="Option name" />
+            <Button variant="ghost" icon={FiTrash2} onClick={() => setGroups(groups.filter((_, i) => i !== gi))} aria-label="Remove option" />
+          </div>
+          {g.choices.map((c, ci) => (
+            <div key={ci} className="flex items-center gap-2 text-sm">
+              <input className={inputClass} value={c.label} onChange={(e) => setChoice(gi, ci, { label: e.target.value })} placeholder={ci === 0 ? 'First choice is the default' : 'Choice'} aria-label="Choice" />
+              <span className="text-zinc-500 whitespace-nowrap">+₹</span>
+              <input type="number" min="0" step="0.05" className={`${inputClass} w-24`} value={c.add ?? 0} onChange={(e) => setChoice(gi, ci, { add: Number(e.target.value) || 0 })} aria-label="Extra price per piece" />
+              <Button variant="ghost" icon={FiTrash2} onClick={() => setGroup(gi, { choices: g.choices.filter((_, j) => j !== ci) })} aria-label="Remove choice" />
+            </div>
+          ))}
+          <Button size="sm" variant="secondary" onClick={() => setGroup(gi, { choices: [...g.choices, { label: '', add: 0 }] })}>+ Add choice</Button>
+        </div>
+      ))}
+      <Button size="sm" variant="secondary" onClick={() => setGroups([...groups, { name: '', choices: [{ label: '', add: 0 }, { label: '', add: 0 }] }])}>+ Add option</Button>
+      <p className="text-xs text-zinc-500">The first choice is selected by default. Extra price is per piece and is added to the design's price.</p>
     </div>
   );
 }

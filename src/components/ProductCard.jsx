@@ -5,6 +5,7 @@ import { toggleSaved, useSaved } from '../utils/favourites';
 import { productPath } from '../seo/catalog';
 import { flyToCart } from '../utils/flyToCart';
 import { useCart } from '../context/CartContext';
+import { defaultOptions } from '../utils/pricing';
 import { PLACEHOLDER_IMAGE } from '../data/products';
 import { hasPhoto } from './sketchFor';
 import { CategorySketch } from './Sketches';
@@ -61,7 +62,7 @@ export default function ProductCard({ product, previewText = '' }) {
         <motion.button
           type="button"
           whileTap={{ scale: 0.97 }}
-          onClick={(e) => { addItem({ ...product, quantity: 1 }); flyToCart(e.currentTarget.closest('.group')?.querySelector('img, svg') || e.currentTarget); }}
+          onClick={(e) => { addItem({ ...product, ...defaultOptions(product), quantity: 1 }); flyToCart(e.currentTarget.closest('.group')?.querySelector('img, svg') || e.currentTarget); }}
           className="mt-4 h-11 w-full inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold transition-colors hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-secondary"
         >
           <LuShoppingBag size={17} aria-hidden="true" /> Add to cart

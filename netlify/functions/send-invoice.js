@@ -27,6 +27,7 @@ function buildOrderMessage(order) {
     'Items:',
     ...cart.flatMap((item) => [
       `• ${item.name} x${item.quantity} — ${formatCurrency(item.price * item.quantity)}`,
+      ...Object.entries(item.options || {}).map(([k, v]) => `   ${escapeHtml(k)}: ${escapeHtml(v)}`),
       ...((item.personalisation?.summary || []).map((s) => `   ${escapeHtml(s.label)}: ${escapeHtml(s.value)}`)),
     ]),
     '',

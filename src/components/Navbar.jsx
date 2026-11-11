@@ -92,7 +92,8 @@ function CartDrawer({ onClose }) {
                 <img src={item.image || PLACEHOLDER_IMAGE} alt="" className="w-16 h-20 object-cover bg-paper2 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold truncate">{item.name}</p>
-                  <p className="text-sm">{money(item.price)} per card</p>
+                  <p className="text-sm">{money(item.price)} each</p>
+                  {item.options && <p className="text-xs text-ink/70">{Object.values(item.options).join(' · ')}</p>}
                   <div className="flex items-center justify-between mt-2">
                     <div className="inline-flex items-center bg-paper2">
                       <button type="button" aria-label="Fewer" onClick={() => (item.quantity <= min ? removeItem(item.id) : updateQuantity(item.id, item.quantity - step))} className="w-9 h-9 flex items-center justify-center hover:text-brand"><FiMinus /></button>

@@ -19,7 +19,7 @@ import { absoluteUrl, breadcrumbSchema, SITE_URL, safeUrl } from '../seo/site';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { flyToCart } from '../utils/flyToCart';
-import { clampQty, priceForQty, qtyRules } from '../utils/pricing';
+import { clampQty, priceForQty, qtyRules, optionGroups } from '../utils/pricing';
 
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
@@ -51,6 +51,7 @@ export default function ProductPage() {
   const [added, setAdded] = useState(false);
   const [template, setTemplate] = useState(null); // personalisation layout, when the design has one
   const [personalising, setPersonalising] = useState(false);
+  const [picks, setPicks] = useState({}); // option group name -> chosen index
   const { addItem } = useCart();
   const { settings } = useShopSettings();
 
@@ -81,7 +82,12 @@ export default function ProductPage() {
   const meta = productMeta(product);
   const { min, step } = qtyRules(product);
   const quantity = qty ?? min;
-  const unitPrice = offer == null ? null : priceForQty({ ...product, price: offer }, quantity);
+  // Configure & price: one choice per option group; each choice can add to the price per piece.
+  const groups = optionGroups(product);
+  const chosen = groups.map((g) => g.choices[Math.min(picks[g.name] ?? 0, g.choices.length - 1)]);
+  const optionsAdd = chosen.reduce((sum, c) => sum + (Number(c.add) || 0), 0);
+  const optionsPicked = Object.fromEntries(groups.map((g, i) => [g.name, chosen[i].label]));
+  const unitPrice = offer == null ? null : priceForQty({ ...product, price: offer, optionsAdd }, quantity);
   const unit = String(product.per || 'card').replace(/^1\s+/, '');
   const images = [...new Set([product.image, ...(product.images || [])].filter(Boolean))];
   if (!images.length) images.push(PLACEHOLDER_IMAGE);
@@ -135,7 +141,8 @@ export default function ProductPage() {
 
   const handleAdd = (e) => {
     if (offer == null) return;
-    addItem({ ...product, price: offer, basePrice: offer, quantity });
+    const key = groups.length ? `::${Object.values(optionsPicked).join('|')}` : '';
+    addItem({ ...product, id: `${product.id}${key}`, price: offer, basePrice: offer, optionsAdd, options: groups.length ? optionsPicked : undefined, quantity });
     flyToCart(document.querySelector('[data-product-image]') || e?.currentTarget);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
@@ -228,6 +235,29 @@ export default function ProductPage() {
             </div>
             {offer != null && <p className="text-xs text-gray-500 mt-1">Prices include printing of your names and wording. Courier extra.</p>}
 
+
+            {offer != null && groups.length > 0 && (
+              <div className="mt-6 bg-paper2 p-4 sm:p-5">
+                <p className="font-display font-bold text-lg">Configure &amp; price</p>
+                <div className="mt-3 space-y-4">
+                  {groups.map((g) => (
+                    <div key={g.name}>
+                      <p className="text-sm font-semibold mb-2">{g.name}</p>
+                      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={g.name}>
+                        {g.choices.map((c, ci) => {
+                          const on = (picks[g.name] ?? 0) === ci;
+                          return (
+                            <button key={c.label} type="button" role="radio" aria-checked={on} onClick={() => setPicks({ ...picks, [g.name]: ci })} className={`min-h-[40px] px-3 py-2 text-sm font-medium text-left transition-colors ${on ? 'bg-primary text-white' : 'bg-paper hover:bg-paper3'}`}>
+                              {c.label}{Number(c.add) ? <span className={on ? 'text-white/85' : 'text-brand'}> +₹{Number(c.add)}</span> : null}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {offer != null && (
               <div className="mt-6">

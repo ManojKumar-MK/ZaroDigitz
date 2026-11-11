@@ -64,6 +64,7 @@ export default function CartPage() {
                   <div className="text-xs text-gray-400 ">{item.code}</div>
                   <div className="font-bold text-dark text-base truncate">{item.name}</div>
                   <div className="text-xs text-gray-400">{item.category}</div>
+                  {item.options && <div className="text-xs text-gray-600 mt-0.5">{Object.entries(item.options).map(([k, v]) => `${k}: ${v}`).join(' · ')}</div>}
                   <div className="font-black text-primary text-lg mt-1">₹{item.price} <span className="text-xs font-normal text-gray-400">per {String(item.per || 'card').replace(/^1\s+/, '')}</span></div>
                 </div>
                 <div className="flex flex-col items-end gap-3">

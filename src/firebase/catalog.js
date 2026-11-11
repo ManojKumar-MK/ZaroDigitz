@@ -38,7 +38,9 @@ export const DEFAULT_SETTINGS = {
 
 const PRODUCT_FIELDS = ['name', 'tamil', 'category', 'brand', 'per', 'unit', 'mrp', 'offerPrice', 'image', 'active', 'sortOrder', 'description', 'seoTitle', 'seoDescription',
   // cards: quantity rules, bulk prices, specs and extra photos
-  'minQty', 'qtyStep', 'tiers', 'material', 'size', 'orientation', 'style', 'printingNote', 'images'];
+  'minQty', 'qtyStep', 'tiers', 'material', 'size', 'orientation', 'style', 'printingNote', 'images',
+  // configure & price: option groups with per-piece add-ons, and a switch to show them
+  'options', 'showOptions'];
 
 /** Strip a product down to the fields stored in Firestore. */
 export function toProductDoc(product) {

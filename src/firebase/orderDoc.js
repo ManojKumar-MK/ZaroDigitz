@@ -43,6 +43,7 @@ export function buildOrderDocument(snapshot, { invoiceNumber, telegram, orderNum
     quantity: Number(item.quantity) || 0,
     lineTotal: (Number(item.price) || 0) * (Number(item.quantity) || 0),
     ...(item.custom ? { custom: true } : {}),
+    ...(item.options ? { options: item.options } : {}),
     ...(item.personalisation ? { personalisation: { token: item.personalisation.token || null, summary: item.personalisation.summary || [] } } : {}),
   }));
   const mobile = String(form.mobile || '').replace(/\D/g, '');
