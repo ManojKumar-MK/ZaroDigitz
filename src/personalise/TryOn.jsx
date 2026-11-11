@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { LuCamera, LuImageUp, LuRotateCw } from 'react-icons/lu';
+import { useLang } from '../i18n/context';
 
 /*
  * Try it before ordering: the personalised design placed in a scene that tilts with the
@@ -16,6 +17,7 @@ const SCENES = {
 };
 
 export function SceneView({ src, kind = 'wedding' }) {
+  const { t } = useLang();
   const s = SCENES[kind] || SCENES.wedding;
   const px = useMotionValue(0);
   const py = useMotionValue(0);
@@ -40,15 +42,16 @@ export function SceneView({ src, kind = 'wedding' }) {
       {(kind === 'diary' || kind === 'notebook') && <div className="absolute left-[16%] bottom-[18%] w-[26%] h-[2.2%] bg-[#211114] rounded-full" style={{ transform: 'rotate(-18deg)' }} aria-hidden="true" />}
 
       <motion.div className="absolute left-1/2 -translate-x-1/2" style={{ bottom: s.bottom, width: s.width, rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }}>
-        <img src={src} alt="Your design in a room" className="w-full h-auto block" style={{ transform: s.tilt, transformOrigin: 'bottom center', boxShadow: '0 30px 40px -10px rgba(0,0,0,0.45)' }} draggable="false" />
+        <img src={src} alt={t('Your design in a room')} className="w-full h-auto block" style={{ transform: s.tilt, transformOrigin: 'bottom center', boxShadow: '0 30px 40px -10px rgba(0,0,0,0.45)' }} draggable="false" />
       </motion.div>
-      <p className="absolute left-4 top-4 bg-black/55 text-white text-sm font-semibold px-3 py-1.5">{s.label} · move to tilt</p>
+      <p className="absolute left-3 top-3 bg-ink/80 text-paper text-[14px] font-semibold px-3 py-1.5">{t(s.label)} · {t('move to tilt')}</p>
     </div>
   );
 }
 
 /** The design over the live camera (or an uploaded photo of the customer's space). */
 export function CameraView({ src, name = 'design' }) {
+  const { t } = useLang();
   const box = useRef(null);
   const video = useRef(null);
   const [stream, setStream] = useState(null);
@@ -66,7 +69,7 @@ export function CameraView({ src, name = 'design' }) {
       setStream(s);
       setBg(null);
     } catch {
-      setError('The camera is not available. Upload a photo of your table or wall instead.');
+      setError(t('The camera is not available. Upload a photo of your table or wall instead.'));
     }
   };
   useEffect(() => { if (video.current && stream) video.current.srcObject = stream; }, [stream]);
@@ -115,19 +118,19 @@ export function CameraView({ src, name = 'design' }) {
         {stream && <video ref={video} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-cover" />}
         {bg && <img src={bg} alt="" className="absolute inset-0 w-full h-full object-cover" />}
         {!live && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center text-[#FBF5EC]">
-            <p className="text-lg max-w-[34ch]">See your design on your own table or wall. Nothing is uploaded; it stays on your phone.</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center text-paper">
+            <p className="text-lg max-w-[34ch]">{t('See your design on your own table or wall. Nothing is uploaded; it stays on your phone.')}</p>
             <div className="flex flex-wrap justify-center gap-2">
-              <button type="button" onClick={start} className="inline-flex items-center gap-2 h-12 px-5 bg-secondary text-[#211114] font-bold"><LuCamera size={18} aria-hidden="true" /> Open camera</button>
-              <label className="inline-flex items-center gap-2 h-12 px-5 bg-white/10 hover:bg-white/20 font-semibold cursor-pointer"><LuImageUp size={18} aria-hidden="true" /> Use a photo<input type="file" accept="image/*" className="sr-only" onChange={(e) => onUpload(e.target.files?.[0])} /></label>
+              <button type="button" onClick={start} className="inline-flex items-center gap-2 h-12 px-5 bg-primary text-white font-bold hover:bg-primary-dark transition-colors"><LuCamera size={18} aria-hidden="true" /> {t('Open camera')}</button>
+              <label className="inline-flex items-center gap-2 h-12 px-5 bg-white/10 hover:bg-white/20 font-semibold cursor-pointer"><LuImageUp size={18} aria-hidden="true" /> {t('Use a photo')}<input type="file" accept="image/*" className="sr-only" onChange={(e) => onUpload(e.target.files?.[0])} /></label>
             </div>
-            {error && <p className="text-sm text-[rgb(var(--accent-light-rgb))]">{error}</p>}
+            {error && <p className="text-[15px] text-[rgb(var(--accent-light-rgb))]">{error}</p>}
           </div>
         )}
         {live && (
           <motion.img
             src={src}
-            alt="Your design"
+            alt={t('Your design')}
             drag
             dragConstraints={box}
             dragElastic={0.1}
@@ -138,13 +141,13 @@ export function CameraView({ src, name = 'design' }) {
         )}
       </div>
       {live && (
-        <div className="grid sm:grid-cols-[1fr_1fr_auto] gap-3 items-end text-sm">
-          <label className="grid gap-1">Size<input type="range" min="0.4" max="2" step="0.02" value={scale} onChange={(e) => setScale(Number(e.target.value))} /></label>
-          <label className="grid gap-1"><span className="inline-flex items-center gap-1"><LuRotateCw size={14} aria-hidden="true" /> Turn</span><input type="range" min="-45" max="45" step="1" value={rot} onChange={(e) => setRot(Number(e.target.value))} /></label>
-          <button type="button" onClick={snap} className="inline-flex items-center justify-center gap-2 h-12 px-5 bg-primary text-white font-bold hover:bg-primary-dark transition-colors"><LuCamera size={18} aria-hidden="true" /> Take photo</button>
+        <div className="grid sm:grid-cols-[1fr_1fr_auto] gap-3 items-end text-[15px]">
+          <label className="grid gap-1">{t('Size')}<input type="range" min="0.4" max="2" step="0.02" value={scale} onChange={(e) => setScale(Number(e.target.value))} /></label>
+          <label className="grid gap-1"><span className="inline-flex items-center gap-1"><LuRotateCw size={14} aria-hidden="true" /> {t('Turn')}</span><input type="range" min="-45" max="45" step="1" value={rot} onChange={(e) => setRot(Number(e.target.value))} /></label>
+          <button type="button" onClick={snap} className="inline-flex items-center justify-center gap-2 h-12 px-5 bg-primary text-white font-bold hover:bg-primary-dark transition-colors"><LuCamera size={18} aria-hidden="true" /> {t('Take photo')}</button>
         </div>
       )}
-      {live && <p className="text-sm">Drag the design into place. Then take a photo to keep or share it.</p>}
+      {live && <p className="text-[15px]">{t('Drag the design into place. Then take a photo to keep or share it.')}</p>}
     </div>
   );
 }

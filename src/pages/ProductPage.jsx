@@ -317,7 +317,7 @@ export default function ProductPage() {
 
         {related.length > 0 && (
           <section className="mt-24 lg:mt-40">
-            <div className="flex items-end justify-between gap-6">
+            <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
               <h2 className="font-display font-extrabold tracking-[-0.05em] leading-[1.02] text-[clamp(28px,3vw,44px)]">{t('More {category}', { category: cat(product.category) })}</h2>
               <Link to={categoryPath(product.category)} className="text-lg font-semibold text-primary underline underline-offset-4 shrink-0">{t('See all')}</Link>
             </div>
