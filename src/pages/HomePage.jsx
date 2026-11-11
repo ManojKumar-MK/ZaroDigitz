@@ -279,7 +279,7 @@ export default function HomePage() {
   const [catalogProducts, setCatalogProducts] = useState(() => getCatalogProducts());
   // The live card: what the visitor types appears on the invitation as they type.
   // The live preview: a 2027 calendar first (the season's focus), then diary and wedding card.
-  const [mode, setMode] = useState('calendar');
+  const [modePick, setMode] = useState('calendar');
   const [live, setLive] = useState({});
 
   useEffect(() => {
@@ -296,6 +296,10 @@ export default function HomePage() {
   const printing = useMemo(() => priced.filter((p) => !isCard(p)).slice(0, 10), [priced]); // eslint-disable-line react-hooks/exhaustive-deps
   const budget = useMemo(() => priced.filter(isCard).sort((a, b) => a.price - b.price).slice(0, 10), [priced]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Admin → Settings → Home page: which sections and hero tabs are shown (all on by default).
+  const show = (key) => settings.homeSections?.[key] !== false;
+  const heroModes = ['calendar', 'diary', 'wedding'].filter((m) => settings.heroTabs?.[m] !== false);
+  const mode = heroModes.includes(modePick) ? modePick : (heroModes[0] || 'calendar');
   const proofHref = shopWhatsAppLink(`Hi Zaro Digitz! ${LIVE_MODES[mode].proof(liveValues(mode, live))}`, settings.whatsappNumber);
 
 
@@ -328,7 +332,7 @@ export default function HomePage() {
           {/* The live thing: put your own name on it */}
           <form className="bg-night text-white p-6 sm:p-8" onSubmit={(e) => { e.preventDefault(); window.open(proofHref, '_blank', 'noopener'); }}>
             <div role="tablist" aria-label="Choose what to preview" className="flex flex-wrap gap-2">
-              {['calendar', 'diary', 'wedding'].map((m) => (
+              {heroModes.map((m) => (
                 <button key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => { setMode(m); setLive({}); }} className={`h-10 px-4 font-semibold transition-colors ${mode === m ? 'bg-secondary text-[#211114]' : 'bg-white/10 hover:bg-white/20'}`}>{LIVE_MODES[m].label}</button>
               ))}
             </div>
@@ -349,6 +353,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {show('benefits') && (<>
       {/* BENEFITS: the four promises, moving slowly */}
       <div className="bg-secondary text-[#211114] overflow-hidden py-4" aria-label="Our promises">
         <div className="marquee-wrapper">
@@ -358,6 +363,8 @@ export default function HomePage() {
         </div>
       </div>
 
+      </>)}
+      {show('newyear') && (<>
       {/* NEW YEAR 2027: the season's main work */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 lg:pt-32">
         <div className="grid lg:grid-cols-12 gap-6 items-end">
@@ -400,12 +407,16 @@ export default function HomePage() {
         <Rail id="rail-yearly" items={yearly} />
       </section>
 
+      </>)}
+      {show('favourites') && (<>
       {/* FAVOURITES: designs people order most, gentlest prices first */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 lg:pt-32 grid grid-cols-[1fr_auto] items-end gap-y-2">
         <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Customer favourites</Rise>
         <Rail id="rail-favourites" items={favourites} />
       </section>
 
+      </>)}
+      {show('services') && (<>
       {/* SERVICES: everything on the shop sign, one tap away */}
       <section className="bg-night text-[#FBF5EC] py-24 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -426,12 +437,16 @@ export default function HomePage() {
         </div>
       </section>
 
+      </>)}
+      {show('printing') && (<>
       {/* PRINTING FAVOURITES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 pt-24 lg:pt-32 pb-8 grid grid-cols-[1fr_auto] items-end gap-y-2">
         <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Printing favourites</Rise>
         <Rail id="rail-printing" items={printing} />
       </section>
 
+      </>)}
+      {show('traditions') && (<>
       {/* TRADITIONS: every kind of card, drawn */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32">
         <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Browse by tradition and style</Rise>
@@ -448,6 +463,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      </>)}
+      {show('numbers') && (<>
       {/* NUMBERS: the facts of the order */}
       <section className="bg-secondary text-[#211114]">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-14 grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -460,18 +477,26 @@ export default function HomePage() {
         </div>
       </section>
 
+      </>)}
+      {show('timeline') && (<>
       {/* HOW IT WORKS: a timeline that fills as you scroll */}
       <Timeline />
 
+      </>)}
+      {show('budget') && (<>
       {/* BUDGET: lovely cards at gentle prices */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32 grid grid-cols-[1fr_auto] items-end gap-y-2">
         <Rise as="h2" className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">Budget-friendly wedding cards</Rise>
         <Rail id="rail-budget" items={budget} />
       </section>
 
+      </>)}
+      {show('reviews') && (<>
       {/* REVIEWS: real Google reviews (hidden until there are some) */}
       <GoogleReviews />
 
+      </>)}
+      {show('faq') && (<>
       {/* FAQ beside the photographs */}
       <section id="faq" className="scroll-mt-28 bg-night text-white py-24 lg:pt-0 lg:pb-40 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 grid lg:grid-cols-12 gap-12">
@@ -498,6 +523,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      </>)}
+      {show('visit') && (<>
       {/* VISIT: the studio on Maruthu Pandiyar Mettu Street */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32">
         <div className="grid lg:grid-cols-12 gap-6 items-end mb-10">
@@ -532,6 +559,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      </>)}
     </div>
   );
 }

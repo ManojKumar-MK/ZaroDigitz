@@ -8,6 +8,7 @@ import { ADMIN_EMAILS } from '../../firebase/client';
 import DataMigrationCard from '../DataMigrationCard';
 import InvoiceNumbersCard from '../InvoiceNumbersCard';
 import BrandColorsCard from '../BrandColorsCard';
+import HomeSectionsCard from '../HomeSectionsCard';
 import WatermarkCard from '../WatermarkCard';
 import { Button, Card, Field, inputClass, inr } from '../ui';
 import { computeCharges, DEFAULT_CHARGES, DEFAULT_CHARGES_NOTE } from '../../data/charges';
@@ -174,6 +175,7 @@ export default function Settings() {
         )}
       </Card>
 
+      <HomeSectionsCard />
       <BrandColorsCard />
       <WatermarkCard />
       <InvoiceNumbersCard />
