@@ -26,7 +26,7 @@ export default function CartPage() {
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 py-20">
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}>
           <LuShoppingCart size={44} className="mx-auto mb-6 text-primary" aria-hidden="true" />
-          <h1 className="font-display font-bold tracking-[-0.03em] text-[clamp(32px,3.6vw,52px)] leading-[1.02]">Your cart is empty</h1>
+          <h1 className="font-display font-extrabold tracking-[-0.05em] text-[clamp(32px,3.6vw,52px)] leading-[1.02]">Your cart is empty</h1>
           <p className="text-xl mt-4 mb-10">Pick a calendar, a diary or any design to start.</p>
           <Link to="/cards" className="inline-flex items-center gap-2 h-14 px-8 bg-primary text-white text-[17px] font-bold hover:bg-primary-dark transition-colors">
             See all designs <FiArrowRight />
@@ -37,10 +37,10 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pt-10 pb-24 lg:pb-32">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 pt-10 pb-24 lg:pb-32">
       <div className="flex items-end justify-between gap-6 mb-10">
         <div>
-          <h1 className="font-display font-bold tracking-[-0.04em] leading-[0.98] text-primary text-[clamp(40px,5vw,72px)]">Your cart</h1>
+          <h1 className="font-display font-extrabold tracking-[-0.05em] leading-[0.9] text-[clamp(40px,5vw,72px)]">Your cart</h1>
           <p className="text-xl mt-3">{totalItems} design{totalItems !== 1 ? 's' : ''}, printed after you approve a proof on WhatsApp.</p>
         </div>
         <button onClick={clearCart} className="text-[17px] font-semibold underline underline-offset-4 hover:text-primary transition-colors shrink-0">Empty the cart</button>

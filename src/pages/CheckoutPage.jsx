@@ -278,7 +278,7 @@ export default function CheckoutPage() {
           >
             <FiCheckCircle size={48} className="text-green-500" />
           </motion.div>
-          <h1 className="font-display font-bold tracking-[-0.03em] text-[clamp(32px,3.6vw,52px)] leading-[1.02] mb-4">Your order is placed</h1>
+          <h1 className="font-display font-extrabold tracking-[-0.05em] text-[clamp(32px,3.6vw,52px)] leading-[1.02] mb-4">Your order is placed</h1>
           <p className="text-ink/75 mb-6 leading-relaxed">
             Thank you for your order! Our team will contact you on <strong>{form.mobile}</strong> to confirm delivery details.
           </p>
@@ -371,7 +371,7 @@ export default function CheckoutPage() {
       <div className="min-h-[60vh] flex items-center justify-center text-center px-4">
         <div>
           <div className="mx-auto w-20 h-20 mb-5 rounded-full bg-primary/10 text-primary flex items-center justify-center"><LuShoppingCart size={36} /></div>
-          <h1 className="font-display font-bold tracking-[-0.03em] text-[clamp(32px,3.6vw,52px)] leading-[1.02] mb-4">Your cart is empty</h1>
+          <h1 className="font-display font-extrabold tracking-[-0.05em] text-[clamp(32px,3.6vw,52px)] leading-[1.02] mb-4">Your cart is empty</h1>
           <Link to="/cards" className="text-primary hover:underline font-medium">Browse Products</Link>
         </div>
       </div>
@@ -383,7 +383,7 @@ export default function CheckoutPage() {
       <div className="min-h-[60vh] flex items-center justify-center text-center px-4">
         <div className="max-w-md">
           <div className="mx-auto w-20 h-20 mb-5 rounded-full bg-primary/10 text-primary flex items-center justify-center"><LuReceiptText size={36} /></div>
-          <h1 className="font-display font-bold tracking-[-0.03em] text-[clamp(32px,3.6vw,52px)] leading-[1.02] mb-4">Add a little more to order</h1>
+          <h1 className="font-display font-extrabold tracking-[-0.05em] text-[clamp(32px,3.6vw,52px)] leading-[1.02] mb-4">Add a little more to order</h1>
           <p className="text-ink/75 mb-3">Checkout is available only for orders above ₹{MIN_CHECKOUT_AMOUNT.toLocaleString()}.</p>
           <p className="text-[15px] text-ink/75 mb-8">Current cart total: ₹{totalAmount.toLocaleString()}</p>
           <div className="flex items-center justify-center gap-4">
@@ -404,8 +404,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pt-10 pb-24 lg:pb-32">
-      <h1 className="font-display font-bold tracking-[-0.04em] leading-[0.98] text-primary text-[clamp(40px,5vw,72px)]">Checkout</h1>
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 pt-10 pb-24 lg:pb-32">
+      <h1 className="font-display font-extrabold tracking-[-0.05em] leading-[0.9] text-[clamp(40px,5vw,72px)]">Checkout</h1>
       <p className="text-xl mt-3 mb-10 max-w-[52ch]">Your details for delivery. We send a proof on WhatsApp and print only after you approve it.</p>
       {settings.acceptingOrders === false && (
         <div className="mb-6 bg-amber-50 text-amber-900 px-5 py-4 text-[15px]">

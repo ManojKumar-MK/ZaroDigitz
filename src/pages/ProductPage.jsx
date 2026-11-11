@@ -178,7 +178,7 @@ export default function ProductPage() {
         jsonLd={[breadcrumbSchema(crumbs), productSchema]}
       />
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pt-6 pb-24 lg:pb-32">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 pt-6 pb-24 lg:pb-32">
         <Breadcrumbs items={crumbs} />
 
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 mt-6">
@@ -212,7 +212,7 @@ export default function ProductPage() {
 
           {/* Details */}
           <div className="lg:col-span-5">
-            <h1 className="font-display font-bold tracking-[-0.03em] leading-[1.02] text-[clamp(34px,3.6vw,56px)]">{product.name}</h1>
+            <h1 className="font-display font-extrabold tracking-[-0.05em] leading-[1.02] text-[clamp(34px,3.6vw,56px)]">{product.name}</h1>
             <p className="text-xl mt-3">{product.category}, printed with your name in our Sivakasi studio.</p>
             {product.tamil && <p className="mt-2 text-xl" lang="ta">{product.tamil}</p>}
 
@@ -311,7 +311,7 @@ export default function ProductPage() {
         {related.length > 0 && (
           <section className="mt-24 lg:mt-40">
             <div className="flex items-end justify-between gap-6">
-              <h2 className="font-display font-bold tracking-[-0.03em] leading-[1.02] text-[clamp(28px,3vw,44px)]">More {product.category.toLowerCase()}</h2>
+              <h2 className="font-display font-extrabold tracking-[-0.05em] leading-[1.02] text-[clamp(28px,3vw,44px)]">More {product.category.toLowerCase()}</h2>
               <Link to={categoryPath(product.category)} className="text-lg font-semibold text-primary underline underline-offset-4 shrink-0">See all</Link>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-5 mt-10">

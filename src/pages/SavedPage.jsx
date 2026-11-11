@@ -15,8 +15,8 @@ export default function SavedPage() {
   return (
     <div className="bg-paper text-ink">
       <Seo title="Saved designs" path="/saved" noindex />
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pt-10 pb-24 lg:pb-32">
-        <h1 className="font-display font-bold tracking-[-0.04em] leading-[0.98] text-primary text-[clamp(40px,5vw,72px)]">Saved designs</h1>
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 pt-10 pb-24 lg:pb-32">
+        <h1 className="font-display font-extrabold tracking-[-0.05em] leading-[0.9] text-[clamp(40px,5vw,72px)]">Saved designs</h1>
         <p className="text-xl mt-4 max-w-[52ch]">{items.length ? 'Your favourites, side by side. Tap the heart again to remove one.' : 'Tap the heart on any design to save it here and compare later.'}</p>
         {items.length ? (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-5 mt-12">

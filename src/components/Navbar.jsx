@@ -136,14 +136,13 @@ export default function Navbar() {
     <>
     <header className="sticky top-0 z-50">
       <nav className="relative bg-paper text-ink" onMouseLeave={() => setOpen(null)} aria-label="Main">
-        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 xl:px-12 h-20 grid grid-cols-[1fr_auto] xl:grid-cols-[auto_1fr_auto] items-center gap-4 xl:gap-8">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 h-[72px] grid grid-cols-[1fr_auto] xl:grid-cols-[auto_1fr_auto] items-center gap-4 xl:gap-8">
           <div className="flex items-center gap-2">
             <button type="button" aria-label="Open menu" className="xl:hidden w-11 h-11 -ml-2 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand" onClick={() => openPanel('menu')}><LuMenu size={22} /></button>
             <Link to="/" className="flex items-center gap-3 group">
-              <img src="/zaro-logo-112.webp" width="52" height="52" alt="" className="w-12 h-12 sm:w-[52px] sm:h-[52px] object-contain transition-transform duration-500 group-hover:scale-105" />
+              <img src="/zaro-logo-112.webp" width="40" height="40" alt="" className="w-10 h-10 object-contain" />
               <span className="leading-tight">
-                <span className="block font-display font-bold text-lg sm:text-xl text-brand whitespace-nowrap">ZARO Digitz</span>
-                <span className="hidden sm:block xl:hidden 2xl:block text-sm mt-0.5 whitespace-nowrap">Digital Color Prints</span>
+                <span className="block font-display font-extrabold text-xl tracking-[-0.03em] whitespace-nowrap">ZARO Digitz</span>
               </span>
             </Link>
           </div>
@@ -151,14 +150,14 @@ export default function Navbar() {
           <ul className="hidden xl:flex items-center justify-center gap-0.5 whitespace-nowrap min-w-0">
             {MENUS.map((m) => (
               <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
-                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(m.label)} className={`relative h-20 px-3.5 inline-flex items-center gap-2 text-[17px] font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
+                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(m.label)} className={`relative h-[72px] px-3.5 inline-flex items-center gap-2 text-[16px] font-semibold transition-colors ${open === m.label ? 'text-primary' : 'hover:text-primary'}`}>
                   {m.label}<LuChevronDown size={15} className={`opacity-70 transition-transform ${open === m.label ? 'rotate-180' : ''}`} aria-hidden="true" />
                   {open === m.label && <motion.span layoutId="nav-open" className="absolute left-3.5 right-3.5 bottom-0 h-[3px] bg-secondary" />}
                 </button>
               </li>
             ))}
             {LINKS.map((l) => (
-              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-20 px-3.5 inline-flex items-center gap-2 text-[17px] font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}>{l.label}</Link></li>
+              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-[72px] px-3.5 inline-flex items-center gap-2 text-[16px] font-semibold transition-colors ${location.pathname === l.to ? 'text-primary' : 'hover:text-primary'}`}>{l.label}</Link></li>
             ))}
           </ul>
 
@@ -182,7 +181,7 @@ export default function Navbar() {
             <motion.div key={open} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="hidden xl:block absolute inset-x-0 top-full bg-paper2 text-ink">
               {MENUS.filter((m) => m.label === open).map((m) => (
                 <div key={m.label} className="max-w-[1440px] mx-auto px-12 py-12 grid grid-cols-12 gap-x-8 gap-y-6">
-                  <p className="col-span-12 -mb-3 font-display font-bold text-[22px] text-brand">{m.label}</p>
+                  <p className="col-span-12 -mb-3 font-display font-extrabold text-[28px] tracking-[-0.04em]">{m.label}</p>
                   <ul className={`col-span-12 grid ${m.items.length > 8 ? 'grid-cols-4' : 'grid-cols-3'} gap-x-10 gap-y-3`}>
                     {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={() => setOpen(null)} className="text-lg hover:text-brand hover:translate-x-1 inline-block transition-transform">{c}</Link></li>)}
                     <li className="col-span-full mt-3"><Link to="/cards" onClick={() => setOpen(null)} className="font-semibold text-brand underline underline-offset-4">See every design</Link></li>
@@ -201,7 +200,7 @@ export default function Navbar() {
           <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60 xl:hidden" onClick={close}>
             <motion.aside initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute left-0 top-0 h-full w-[86%] max-w-sm bg-paper text-ink overflow-y-auto" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Menu">
               <div className="flex items-center justify-between px-5 h-16 bg-paper2">
-                <span className="font-display font-bold text-lg text-brand">ZARO Digitz</span>
+                <span className="font-display font-extrabold text-lg tracking-[-0.03em]">ZARO Digitz</span>
                 <button type="button" onClick={close} aria-label="Close menu" className="p-2"><LuX size={22} /></button>
               </div>
               <div className="px-5 py-4">

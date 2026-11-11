@@ -28,13 +28,13 @@ export default function GoogleReviews() {
   const links = googleBusinessLinks(settings);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-8 py-24 lg:py-32">
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 py-0">
       <div className="grid lg:grid-cols-12 gap-6 items-end">
         <div className="lg:col-span-7">
-          <h2 className="font-display font-bold tracking-tight text-[clamp(32px,3.4vw,48px)] leading-tight">What customers say on Google</h2>
+          <h2 className="font-display font-extrabold tracking-[-0.05em] text-[clamp(40px,4.6vw,68px)] leading-[0.9]">What customers say on Google</h2>
           {data.rating && (
             <p className="mt-4 flex flex-wrap items-center gap-3 text-lg">
-              <span className="font-display font-bold text-4xl text-brand">{Number(data.rating).toFixed(1)}</span>
+              <span className="font-display font-extrabold text-4xl">{Number(data.rating).toFixed(1)}</span>
               <Stars n={data.rating} size={20} />
               <span>from {data.count} Google {data.count === 1 ? 'review' : 'reviews'}</span>
             </p>

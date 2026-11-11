@@ -64,6 +64,7 @@ export default function PriceListPage() {
     else if (sortBy === 'price-desc') list = [...list].sort((a, b) => priceOf(b) - priceOf(a));
     else if (sortBy === 'name-asc') list = [...list].sort((a, b) => a.name.localeCompare(b.name));
     else if (sortBy === 'newest') list = [...list].sort((a, b) => (b.sortOrder ?? b.id ?? 0) - (a.sortOrder ?? a.id ?? 0));
+    else list = [...list].sort((a, b) => Number(/diar|calendar/i.test(b.category)) - Number(/diar|calendar/i.test(a.category))); // the season's calendars first
     return list;
   }, [categoryItems, search, sortBy, maxPrice]);
 
@@ -132,10 +133,14 @@ export default function PriceListPage() {
       />
 
       {/* Header */}
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pt-6 pb-10">
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 pt-6 pb-10">
         <Breadcrumbs items={crumbs} />
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="grid lg:grid-cols-12 gap-6 items-end mt-8">
-          <h1 className="lg:col-span-7 font-display font-bold tracking-[-0.04em] leading-[0.98] text-primary text-[clamp(40px,5.2vw,80px)]">{meta ? meta.h1 : 'Everything we print'}</h1>
+          <h1 className="lg:col-span-7 font-display font-extrabold tracking-[-0.05em] leading-[0.9] text-[clamp(40px,5.2vw,80px)]">
+            {meta ? meta.h1 : (
+              <span className="flex flex-wrap items-center gap-x-[0.2em]">Everything <img src="/photos/ink-trays.webp" alt="" className="inline-block h-[0.8em] w-[2.4em] object-cover rounded-[10px]" /> we print</span>
+            )}
+          </h1>
           <div className="lg:col-span-5">
             {meta?.tamil && <p className="text-xl" lang="ta">{meta.tamil}</p>}
             <p className="text-xl leading-relaxed mt-2">{meta ? meta.intro : 'Calendars, diaries, business printing and invitations. Every design shows its price per piece, with printing included.'}</p>
@@ -143,7 +148,7 @@ export default function PriceListPage() {
         </motion.div>
       </section>
 
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pb-24 lg:pb-32">
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 pb-24 lg:pb-32">
         {/* Categories */}
         <div className="flex flex-wrap gap-2">
           {shownCategories.map((c) => {
@@ -154,7 +159,7 @@ export default function PriceListPage() {
                 type="button"
                 aria-pressed={active}
                 onClick={() => navigate(c === 'All' ? '/cards' : categoryPath(c))}
-                className={`h-11 px-4 text-[15px] font-medium transition-colors ${active ? 'bg-ink text-paper' : 'bg-paper2 hover:bg-paper3'}`}
+                className={`h-11 px-4 text-[16px] font-semibold transition-colors ${active ? 'bg-ink text-paper' : 'bg-paper2 hover:bg-paper3'}`}
               >
                 {c === 'All' ? 'All designs' : c}
               </button>

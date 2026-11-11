@@ -8,7 +8,7 @@ import { saveEnquiry } from '../firebase/orders';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 
-const WRAP = 'max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12';
+const WRAP = 'max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10';
 const rise = { hidden: { opacity: 0, y: 24 }, show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 } }) };
 const Rise = ({ i = 0, as = 'div', className, children }) => {
   const M = motion[as];
@@ -61,7 +61,7 @@ export default function ContactPage() {
       {/* Where we are, with the map */}
       <section className={`${WRAP} pt-14 sm:pt-20 pb-24 lg:pb-32 grid lg:grid-cols-12 gap-12 lg:gap-8`}>
         <div className="lg:col-span-5 flex flex-col">
-          <Rise as="h1" className="font-display font-bold tracking-[-0.04em] leading-[0.98] text-primary text-[clamp(40px,5vw,76px)] max-w-[12ch]">Call, WhatsApp or visit us</Rise>
+          <Rise as="h1" className="font-display font-extrabold tracking-[-0.05em] leading-[0.9] text-[clamp(40px,5vw,76px)] max-w-[12ch]">Call, WhatsApp or visit us</Rise>
           <Rise i={1} as="p" className="text-xl leading-relaxed mt-6 max-w-[40ch]">Ask about designs, prices, wording or delivery. We usually reply the same day.</Rise>
           <Rise i={2} className="flex flex-wrap gap-2 mt-10">
             <a href={wa} target="_blank" rel="noopener noreferrer" className="h-14 px-6 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-bold transition-colors hover:bg-primary-dark"><FaWhatsapp size={20} aria-hidden="true" /> WhatsApp us</a>
@@ -95,11 +95,17 @@ export default function ContactPage() {
         </Rise>
       </section>
 
+      <Rise className={`${WRAP} pb-24 lg:pb-32 grid grid-cols-2 lg:grid-cols-3 gap-3`}>
+        <img src="/photos/paper-stack.webp" alt="A stack of printed sheets" loading="lazy" className="w-full aspect-[4/5] object-cover" />
+        <img src="/photos/colour-loupe.webp" alt="Checking colour with a loupe" loading="lazy" className="w-full aspect-[4/5] object-cover lg:mt-16" />
+        <img src="/photos/spiral-notebook.webp" alt="A wire-bound notebook and pens" loading="lazy" className="hidden lg:block w-full aspect-[4/5] object-cover" />
+      </Rise>
+
       {/* A message, on a coupon */}
       <section className={`${WRAP} pb-24 lg:pb-40`}>
-        <Rise className="coupon bg-primary text-white grid lg:grid-cols-[46%_auto_1fr] max-w-[1200px] mx-auto">
+        <Rise className="coupon bg-ink text-paper grid lg:grid-cols-[46%_auto_1fr] max-w-[1200px] mx-auto">
           <div className="p-8 sm:p-12 flex flex-col justify-between gap-8">
-            <h2 className="font-display font-bold tracking-[-0.03em] leading-[1.02] text-[clamp(30px,3vw,44px)]">Send us a message</h2>
+            <h2 className="font-display font-extrabold tracking-[-0.05em] leading-[1.02] text-[clamp(30px,3vw,44px)]">Send us a message</h2>
             <p className="text-lg max-w-[34ch]">Tell us what you need and how many. We reply on your phone with a price, usually the same day.</p>
           </div>
           <span className="coupon-perforation" aria-hidden="true" />
@@ -124,7 +130,7 @@ export default function ContactPage() {
                   <textarea id="c-message" rows={4} value={form.message} onChange={set('message')} placeholder="What would you like printed?" aria-invalid={Boolean(errors.message)} aria-describedby={errors.message ? 'c-message-err' : undefined} className={`${input(errors.message)} py-3 resize-none`} />
                   {errors.message && <p id="c-message-err" className="text-[15px] mt-1 text-[rgb(var(--accent-light-rgb))]">{errors.message}</p>}
                 </div>
-                <button type="submit" disabled={sending} className="h-14 mt-1 bg-night text-white text-[17px] font-bold transition-colors hover:bg-black active:scale-[0.99] disabled:opacity-70">{sending ? 'Sending…' : 'Send message'}</button>
+                <button type="submit" disabled={sending} className="h-14 mt-1 bg-primary text-white text-[17px] font-bold transition-colors hover:bg-primary-dark active:scale-[0.99] disabled:opacity-70">{sending ? 'Sending…' : 'Send message'}</button>
               </form>
             )}
           </div>

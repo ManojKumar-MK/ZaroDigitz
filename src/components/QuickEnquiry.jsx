@@ -37,9 +37,9 @@ export default function QuickEnquiry({ subject, title = 'Tell us what you have i
 
   return (
     <section className="bg-paper2 text-ink" aria-label="Enquiry">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 py-24 lg:py-32 grid lg:grid-cols-12 gap-10 items-start">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 py-24 lg:py-32 grid lg:grid-cols-12 gap-10 items-start">
         <div className="lg:col-span-5">
-          <h2 className="font-display font-bold tracking-[-0.03em] text-[clamp(28px,3vw,44px)] leading-[1.02]">{title}</h2>
+          <h2 className="font-display font-extrabold tracking-[-0.05em] text-[clamp(28px,3vw,44px)] leading-[1.02]">{title}</h2>
           <p className="text-lg mt-4 max-w-[40ch]">Leave your number and we call you back with designs and prices, or chat with us on WhatsApp right now.</p>
         </div>
 
