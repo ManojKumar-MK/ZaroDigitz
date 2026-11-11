@@ -15,7 +15,6 @@ const SECTIONS = [
   ['printing', 'Designs: printing tab', 'Visiting cards, flyers, bill books, notebooks…'],
   ['budget', 'Designs: wedding cards tab', 'Wedding and function cards, lowest price first'],
   ['reviews', 'Google reviews', 'Shows only when reviews are available'],
-  ['faq', 'Questions', 'Questions with their answers beside them'],
   ['visit', 'Visit and phone number', 'Phone number, open now, address and directions'],
 ];
 const TABS = [['calendar', 'Calendar'], ['diary', 'Diary'], ['wedding', 'Wedding card']]; // “Try your details on a design” tabs

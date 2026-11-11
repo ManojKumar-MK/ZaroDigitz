@@ -12,7 +12,7 @@ const COLUMNS = [
     [categoryPath('Bill Books & Receipt Books'), 'Bill books'],
     [categoryPath('Hindu Wedding Cards'), 'Invitations'],
   ]],
-  ['Shop', [['/cards', 'All designs'], ['/saved', 'Saved designs'], ['/cart', 'Cart'], ['/#faq', 'Questions']]],
+  ['Shop', [['/cards', 'All designs'], ['/saved', 'Saved designs'], ['/cart', 'Cart']]],
   ['Studio', [['/about', 'About us'], ['/contact', 'Contact']]],
 ];
 

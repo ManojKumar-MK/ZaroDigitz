@@ -7,7 +7,7 @@ import LiveCard from '../components/LiveCard';
 import GoogleReviews from '../components/GoogleReviews';
 import ProductCard from '../components/ProductCard';
 import { LIVE_MODES, liveValues } from '../components/liveModes';
-import { faqSchema, getFaqs, categoryPath, productPath } from '../seo/catalog';
+import { categoryPath, productPath } from '../seo/catalog';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { getCatalogProducts } from '../data/products';
@@ -313,23 +313,6 @@ function Designs({ tabs }) {
   );
 }
 
-/* ───────────── Questions: large on the left, answers beside ───────────── */
-function Questions({ faqs }) {
-  return (
-    <section id="faq" className={`${WRAP} scroll-mt-28 pt-24 lg:pt-36`}>
-      <Rise as="h2" className={HEAD}>Questions people ask</Rise>
-      <dl className="mt-12 lg:mt-16 space-y-10 lg:space-y-12">
-        {faqs.slice(0, 7).map((f, i) => (
-          <Rise key={f.q} i={Math.min(i, 3)} className="grid lg:grid-cols-12 gap-x-8 gap-y-3">
-            <dt className="lg:col-span-6 font-display font-semibold text-[clamp(20px,1.7vw,26px)] leading-[1.2] tracking-[-0.02em]">{f.q}</dt>
-            <dd className="lg:col-start-8 lg:col-span-5 text-lg leading-[1.55] max-w-[42ch] lg:pt-2">{f.a}</dd>
-          </Rise>
-        ))}
-      </dl>
-    </section>
-  );
-}
-
 /* ───────────── Visit: the studio, with the map beside it ───────────── */
 function Visit({ settings }) {
   const links = googleBusinessLinks(settings);
@@ -407,7 +390,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-paper text-ink">
-      <Seo path="/" jsonLd={faqSchema(getFaqs(settings))} />
+      <Seo path="/" />
       <Hero settings={settings} />
       {show('benefits') && <Shop />}
       {show('services') && <Prices products={priced} showFacts={show('numbers')} showInvites={show('traditions')} />}
@@ -416,7 +399,6 @@ export default function HomePage() {
       {designTabs.length > 0 && <Designs tabs={designTabs} />}
       {heroModes.length > 0 && <TryIt heroModes={heroModes} mode={mode} setMode={setMode} live={live} setLive={setLive} proofHref={proofHref} />}
       {show('reviews') && <div className="pt-24 lg:pt-36"><GoogleReviews /></div>}
-      {show('faq') && <Questions faqs={getFaqs(settings)} />}
       {show('visit') ? <Visit settings={settings} /> : <div className="pb-24" />}
     </div>
   );
