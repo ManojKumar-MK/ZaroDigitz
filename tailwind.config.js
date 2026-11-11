@@ -31,8 +31,8 @@ export default {
         night: 'rgb(var(--night) / <alpha-value>)',
       },
       fontFamily: {
-        display: ['"Schibsted Grotesk"', 'system-ui', 'sans-serif'],
-        body: ['"Schibsted Grotesk"', 'system-ui', 'sans-serif'],
+        display: ['"Schibsted Grotesk"', '"Noto Sans Tamil"', 'system-ui', 'sans-serif'],
+        body: ['"Schibsted Grotesk"', '"Noto Sans Tamil"', 'system-ui', 'sans-serif'],
       },
       fontWeight: {
         black: '800',

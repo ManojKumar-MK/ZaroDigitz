@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLang } from '../i18n/context';
 import { motion } from 'framer-motion';
 import { FaGoogle, FaStar } from 'react-icons/fa';
 import { API_URL } from '../firebase/apiStore';
@@ -16,6 +17,7 @@ const Stars = ({ n, size = 16 }) => (
  * Shows nothing until there are reviews to show (no placeholder or invented quotes).
  */
 export default function GoogleReviews() {
+  const { t } = useLang();
   const { settings } = useShopSettings();
   const [data, setData] = useState(null);
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function GoogleReviews() {
     <section className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 py-0">
       <div className="grid lg:grid-cols-12 gap-6 items-end">
         <div className="lg:col-span-7">
-          <h2 className="font-display font-extrabold tracking-[-0.05em] text-[clamp(40px,4.6vw,68px)] leading-[0.9]">What customers say on Google</h2>
+          <h2 className="font-display font-extrabold tracking-[-0.05em] text-[clamp(40px,4.6vw,68px)] leading-[0.9]">{t('What customers say on Google')}</h2>
           {data.rating && (
             <p className="mt-4 flex flex-wrap items-center gap-3 text-lg">
               <span className="font-display font-extrabold text-4xl">{Number(data.rating).toFixed(1)}</span>
@@ -41,8 +43,8 @@ export default function GoogleReviews() {
           )}
         </div>
         <div className="lg:col-span-5 flex flex-wrap gap-3 lg:justify-end">
-          <a href={data.url || links.reviews} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 h-12 px-5 bg-paper2 hover:bg-paper3 font-semibold transition-colors"><FaGoogle aria-hidden="true" /> Read all reviews</a>
-          <a href={links.review} target="_blank" rel="noopener noreferrer" className="inline-flex items-center h-12 px-5 bg-primary text-white font-semibold hover:bg-primary-dark transition-colors">Write a review</a>
+          <a href={data.url || links.reviews} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 h-12 px-5 bg-paper2 hover:bg-paper3 font-semibold transition-colors"><FaGoogle aria-hidden="true" /> {t('Read all reviews')}</a>
+          <a href={links.review} target="_blank" rel="noopener noreferrer" className="inline-flex items-center h-12 px-5 bg-primary text-white font-semibold hover:bg-primary-dark transition-colors">{t('Write a review')}</a>
         </div>
       </div>
 
@@ -61,7 +63,7 @@ export default function GoogleReviews() {
           </motion.figure>
         ))}
       </div>
-      <p className="mt-4 text-[13px] text-ink/70">Reviews from Google.</p>
+      <p className="mt-4 text-[13px] text-ink/70">{t('Reviews from Google.')}</p>
     </section>
   );
 }

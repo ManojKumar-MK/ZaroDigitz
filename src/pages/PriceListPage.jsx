@@ -13,6 +13,7 @@ import { staticPage, staticDescription } from '../seo/pages';
 import { absoluteUrl, breadcrumbSchema, safeUrl } from '../seo/site';
 import { CATEGORY_BY_SLUG, categoryMeta, categoryPath, productPath } from '../seo/catalog';
 import { useShopSettings } from '../context/ShopSettingsContext';
+import { useLang } from '../i18n/context';
 
 const SCHEMA_PRODUCT_LIMIT = 100; // keep the JSON-LD payload reasonable
 const PAGE_SIZE = 24;
@@ -27,6 +28,7 @@ const SORTS = [
 
 /** Card designs: all of them at /cards, one category at /cards/<slug>. */
 export default function PriceListPage() {
+  const { t, ta, cat, pname } = useLang();
   const [catalogProducts, setCatalogProducts] = useState(() => getCatalogProducts());
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -56,7 +58,7 @@ export default function PriceListPage() {
     const cap = Number(maxPrice) || Infinity;
     let list = categoryItems.filter((p) => {
       const price = getOfferPrice(p);
-      const matchSearch = !q || [p.name, p.code, p.category, p.tamil || ''].some((v) => String(v).toLowerCase().includes(q));
+      const matchSearch = !q || [p.name, p.code, p.category, p.tamil || '', cat(p.category), pname(p)].some((v) => String(v).toLowerCase().includes(q));
       return matchSearch && (price == null || price <= cap);
     });
     const priceOf = (p) => getOfferPrice(p) ?? Infinity;
@@ -66,7 +68,7 @@ export default function PriceListPage() {
     else if (sortBy === 'newest') list = [...list].sort((a, b) => (b.sortOrder ?? b.id ?? 0) - (a.sortOrder ?? a.id ?? 0));
     else list = [...list].sort((a, b) => Number(/diar|calendar/i.test(b.category)) - Number(/diar|calendar/i.test(a.category))); // the season's calendars first
     return list;
-  }, [categoryItems, search, sortBy, maxPrice]);
+  }, [categoryItems, search, sortBy, maxPrice, ta]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const current = Math.min(page, pages);
@@ -81,6 +83,11 @@ export default function PriceListPage() {
     { name: 'Home', path: '/' },
     { name: 'All Designs', path: '/cards' },
     ...(routeCategory ? [{ name: routeCategory, path: pagePath }] : []),
+  ];
+  const crumbsView = [
+    { name: t('Home'), path: '/' },
+    { name: t('All Designs'), path: '/cards' },
+    ...(routeCategory ? [{ name: cat(routeCategory), path: pagePath }] : []),
   ];
 
   const listSchema = useMemo(() => {
@@ -134,16 +141,16 @@ export default function PriceListPage() {
 
       {/* Header */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 pt-6 pb-10">
-        <Breadcrumbs items={crumbs} />
+        <Breadcrumbs items={crumbsView} />
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="grid lg:grid-cols-12 gap-6 items-end mt-8">
-          <h1 className="lg:col-span-7 font-display font-extrabold tracking-[-0.05em] leading-[0.9] text-[clamp(40px,5.2vw,80px)]">
-            {meta ? meta.h1 : (
-              <span className="flex flex-wrap items-center gap-x-[0.2em]">Everything <img src="/photos/ink-trays.webp" alt="" className="inline-block h-[0.8em] w-[2.4em] object-cover rounded-[10px]" /> we print</span>
+          <h1 className={`lg:col-span-7 font-display font-extrabold tracking-[-0.05em] leading-[0.9] ${ta ? "text-[clamp(30px,3.8vw,58px)]" : "text-[clamp(40px,5.2vw,80px)]"}`}>
+            {meta ? (ta ? cat(routeCategory) : meta.h1) : (
+              <span className="flex flex-wrap items-center gap-x-[0.2em]">{t('Everything')} <img src="/photos/ink-trays.webp" alt="" className="inline-block h-[0.8em] w-[2.4em] object-cover rounded-[10px]" /> {t('we print')}</span>
             )}
           </h1>
           <div className="lg:col-span-5">
-            {meta?.tamil && <p className="text-xl" lang="ta">{meta.tamil}</p>}
-            <p className="text-xl leading-relaxed mt-2">{meta ? meta.intro : 'Calendars, diaries, business printing and invitations. Every design shows its price per piece, with printing included.'}</p>
+            {meta?.tamil && !ta && <p className="text-xl" lang="ta">{meta.tamil}</p>}
+            <p className="text-xl leading-relaxed mt-2">{meta && !ta ? meta.intro : t('Calendars, diaries, business printing and invitations. Every design shows its price per piece, with printing included.')}</p>
           </div>
         </motion.div>
       </section>
@@ -161,7 +168,7 @@ export default function PriceListPage() {
                 onClick={() => navigate(c === 'All' ? '/cards' : categoryPath(c))}
                 className={`h-11 px-4 text-[16px] font-semibold transition-colors ${active ? 'bg-ink text-paper' : 'bg-paper2 hover:bg-paper3'}`}
               >
-                {c === 'All' ? 'All designs' : c}
+                {c === 'All' ? t('All designs') : cat(c)}
               </button>
             );
           })}
@@ -175,40 +182,40 @@ export default function PriceListPage() {
               type="search"
               value={search}
               onChange={(e) => update(() => setSearch(e.target.value))}
-              placeholder="Search designs or codes"
-              aria-label="Search designs"
+              placeholder={t('Search designs or codes')}
+              aria-label={t('Search designs')}
               className="w-full h-12 pl-11 pr-10 bg-paper2 text-[17px] placeholder:text-ink/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             />
-            {search && <button type="button" aria-label="Clear search" onClick={() => update(() => setSearch(''))} className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-primary"><FiX /></button>}
+            {search && <button type="button" aria-label={t('Clear search')} onClick={() => update(() => setSearch(''))} className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-primary"><FiX /></button>}
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <label className="flex items-center gap-2 text-[17px]">
-              Up to ₹
+              {t('Up to ₹')}
               <input
                 type="number"
                 min="0"
                 inputMode="numeric"
                 value={maxPrice}
                 onChange={(e) => update(() => setMaxPrice(e.target.value))}
-                placeholder={highestPrice ? String(highestPrice) : 'any'}
-                aria-label="Highest price per piece"
+                placeholder={highestPrice ? String(highestPrice) : t('any')}
+                aria-label={t('Highest price per piece')}
                 className="w-24 h-12 px-3 bg-paper2"
               />
-              per piece
+              {t('per piece')}
             </label>
-            <select value={sortBy} onChange={(e) => update(() => setSortBy(e.target.value))} aria-label="Sort designs" className="h-12 px-3 bg-paper2 text-[17px]">
-              {SORTS.map(([v, label]) => <option key={v} value={v}>{label}</option>)}
+            <select value={sortBy} onChange={(e) => update(() => setSortBy(e.target.value))} aria-label={t('Sort designs')} className="h-12 px-3 bg-paper2 text-[17px]">
+              {SORTS.map(([v, label]) => <option key={v} value={v}>{t(label)}</option>)}
             </select>
           </div>
         </div>
 
         {/* Results and active filters */}
         <div className="flex flex-wrap items-center gap-2 mb-5 text-[15px]" aria-live="polite">
-          <span className="font-semibold mr-2">{filtered.length} {filtered.length === 1 ? 'design' : 'designs'}</span>
-          {routeCategory && <button type="button" onClick={() => navigate('/cards')} className="inline-flex items-center gap-2 h-9 px-3 bg-paper2 hover:bg-paper3">{routeCategory} <span aria-hidden="true">×</span><span className="sr-only">Remove filter</span></button>}
-          {search.trim() && <button type="button" onClick={() => update(() => setSearch(''))} className="inline-flex items-center gap-2 h-9 px-3 bg-paper2 hover:bg-paper3">“{search.trim()}” <span aria-hidden="true">×</span><span className="sr-only">Remove search</span></button>}
-          {maxPrice && <button type="button" onClick={() => update(() => setMaxPrice(''))} className="inline-flex items-center gap-2 h-9 px-3 bg-paper2 hover:bg-paper3">Up to ₹{maxPrice} <span aria-hidden="true">×</span><span className="sr-only">Remove price limit</span></button>}
-          {(routeCategory || search.trim() || maxPrice) && <button type="button" onClick={() => { setSearch(''); setMaxPrice(''); setPage(1); if (routeCategory) navigate('/cards'); }} className="h-9 px-3 font-semibold text-brand underline underline-offset-4">Clear all</button>}
+          <span className="font-semibold mr-2">{t(filtered.length === 1 ? '{n} design' : '{n} designs', { n: filtered.length })}</span>
+          {routeCategory && <button type="button" onClick={() => navigate('/cards')} className="inline-flex items-center gap-2 h-9 px-3 bg-paper2 hover:bg-paper3">{cat(routeCategory)} <span aria-hidden="true">×</span><span className="sr-only">{t('Remove filter')}</span></button>}
+          {search.trim() && <button type="button" onClick={() => update(() => setSearch(''))} className="inline-flex items-center gap-2 h-9 px-3 bg-paper2 hover:bg-paper3">“{search.trim()}” <span aria-hidden="true">×</span><span className="sr-only">{t('Remove search')}</span></button>}
+          {maxPrice && <button type="button" onClick={() => update(() => setMaxPrice(''))} className="inline-flex items-center gap-2 h-9 px-3 bg-paper2 hover:bg-paper3">{t('Up to ₹')}{maxPrice} <span aria-hidden="true">×</span><span className="sr-only">{t('Remove price limit')}</span></button>}
+          {(routeCategory || search.trim() || maxPrice) && <button type="button" onClick={() => { setSearch(''); setMaxPrice(''); setPage(1); if (routeCategory) navigate('/cards'); }} className="h-9 px-3 font-semibold text-brand underline underline-offset-4">{t('Clear all')}</button>}
         </div>
 
         {/* Grid */}
@@ -223,23 +230,23 @@ export default function PriceListPage() {
         ) : (
           <div className="py-20">
             <LuSearchX size={40} className="mb-3 text-primary" aria-hidden="true" />
-            <p className="text-xl">No designs match. Try another search or price, or ask us on WhatsApp: we print to order.</p>
+            <p className="text-xl">{t('No designs match. Try another search or price, or ask us on WhatsApp: we print to order.')}</p>
           </div>
         )}
 
         {/* Pagination */}
         {pages > 1 && (
-          <nav className="flex flex-wrap justify-center gap-2 mt-10" aria-label="Pages">
-            <button type="button" disabled={current === 1} onClick={() => goTo(current - 1)} className="h-12 px-4 bg-paper2 hover:bg-paper3 disabled:opacity-40">Previous</button>
+          <nav className="flex flex-wrap justify-center gap-2 mt-10" aria-label={t('Pages')}>
+            <button type="button" disabled={current === 1} onClick={() => goTo(current - 1)} className="h-12 px-4 bg-paper2 hover:bg-paper3 disabled:opacity-40">{t('Previous')}</button>
             {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
               <button key={n} type="button" aria-current={n === current ? 'page' : undefined} onClick={() => goTo(n)} className={`w-12 h-12 ${n === current ? 'bg-ink text-paper' : 'bg-paper2 hover:bg-paper3'}`}>{n}</button>
             ))}
-            <button type="button" disabled={current === pages} onClick={() => goTo(current + 1)} className="h-12 px-4 bg-paper2 hover:bg-paper3 disabled:opacity-40">Next</button>
+            <button type="button" disabled={current === pages} onClick={() => goTo(current + 1)} className="h-12 px-4 bg-paper2 hover:bg-paper3 disabled:opacity-40">{t('Next')}</button>
           </nav>
         )}
       </section>
 
-      <QuickEnquiry subject={routeCategory || 'invitation cards'} title="Need something not listed here?" />
+      <QuickEnquiry subject={routeCategory || 'invitation cards'} title={t('Need something not listed here?')} />
     </div>
   );
 }

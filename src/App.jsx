@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, useParams } from 'react-rout
 import { useEffect, lazy, Suspense } from 'react';
 import { CartProvider } from './context/CartContext';
 import { ShopSettingsProvider } from './context/ShopSettingsContext';
+import LanguageProvider from './i18n/LanguageProvider';
 import ErrorBoundary from './components/ErrorBoundary';
 import { trackPage } from './utils/analytics';
 
@@ -112,9 +113,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <ShopSettingsProvider>
+        <LanguageProvider>
         <CartProvider>
           <AppLayout />
         </CartProvider>
+        </LanguageProvider>
       </ShopSettingsProvider>
     </BrowserRouter>
   );

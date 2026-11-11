@@ -39,7 +39,7 @@ html { scroll-padding-top: 96px; }
 body { overflow-x: clip; }
 
 body {
-  font-family: 'Schibsted Grotesk', system-ui, sans-serif;
+  font-family: 'Schibsted Grotesk', 'Noto Sans Tamil', system-ui, sans-serif;
   letter-spacing: -0.01em;
   line-height: 1.45;
   background-color: rgb(var(--paper));
@@ -143,3 +143,17 @@ tr.table-row:hover { background: rgba(122,31,43,0.05); }
     background: radial-gradient(circle, rgb(var(--paper)) 2.6px, transparent 3px) 0 0 / 6px 14px repeat-y;
   }
 }
+
+/* Tamil: its vowel signs sit above and below the letters, so tight display settings clip them.
+   Open the tracking and leading, and let long Tamil words break instead of overflowing. */
+html[data-lang="ta"] body { line-height: 1.6; letter-spacing: 0; }
+html[data-lang="ta"] [class*="tracking-"] { letter-spacing: 0 !important; }
+html[data-lang="ta"] .font-display { line-height: 1.3 !important; letter-spacing: 0 !important; }
+html[data-lang="ta"] [class*="leading-["], html[data-lang="ta"] .leading-none, html[data-lang="ta"] .leading-tight, html[data-lang="ta"] .leading-snug { line-height: 1.35 !important; }
+html[data-lang="ta"] h1, html[data-lang="ta"] h2, html[data-lang="ta"] h3 { overflow-wrap: break-word; max-width: none; }
+html[data-lang="ta"] :is(h1, h2, h3) .whitespace-nowrap { white-space: normal; }
+
+/* Tamil words run longer than English: headings step down a size (the hero and the big
+   display words, marked data-keep, keep theirs). */
+html[data-lang="ta"] #root h1:not([data-keep]) { font-size: clamp(28px, 3.2vw, 48px) !important; }
+html[data-lang="ta"] #root h2:not([data-keep]) { font-size: clamp(24px, 2.4vw, 36px) !important; }

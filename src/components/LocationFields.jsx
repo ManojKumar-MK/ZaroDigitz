@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLang } from '../i18n/context';
 
 // Lightweight replacement for the world-wide country/state/city dataset (9 MB) that
 // used to ship with the checkout. Orders are shipped within India, so: India by
@@ -29,6 +30,7 @@ export async function lookupPincode(pincode, signal) {
 }
 
 export default function LocationFields({ form, setForm, errors, setErrors }) {
+  const { t } = useLang();
   const [lookup, setLookup] = useState({ status: 'idle', pincode: '' }); // idle | loading | done | none | error
   const lastLooked = useRef('');
   const isIndia = !form.country || form.country === 'India';
@@ -73,7 +75,7 @@ export default function LocationFields({ form, setForm, errors, setErrors }) {
   return (
     <>
       <div className="sm:col-span-2">
-        <label className="block text-sm font-semibold text-dark mb-2">Country *</label>
+        <label className="block text-[15px] font-semibold text-ink mb-2">{t('Country *')}</label>
         <select
           value={COUNTRIES.includes(form.country) ? form.country : form.country ? 'Other' : 'India'}
           onChange={(e) => { setForm((prev) => ({ ...prev, country: e.target.value === 'Other' ? '' : e.target.value, state: '', district: '' })); clearError('country', 'state', 'district'); }}
@@ -86,44 +88,44 @@ export default function LocationFields({ form, setForm, errors, setErrors }) {
             type="text"
             value={form.country}
             onChange={(e) => { setForm((prev) => ({ ...prev, country: e.target.value })); clearError('country'); }}
-            placeholder="Country name"
+            placeholder={t('Country name')}
             className={`${inputClass(errors.country)} mt-2`}
           />
         )}
-        {errors.country && <p className="text-red-500 text-xs mt-1">{errors.country}</p>}
+        {errors.country && <p className="text-primary text-[15px] mt-1">{t(errors.country)}</p>}
         {isIndia && lookup.status === 'loading' && <p className="text-xs text-gray-500 mt-1">Looking up pincode {lookup.pincode}…</p>}
         {isIndia && lookup.status === 'done' && <p className="text-xs text-emerald-600 mt-1">State and district filled from pincode {lookup.pincode}. Please check them.</p>}
         {isIndia && lookup.status === 'none' && <p className="text-xs text-amber-600 mt-1">Pincode {lookup.pincode} not found. Please fill the state and district yourself.</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-dark mb-2">State *</label>
+        <label className="block text-[15px] font-semibold text-ink mb-2">{t('State *')}</label>
         {isIndia ? (
           <select
             value={INDIAN_STATES.includes(form.state) ? form.state : ''}
             onChange={(e) => { setForm((prev) => ({ ...prev, state: e.target.value })); clearError('state'); }}
             className={inputClass(errors.state)}
           >
-            <option value="">Select state</option>
+            <option value="">{t('Select state')}</option>
             {INDIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         ) : (
-          <input type="text" value={form.state} onChange={(e) => { setForm((prev) => ({ ...prev, state: e.target.value })); clearError('state'); }} placeholder="State / province" className={inputClass(errors.state)} />
+          <input type="text" value={form.state} onChange={(e) => { setForm((prev) => ({ ...prev, state: e.target.value })); clearError('state'); }} placeholder={t('State / province')} className={inputClass(errors.state)} />
         )}
-        {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state}</p>}
+        {errors.state && <p className="text-primary text-[15px] mt-1">{t(errors.state)}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-dark mb-2">District *</label>
+        <label className="block text-[15px] font-semibold text-ink mb-2">{t('District *')}</label>
         <input
           type="text"
           value={form.district}
           onChange={(e) => { setForm((prev) => ({ ...prev, district: e.target.value })); clearError('district'); }}
-          placeholder="District"
+          placeholder={t('District')}
           autoComplete="address-level2"
           className={inputClass(errors.district)}
         />
-        {errors.district && <p className="text-red-500 text-xs mt-1">{errors.district}</p>}
+        {errors.district && <p className="text-primary text-[15px] mt-1">{t(errors.district)}</p>}
       </div>
     </>
   );

@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
+import { useLang } from '../i18n/context';
 import Seo from '../components/Seo';
-import { LuSparkles } from 'react-icons/lu';
 
 export default function NotFoundPage() {
+  const { t } = useLang();
   return (
-    <div className="min-h-[60vh] flex items-center justify-center bg-primary text-center px-4 py-20">
-      <Seo title="Page Not Found" noindex />
+    <div className="min-h-[60vh] flex items-center justify-center bg-paper text-center px-4 py-20">
+      <Seo title={t('Page Not Found')} noindex />
       <div>
-        <div className="mx-auto w-20 h-20 mb-5 rounded-full bg-white/10 text-secondary flex items-center justify-center"><LuSparkles size={36} /></div>
-        <h1 className="font-display font-bold text-4xl sm:text-5xl text-white">Page not found</h1>
-        <p className="text-ink/75 mt-3 mb-8">That page doesn&apos;t exist, but our card designs do.</p>
+        <h1 className="font-display font-extrabold tracking-[-0.04em] text-4xl sm:text-5xl text-ink">{t('Page not found')}</h1>
+        <p className="text-xl text-ink mt-3 mb-8">{t('That page does not exist, but our designs do.')}</p>
         <div className="flex flex-wrap justify-center gap-3">
-          <Link to="/cards" className="bg-primary hover:bg-primary-dark text-white font-bold px-6 py-3 transition-colors">View Price List</Link>
-          <Link to="/" className="bg-white/10 hover:bg-white/20 text-white font-bold px-6 py-3 transition-colors">Go Home</Link>
+          <Link to="/cards" className="bg-primary hover:bg-primary-dark text-white font-bold px-6 py-3 transition-colors">{t('View Price List')}</Link>
+          <Link to="/" className="bg-paper2 hover:bg-paper3 text-ink font-bold px-6 py-3 transition-colors">{t('Go Home')}</Link>
         </div>
       </div>
     </div>

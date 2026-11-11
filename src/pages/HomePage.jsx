@@ -12,6 +12,7 @@ import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { getCatalogProducts } from '../data/products';
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
+import { useLang } from '../i18n/context';
 
 /*
  * The page reads as a few sentences, each with its evidence beside it. The first one is the
@@ -93,25 +94,26 @@ const STAIRS = [
 
 /* ───────────── First screen: the shop's own line, “Digital [ink] Color Prints” ───────────── */
 function Hero({ settings }) {
+  const { t, ta } = useLang();
   return (
     <section className={`${WRAP} min-h-[calc(100svh-72px)] flex flex-col justify-center py-14`}>
-      <h1 className={`${DISPLAY} text-[clamp(52px,9.4vw,160px)] text-ink`}>
-        <span className="sr-only">Zaro Digitz, Digital Color Prints, Sivakasi</span>
+      <h1 data-keep className={`${DISPLAY} ${ta ? 'text-[clamp(30px,6.4vw,110px)]' : 'text-[clamp(52px,9.4vw,160px)]'} text-ink`}>
+        <span className="sr-only">{t('Zaro Digitz, Digital Color Prints, Sivakasi')}</span>
         <span aria-hidden="true" className="block">
           <span className="flex flex-wrap sm:flex-nowrap items-center gap-x-[0.18em] gap-y-[0.12em]">
-            <span className="whitespace-nowrap">Digital</span>
+            <span className="whitespace-nowrap">{t('Digital')}</span>
             <Shutter eager src="/photos/ink-trays.webp" className="basis-full sm:basis-auto sm:flex-1 h-[1.3em] sm:h-[0.78em] rounded-[14px] min-w-0" imgClass="object-[50%_55%]" />
           </span>
-          <span className="block whitespace-nowrap mt-[0.04em]">Color Prints</span>
+          <span className="block sm:whitespace-nowrap mt-[0.04em]">{t('Color Prints')}</span>
         </span>
       </h1>
       <div className="grid lg:grid-cols-12 gap-8 items-end mt-12 lg:mt-16">
         <Rise i={2} as="p" className="lg:col-span-6 text-[clamp(20px,1.6vw,26px)] leading-snug max-w-[38ch]">
-          Visiting cards, calendars, diaries, flyers, bill books, stickers and invitations, printed in our Sivakasi studio on any media up to 13 × 19 in and 350 gsm.
+          {t('Visiting cards, calendars, diaries, flyers, bill books, stickers and invitations, printed in our Sivakasi studio on any media up to 13 × 19 in and 350 gsm.')}
         </Rise>
         <Rise i={3} className="lg:col-span-6 flex flex-wrap gap-2 lg:justify-end">
-          <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like a price for printing.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="h-14 px-7 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-semibold transition-colors hover:bg-primary-dark active:scale-[0.98]"><FaWhatsapp size={20} aria-hidden="true" /> Get a price</a>
-          <Link to="/cards" className="h-14 px-7 inline-flex items-center bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3 active:scale-[0.98]">See what we print</Link>
+          <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like a price for printing.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="h-14 px-7 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-semibold transition-colors hover:bg-primary-dark active:scale-[0.98]"><FaWhatsapp size={20} aria-hidden="true" /> {t('Get a price')}</a>
+          <Link to="/cards" className="h-14 px-7 inline-flex items-center bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3 active:scale-[0.98]">{t('See what we print')}</Link>
         </Rise>
       </div>
     </section>
@@ -120,14 +122,16 @@ function Hero({ settings }) {
 
 /* ───────────── Calendars and diaries: the object in front of the words ───────────── */
 function Yearly({ products }) {
+  const { t, ta } = useLang();
+  const lines = ta ? ['2027-க்கான', 'காலண்டர்கள்,', 'டைரிகள் மற்றும்', 'பரிசுத் தொகுப்புகள்'] : ['Desk and wall', 'calendars,', 'diaries and', 'gift sets for 2027'];
   const list = Object.keys(YEARLY).map((c) => products.find((p) => p.code === c)).filter(Boolean);
   return (
     <section className={`${WRAP} pt-24 lg:pt-36 grid lg:grid-cols-12 gap-10 lg:gap-8 items-start`}>
       <div className={`lg:col-span-6 ${DISPLAY} text-[clamp(38px,4.8vw,76px)] leading-[0.95]`}>
-        <Rise as="p" className="text-ink/60" aria-hidden="true">Desk and wall</Rise>
-        <Rise as="h2" i={1} className="text-ink">calendars,</Rise>
-        <Rise as="p" i={2} className="text-ink/60" aria-hidden="true">diaries and</Rise>
-        <Rise as="p" i={3} className="text-ink/60" aria-hidden="true">gift sets for 2027</Rise>
+        <Rise as="p" className="text-ink/60" aria-hidden="true">{lines[0]}</Rise>
+        <Rise as="h2" i={1} data-keep className="text-ink"><span className="sr-only">{t('Desk and wall calendars, diaries and gift sets for 2027')}</span><span aria-hidden="true">{lines[1]}</span></Rise>
+        <Rise as="p" i={2} className="text-ink/60" aria-hidden="true">{lines[2]}</Rise>
+        <Rise as="p" i={3} className="text-ink/60" aria-hidden="true">{lines[3]}</Rise>
       </div>
       <div className="lg:col-start-8 lg:col-span-5">
         <motion.div
@@ -137,15 +141,15 @@ function Yearly({ products }) {
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="aspect-[4/3]"
         >
-          <img src="/photos/orange-diary.webp" alt="A hardbound diary on a desk" loading="lazy" className="w-full h-full object-cover" />
+          <img src="/photos/orange-diary.webp" alt={t('A hardbound diary on a desk')} loading="lazy" className="w-full h-full object-cover" />
         </motion.div>
-        <Rise as="p" className="mt-10 text-[clamp(18px,1.3vw,20px)] leading-relaxed">Something your customers use every day of the year, with your shop name, phone and address on it. Order by mid-December and they are in hand before 1 January.</Rise>
+        <Rise as="p" className="mt-10 text-[clamp(18px,1.3vw,20px)] leading-relaxed">{t('Something your customers use every day of the year, with your shop name, phone and address on it. Order by mid-December and they are in hand before 1 January.')}</Rise>
         <Rise as="ul" i={1} className="mt-4 text-[clamp(18px,1.3vw,20px)]">
           {list.map((p) => (
             <li key={p.code}>
               <Link to={productPath(p)} className="group flex items-baseline justify-between gap-6 py-2.5">
-                <span className="font-semibold group-hover:text-primary transition-colors">{YEARLY[p.code]}</span>
-                <span className="tabular-nums whitespace-nowrap">{money(p.price)} <span className="text-ink/70">/ {unitOf(p)}</span> <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">→</span></span>
+                <span className="font-semibold group-hover:text-primary transition-colors">{t(YEARLY[p.code])}</span>
+                <span className="tabular-nums whitespace-nowrap">{money(p.price)} <span className="text-ink/70">/ {t(unitOf(p))}</span> <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">→</span></span>
               </Link>
             </li>
           ))}
@@ -157,16 +161,17 @@ function Yearly({ products }) {
 
 /* ───────────── Try it: your words on the thing we print ───────────── */
 function TryIt({ heroModes, mode, setMode, live, setLive, proofHref }) {
+  const { t } = useLang();
   return (
     <section className={`${WRAP} pt-24 lg:pt-36 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center`}>
       <form className="lg:col-span-6" onSubmit={(e) => { e.preventDefault(); window.open(proofHref, '_blank', 'noopener'); }}>
-        <Rise as="h2" className={HEAD}>Try your details on a design</Rise>
-        <Rise i={1} as="p" className="text-xl leading-relaxed mt-6 max-w-[40ch]">Every piece is printed with your name, logo and details. Type them in for a rough look; we send a proper proof on WhatsApp.</Rise>
+        <Rise as="h2" className={HEAD}>{t('Try your details on a design')}</Rise>
+        <Rise i={1} as="p" className="text-xl leading-relaxed mt-6 max-w-[40ch]">{t('Every piece is printed with your name, logo and details. Type them in for a rough look; we send a proper proof on WhatsApp.')}</Rise>
         {heroModes.length > 1 && (
-          <Rise i={2} className="flex flex-wrap gap-x-6 gap-y-2 mt-10" role="tablist" aria-label="What to preview">
+          <Rise i={2} className="flex flex-wrap gap-x-6 gap-y-2 mt-10" role="tablist" aria-label={t('What to preview')}>
             {heroModes.map((m) => (
               <button key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => { setMode(m); setLive({}); }} className={`text-xl font-semibold pb-1 transition-colors ${mode === m ? 'text-ink' : 'text-ink/60 hover:text-ink'}`}>
-                {LIVE_MODES[m].label}
+                {t(LIVE_MODES[m].label)}
                 {mode === m && <motion.span layoutId="try-tab" className="block h-[3px] bg-ink mt-1" />}
               </button>
             ))}
@@ -175,12 +180,12 @@ function TryIt({ heroModes, mode, setMode, live, setLive, proofHref }) {
         <div className="grid sm:grid-cols-2 gap-2 mt-6">
           {LIVE_MODES[mode].fields.map((f) => (
             <label key={f.key} className="block">
-              <span className="sr-only">{f.label}</span>
-              <input type={f.type || 'text'} maxLength={f.max} placeholder={f.label} value={live[f.key] || ''} onChange={(e) => setLive({ ...live, [f.key]: e.target.value })} className="w-full h-14 px-4 bg-paper2 text-[17px] placeholder:text-ink/60 focus:outline-none focus:bg-paper3 focus-visible:ring-2 focus-visible:ring-ink" />
+              <span className="sr-only">{t(f.label)}</span>
+              <input type={f.type || 'text'} maxLength={f.max} placeholder={t(f.label)} value={live[f.key] || ''} onChange={(e) => setLive({ ...live, [f.key]: e.target.value })} className="w-full h-14 px-4 bg-paper2 text-[17px] placeholder:text-ink/60 focus:outline-none focus:bg-paper3 focus-visible:ring-2 focus-visible:ring-ink" />
             </label>
           ))}
         </div>
-        <button type="submit" className="mt-2 h-14 px-7 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-semibold transition-colors hover:bg-primary-dark active:scale-[0.98]"><FaWhatsapp size={20} aria-hidden="true" /> Send me this as a proof</button>
+        <button type="submit" className="mt-2 h-14 px-7 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-semibold transition-colors hover:bg-primary-dark active:scale-[0.98]"><FaWhatsapp size={20} aria-hidden="true" /> {t('Send me this as a proof')}</button>
       </form>
       <Rise i={1} className="lg:col-start-8 lg:col-span-5 bg-paper2 aspect-square flex items-center justify-center p-10">
         <LiveCard mode={mode} values={live} className="max-w-[380px]" />
@@ -191,6 +196,7 @@ function TryIt({ heroModes, mode, setMode, live, setLive, proofHref }) {
 
 /* ───────────── Prices: the statement, the table pushed right ───────────── */
 function Prices({ products, showFacts, showInvites }) {
+  const { t } = useLang();
   const byCat = useMemo(() => {
     const m = {};
     products.forEach((p) => { (m[p.category] ??= []).push(p); });
@@ -198,24 +204,24 @@ function Prices({ products, showFacts, showInvites }) {
   }, [products]);
   const from = (cat) => {
     const ps = byCat[cat] || [];
-    if (!ps.length) return 'ask us';
+    if (!ps.length) return t('ask us');
     const low = ps.reduce((a, b) => (b.price < a.price ? b : a));
-    return `${ps.length > 1 ? 'from ' : ''}${money(low.price)} / ${unitOf(low)}`;
+    return ps.length > 1 ? t('from {price} / {unit}', { price: money(low.price), unit: t(unitOf(low)) }) : `${money(low.price)} / ${t(unitOf(low))}`;
   };
   const yearly = Object.keys(YEARLY).map((c) => products.find((p) => p.code === c)).filter(Boolean);
   const groups = [
-    yearly.map((p) => ({ kind: 'New Year', name: YEARLY[p.code], price: `${money(p.price)} / ${unitOf(p)}`, to: productPath(p) })),
-    PRINTING.map(([c, n]) => ({ kind: 'Business', name: n, price: from(c), to: categoryPath(c) })),
-    ...(showInvites ? [INVITES.map(([c, n]) => ({ kind: 'Cards', name: n, price: from(c), to: categoryPath(c) }))] : []),
+    yearly.map((p) => ({ kind: t('New Year'), name: t(YEARLY[p.code]), price: `${money(p.price)} / ${t(unitOf(p))}`, to: productPath(p) })),
+    PRINTING.map(([c, n]) => ({ kind: t('Business'), name: t(n), price: from(c), to: categoryPath(c) })),
+    ...(showInvites ? [INVITES.map(([c, n]) => ({ kind: t('Cards'), name: t(n), price: from(c), to: categoryPath(c) }))] : []),
   ];
   return (
     <section className={`${WRAP} pt-24 lg:pt-36`}>
-      <Rise as="h2" className={`${HEAD} max-w-[18ch] lg:indent-[3vw]`}>Prices per piece, printing included</Rise>
+      <Rise as="h2" className={`${HEAD} max-w-[18ch] lg:indent-[3vw]`}>{t('Prices per piece, printing included')}</Rise>
       <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 mt-16 lg:mt-24">
         <div className="lg:col-span-5 flex flex-col justify-end gap-12 order-last lg:order-none">
           {showFacts && (
             <dl className="grid grid-cols-2 gap-x-6 gap-y-8">
-              {[['13 × 19 in', 'largest sheet'], ['350 gsm', 'thickest board'], ['1 day', 'to your proof'], ['7 days', 'to print']].map(([n, l], i) => (
+              {[['13 × 19 in', 'largest sheet'], ['350 gsm', 'thickest board'], ['1 day', 'to your proof'], ['7 days', 'to print']].map(([n, l]) => [t(n), t(l)]).map(([n, l], i) => (
                 <Rise key={l} i={i}>
                   <dt className="font-display font-extrabold tracking-[-0.03em] text-[clamp(26px,2.2vw,34px)] tabular-nums">{n}</dt>
                   <dd className="text-lg mt-1">{l}</dd>
@@ -223,7 +229,7 @@ function Prices({ products, showFacts, showInvites }) {
               ))}
             </dl>
           )}
-          <Rise className="w-[70%] lg:w-[78%] aspect-[4/5]"><img src="/photos/colour-loupe.webp" alt="Checking colour on a printed chart with a loupe" loading="lazy" className="w-full h-full object-cover" /></Rise>
+          <Rise className="w-[70%] lg:w-[78%] aspect-[4/5]"><img src="/photos/colour-loupe.webp" alt={t('Checking colour on a printed chart with a loupe')} loading="lazy" className="w-full h-full object-cover" /></Rise>
         </div>
         <div className="lg:col-start-8 lg:col-span-5">
           {groups.map((rows, gi) => (
@@ -239,7 +245,7 @@ function Prices({ products, showFacts, showInvites }) {
               ))}
             </ul>
           ))}
-          <p className="mt-11 text-[17px] max-w-[42ch]">For a few hundred pieces or more, send the quantity on WhatsApp and we quote a better rate.</p>
+          <p className="mt-11 text-[17px] max-w-[42ch]">{t('For a few hundred pieces or more, send the quantity on WhatsApp and we quote a better rate.')}</p>
         </div>
       </div>
     </section>
@@ -248,6 +254,7 @@ function Prices({ products, showFacts, showInvites }) {
 
 /* ───────────── How an order goes: lines that step across ───────────── */
 function Stairs() {
+  const { t } = useLang();
   return (
     <section className={`${WRAP} pt-24 lg:pt-36`}>
       <ol className="space-y-14">
@@ -255,8 +262,8 @@ function Stairs() {
           const Tag = i === 0 ? 'h2' : 'p';
           return (
             <Rise as="li" key={line} i={i} style={{ '--i': i }} className="pl-[calc(var(--i)*6vw)] lg:pl-[calc(var(--i)*16.66%)]">
-              <Tag className={`font-display font-extrabold tracking-[-0.03em] leading-[1.05] text-[clamp(24px,2.4vw,36px)] ${i === STAIRS.length - 1 ? 'text-primary' : ''}`}>{line}</Tag>
-              <p className="text-[17px] leading-relaxed mt-3 max-w-[34ch]">{text}</p>
+              <Tag className={`font-display font-extrabold tracking-[-0.03em] leading-[1.05] text-[clamp(24px,2.4vw,36px)] ${i === STAIRS.length - 1 ? 'text-primary' : ''}`}>{t(line)}</Tag>
+              <p className="text-[17px] leading-relaxed mt-3 max-w-[34ch]">{t(text)}</p>
             </Rise>
           );
         })}
@@ -267,6 +274,7 @@ function Stairs() {
 
 /* ───────────── The shop: prints dropped on the headline ───────────── */
 function Shop() {
+  const { t } = useLang();
   const [front, setFront] = useState(null);
   const print = (k, extra) => ({
     onMouseEnter: () => setFront(k), onFocus: () => setFront(k), tabIndex: 0,
@@ -274,30 +282,31 @@ function Shop() {
   });
   return (
     <section className="relative bg-paper3 min-h-[70svh] lg:min-h-[86svh] overflow-hidden flex items-center justify-center" onMouseLeave={() => setFront(null)}>
-      <h2 className={`${DISPLAY} text-center text-[clamp(56px,7vw,112px)] leading-[0.9] relative z-10`}>Every<br />media</h2>
-      <div {...print('a', 'w-[34vw] lg:w-[18vw] aspect-[3/4] -rotate-[8deg] -left-[3vw] lg:left-[6vw] top-[3%] lg:top-[8%]')}><img src="/photos/large-printer.webp" alt="A wide-format printer printing a banner" loading="lazy" className="w-full h-full object-cover" /></div>
-      <div {...print('b', 'w-[34vw] lg:w-[18vw] aspect-[3/4] rotate-[6deg] -right-[3vw] lg:right-[8vw] bottom-[24%] lg:bottom-auto lg:top-[30%]')}><img src="/photos/spiral-binding.jpg" alt="Wire binding on a calendar" loading="lazy" className="w-full h-full object-cover" /></div>
-      <div {...print('c', 'hidden lg:block w-[14vw] aspect-[3/4] rotate-[3deg] left-[40vw] -bottom-[8%]')}><img src="/photos/ink-trays.webp" alt="Cyan, magenta and yellow ink on a press" loading="lazy" className="w-full h-full object-cover" /></div>
-      <p className="absolute left-4 sm:left-7 xl:left-10 bottom-6 right-4 lg:right-auto z-30 text-[17px] max-w-[52ch]">Visiting cards, stickers, invitations, flyers, synthetic, bill books, brochures, letterheads, texture board, branding, ID cards and certificates, on any media up to 13 × 19 in and 350 gsm.</p>
+      <h2 data-keep className={`${DISPLAY} text-center text-[clamp(56px,7vw,112px)] leading-[0.9] relative z-10`}>{t('Every')}<br />{t('media')}</h2>
+      <div {...print('a', 'w-[34vw] lg:w-[18vw] aspect-[3/4] -rotate-[8deg] -left-[3vw] lg:left-[6vw] top-[3%] lg:top-[8%]')}><img src="/photos/large-printer.webp" alt={t('A wide-format printer printing a banner')} loading="lazy" className="w-full h-full object-cover" /></div>
+      <div {...print('b', 'w-[34vw] lg:w-[18vw] aspect-[3/4] rotate-[6deg] -right-[3vw] lg:right-[8vw] top-[5%] lg:top-[30%]')}><img src="/photos/spiral-binding.jpg" alt={t('Wire binding on a calendar')} loading="lazy" className="w-full h-full object-cover" /></div>
+      <div {...print('c', 'hidden lg:block w-[14vw] aspect-[3/4] rotate-[3deg] left-[40vw] -bottom-[8%]')}><img src="/photos/ink-trays.webp" alt={t('Cyan, magenta and yellow ink on a press')} loading="lazy" className="w-full h-full object-cover" /></div>
+      <p className="absolute left-4 sm:left-7 xl:left-10 bottom-6 right-4 lg:right-auto z-30 text-[17px] max-w-[52ch]">{t('Visiting cards, stickers, invitations, flyers, synthetic, bill books, brochures, letterheads, texture board, branding, ID cards and certificates, on any media up to 13 × 19 in and 350 gsm.')}</p>
     </section>
   );
 }
 
 /* ───────────── Designs ready to order ───────────── */
 function Designs({ tabs }) {
+  const { t } = useLang();
   const [pick, setPick] = useState(tabs[0]?.key);
   const tab = tabs.find((t) => t.key === pick) || tabs[0];
   if (!tab) return null;
   return (
     <section className={`${WRAP} pt-24 lg:pt-36`}>
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-        <Rise as="h2" className={HEAD}>Ready to order</Rise>
+        <Rise as="h2" className={HEAD}>{t('Ready to order')}</Rise>
         {tabs.length > 1 && (
-          <Rise i={1} className="flex flex-wrap gap-x-6 gap-y-2" role="tablist" aria-label="Kinds of design">
-            {tabs.map((t) => (
-              <button key={t.key} type="button" role="tab" aria-selected={t.key === tab.key} onClick={() => setPick(t.key)} className={`text-xl font-semibold pb-1 transition-colors ${t.key === tab.key ? 'text-ink' : 'text-ink/60 hover:text-ink'}`}>
-                {t.label}
-                {t.key === tab.key && <motion.span layoutId="design-tab" className="block h-[3px] bg-ink mt-1" />}
+          <Rise i={1} className="flex flex-wrap gap-x-6 gap-y-2" role="tablist" aria-label={t('Kinds of design')}>
+            {tabs.map((x) => (
+              <button key={x.key} type="button" role="tab" aria-selected={x.key === tab.key} onClick={() => setPick(x.key)} className={`text-xl font-semibold pb-1 transition-colors ${x.key === tab.key ? 'text-ink' : 'text-ink/60 hover:text-ink'}`}>
+                {t(x.label)}
+                {x.key === tab.key && <motion.span layoutId="design-tab" className="block h-[3px] bg-ink mt-1" />}
               </button>
             ))}
           </Rise>
@@ -308,13 +317,14 @@ function Designs({ tabs }) {
           {tab.items.slice(0, 8).map((p) => <ProductCard key={p.code} product={p} />)}
         </motion.div>
       </AnimatePresence>
-      <Link to="/cards" className="mt-12 inline-flex items-center gap-2 text-xl font-semibold underline underline-offset-[6px] decoration-2 hover:text-primary">All {tab.total} designs <span aria-hidden="true">→</span></Link>
+      <Link to="/cards" className="mt-12 inline-flex items-center gap-2 text-xl font-semibold underline underline-offset-[6px] decoration-2 hover:text-primary">{t('All {n} designs', { n: tab.total })} <span aria-hidden="true">→</span></Link>
     </section>
   );
 }
 
 /* ───────────── Visit: the studio, with the map beside it ───────────── */
 function Visit({ settings }) {
+  const { t } = useLang();
   const links = googleBusinessLinks(settings);
   const [now] = useState(() => new Date());
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'short', hour: 'numeric', hour12: false }).formatToParts(now).map((x) => [x.type, x.value]));
@@ -324,34 +334,34 @@ function Visit({ settings }) {
   return (
     <section className={`${WRAP} pt-24 lg:pt-36 pb-24 lg:pb-32 grid lg:grid-cols-12 gap-10 lg:gap-8 items-stretch`}>
       <div className="lg:col-span-5 flex flex-col">
-        <Rise as="h2" className={HEAD}>Visit the studio</Rise>
-        <Rise i={1} as="p" className="text-xl leading-relaxed mt-5 max-w-[36ch]">Bring your logo or a sample, see the paper and finishes, and get a price on the spot.</Rise>
+        <Rise as="h2" className={HEAD}>{t('Visit the studio')}</Rise>
+        <Rise i={1} as="p" className="text-xl leading-relaxed mt-5 max-w-[36ch]">{t('Bring your logo or a sample, see the paper and finishes, and get a price on the spot.')}</Rise>
         <Rise i={2} as="dl" className="mt-10 grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-6 text-[17px]">
           <div>
-            <dt className="font-semibold">Address</dt>
-            <dd className="mt-1">{BUSINESS.address.streetAddress},<br />Sivakasi {BUSINESS.address.postalCode}</dd>
+            <dt className="font-semibold">{t('Address')}</dt>
+            <dd className="mt-1">{BUSINESS.address.streetAddress},<br />{t('Sivakasi')} {BUSINESS.address.postalCode}</dd>
           </div>
           <div>
-            <dt className="font-semibold">Hours</dt>
-            <dd className="mt-1">Mon to Sat, 9 am to 10 pm<br />Sunday, 10 am to 8 pm</dd>
-            <dd className="mt-2 inline-flex items-center gap-2"><span className={`w-2.5 h-2.5 rounded-full ${open ? 'bg-emerald-500' : 'bg-red-400'}`} aria-hidden="true" />{open ? `Open now, until ${toH - 12} pm` : `Closed now, opens at ${fromH} am`}</dd>
+            <dt className="font-semibold">{t('Hours')}</dt>
+            <dd className="mt-1">{t('Mon to Sat, 9 am to 10 pm')}<br />{t('Sunday, 10 am to 8 pm')}</dd>
+            <dd className="mt-2 inline-flex items-center gap-2"><span className={`w-2.5 h-2.5 rounded-full ${open ? 'bg-emerald-500' : 'bg-red-400'}`} aria-hidden="true" />{open ? t('Open now, until {h} pm', { h: toH - 12 }) : t('Closed now, opens at {h} am', { h: fromH })}</dd>
           </div>
           <div>
-            <dt className="font-semibold">Phone and WhatsApp</dt>
+            <dt className="font-semibold">{t('Phone and WhatsApp')}</dt>
             <dd className="mt-1 tabular-nums"><a href="tel:+919787702336" className="hover:text-primary">+91 97877 02336</a></dd>
           </div>
           <div>
-            <dt className="font-semibold">Email</dt>
+            <dt className="font-semibold">{t('Email')}</dt>
             <dd className="mt-1"><a href={`mailto:${BUSINESS.email}`} className="hover:text-primary break-all">{BUSINESS.email}</a></dd>
           </div>
         </Rise>
         <Rise i={3} className="flex flex-wrap gap-2 mt-10 lg:mt-auto lg:pt-10">
-          <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like a price for printing.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="h-14 px-6 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-semibold transition-colors hover:bg-primary-dark active:scale-[0.98]"><FaWhatsapp size={20} aria-hidden="true" /> WhatsApp us</a>
-          <a href={links.directions} target="_blank" rel="noopener noreferrer" className="h-14 px-6 inline-flex items-center bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3 active:scale-[0.98]">Directions</a>
+          <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like a price for printing.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="h-14 px-6 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-semibold transition-colors hover:bg-primary-dark active:scale-[0.98]"><FaWhatsapp size={20} aria-hidden="true" /> {t('WhatsApp us')}</a>
+          <a href={links.directions} target="_blank" rel="noopener noreferrer" className="h-14 px-6 inline-flex items-center bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3 active:scale-[0.98]">{t('Directions')}</a>
         </Rise>
       </div>
       <Rise i={1} className="lg:col-start-7 lg:col-span-6 min-h-[380px] lg:min-h-[520px] bg-paper2">
-        <iframe title="Map to Zaro Digitz, Sivakasi" src={links.embed} className="w-full h-full min-h-[380px] lg:min-h-[520px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+        <iframe title={t('Map to Zaro Digitz, Sivakasi')} src={links.embed} className="w-full h-full min-h-[380px] lg:min-h-[520px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
       </Rise>
     </section>
   );

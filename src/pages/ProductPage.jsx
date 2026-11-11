@@ -19,6 +19,7 @@ import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { flyToCart } from '../utils/flyToCart';
 import { clampQty, priceForQty, qtyRules, optionGroups } from '../utils/pricing';
+import { useLang } from '../i18n/context';
 
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
@@ -53,6 +54,7 @@ export default function ProductPage() {
   const [picks, setPicks] = useState({}); // option group name -> chosen index
   const { addItem } = useCart();
   const { settings } = useShopSettings();
+  const { t, cat, pname } = useLang();
 
   useEffect(() => {
     const sync = () => setCatalog(getCatalogProducts());
@@ -92,17 +94,23 @@ export default function ProductPage() {
   if (!images.length) images.push(PLACEHOLDER_IMAGE);
   const image = images[Math.min(active, images.length - 1)];
   const specs = [
-    ['Material', product.material],
-    ['Size', product.size],
-    ['Orientation', product.orientation],
-    ['Style', product.style],
-    ['Design code', product.code],
+    [t('Material'), product.material],
+    [t('Size'), product.size],
+    [t('Orientation'), t(product.orientation || '')],
+    [t('Style'), product.style],
+    [t('Design code'), product.code],
   ].filter(([, v]) => v && v !== '-');
   const crumbs = [
     { name: 'Home', path: '/' },
     { name: 'All Designs', path: '/cards' },
     { name: product.category, path: categoryPath(product.category) },
     { name: product.name, path: productPath(product) },
+  ];
+  const crumbsView = [
+    { name: t('Home'), path: '/' },
+    { name: t('All Designs'), path: '/cards' },
+    { name: cat(product.category), path: categoryPath(product.category) },
+    { name: pname(product), path: productPath(product) },
   ];
 
   const productSchema = {
@@ -151,19 +159,19 @@ export default function ProductPage() {
 
   const stepper = (
     <div className="inline-flex items-center bg-paper2">
-      <button type="button" aria-label="Fewer" disabled={quantity <= min} onClick={() => setQty(clampQty(product, quantity - step))} className="w-12 h-12 flex items-center justify-center hover:text-primary disabled:opacity-30"><FiMinus /></button>
+      <button type="button" aria-label={t('Fewer')} disabled={quantity <= min} onClick={() => setQty(clampQty(product, quantity - step))} className="w-12 h-12 flex items-center justify-center hover:text-primary disabled:opacity-30"><FiMinus /></button>
       <input
         type="number"
         inputMode="numeric"
         min={min}
         step={step}
         value={quantity}
-        aria-label="Quantity"
+        aria-label={t('Quantity')}
         onChange={(e) => setQty(Number(e.target.value) || min)}
         onBlur={() => setQty(clampQty(product, quantity))}
         className="w-20 h-12 text-center text-lg font-bold bg-transparent focus:outline-none"
       />
-      <button type="button" aria-label="More" onClick={() => setQty(clampQty(product, quantity + step))} className="w-12 h-12 flex items-center justify-center hover:text-primary"><FiPlus /></button>
+      <button type="button" aria-label={t('More')} onClick={() => setQty(clampQty(product, quantity + step))} className="w-12 h-12 flex items-center justify-center hover:text-primary"><FiPlus /></button>
     </div>
   );
 
@@ -179,13 +187,13 @@ export default function ProductPage() {
       />
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 pt-6 pb-24 lg:pb-32">
-        <Breadcrumbs items={crumbs} />
+        <Breadcrumbs items={crumbsView} />
 
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 mt-6">
           {/* Gallery: the piece, large, held in place while the details scroll */}
           <div className="lg:col-span-7">
             <div className="lg:sticky lg:top-28">
-              <button type="button" onClick={() => setZoom(true)} aria-label="Open larger image" className="block w-full aspect-square bg-paper2 overflow-hidden cursor-zoom-in">
+              <button type="button" onClick={() => setZoom(true)} aria-label={t('Open larger image')} className="block w-full aspect-square bg-paper2 overflow-hidden cursor-zoom-in">
                 <motion.img
                   key={image}
                   initial={{ opacity: 0, scale: 1.03 }}
@@ -193,7 +201,7 @@ export default function ProductPage() {
                   transition={{ duration: 0.5 }}
                   data-product-image
                   src={safeUrl(image)}
-                  alt={`${product.name} - ${product.category} by Zaro Digitz`}
+                  alt={`${pname(product)} - ${cat(product.category)}`}
                   className="w-full h-full object-cover"
                   onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }}
                 />
@@ -201,7 +209,7 @@ export default function ProductPage() {
               {images.length > 1 && (
                 <div className="flex gap-2 mt-2 overflow-x-auto scrollbar-none">
                   {images.map((src, i) => (
-                    <button key={src} type="button" onClick={() => setActive(i)} aria-label={`Image ${i + 1} of ${images.length}`} aria-pressed={i === active} className={`shrink-0 w-24 h-24 overflow-hidden transition-opacity ${i === active ? 'ring-4 ring-primary ring-inset' : 'opacity-80 hover:opacity-100'}`}>
+                    <button key={src} type="button" onClick={() => setActive(i)} aria-label={t('Image {i} of {n}', { i: i + 1, n: images.length })} aria-pressed={i === active} className={`shrink-0 w-24 h-24 overflow-hidden transition-opacity ${i === active ? 'ring-4 ring-primary ring-inset' : 'opacity-80 hover:opacity-100'}`}>
                       <img src={safeUrl(src)} alt="" className="w-full h-full object-cover" loading="lazy" />
                     </button>
                   ))}
@@ -212,35 +220,34 @@ export default function ProductPage() {
 
           {/* Details */}
           <div className="lg:col-span-5">
-            <h1 className="font-display font-extrabold tracking-[-0.05em] leading-[1.02] text-[clamp(34px,3.6vw,56px)]">{product.name}</h1>
-            <p className="text-xl mt-3">{product.category}, printed with your name in our Sivakasi studio.</p>
-            {product.tamil && <p className="mt-2 text-xl" lang="ta">{product.tamil}</p>}
+            <h1 className="font-display font-extrabold tracking-[-0.05em] leading-[1.02] text-[clamp(34px,3.6vw,56px)]">{pname(product)}</h1>
+            <p className="text-xl mt-3">{t('{category}, printed with your name in our Sivakasi studio.', { category: cat(product.category) })}</p>
 
             <div className="mt-8 flex items-baseline flex-wrap gap-x-3 tabular-nums">
               {offer == null ? (
-                <span className="text-xl">Price on request: ask us on WhatsApp</span>
+                <span className="text-xl">{t('Price on request: ask us on WhatsApp')}</span>
               ) : (
                 <>
                   <span className="font-display font-bold text-[48px] leading-none text-primary">{money(unitPrice)}</span>
-                  <span className="text-lg">per {unit}</span>
+                  <span className="text-lg">{t('per {unit}', { unit: t(unit) })}</span>
                   {discounted && unitPrice === offer && <span className="text-lg line-through text-ink/70">{money(product.mrp)}</span>}
                 </>
               )}
             </div>
-            {offer != null && <p className="text-[17px] mt-3">Printing of your name and wording is included. Courier is extra.</p>}
+            {offer != null && <p className="text-[17px] mt-3">{t('Printing of your name and wording is included. Courier is extra.')}</p>}
 
             {offer != null && groups.length > 0 && (
               <div className="mt-10 space-y-6">
-                <h2 className="font-display font-bold text-[22px]">Choose paper and finish</h2>
+                <h2 className="font-display font-bold text-[22px]">{t('Choose paper and finish')}</h2>
                 {groups.map((g) => (
                   <div key={g.name}>
-                    <p className="text-[17px] font-semibold mb-2">{g.name}</p>
-                    <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={g.name}>
+                    <p className="text-[17px] font-semibold mb-2">{t(g.name)}</p>
+                    <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t(g.name)}>
                       {g.choices.map((c, ci) => {
                         const on = (picks[g.name] ?? 0) === ci;
                         return (
                           <button key={c.label} type="button" role="radio" aria-checked={on} onClick={() => setPicks({ ...picks, [g.name]: ci })} className={`min-h-[48px] px-4 py-2 text-[17px] font-medium text-left transition-colors ${on ? 'bg-ink text-paper' : 'bg-paper2 hover:bg-paper3'}`}>
-                            {c.label}{Number(c.add) ? <span className={on ? 'text-paper/85' : 'text-primary'}> {Number(c.add) > 0 ? '+' : '−'}₹{Math.abs(Number(c.add))}</span> : null}
+                            {t(c.label)}{Number(c.add) ? <span className={on ? 'text-paper/85' : 'text-primary'}> {Number(c.add) > 0 ? '+' : '−'}₹{Math.abs(Number(c.add))}</span> : null}
                           </button>
                         );
                       })}
@@ -252,20 +259,20 @@ export default function ProductPage() {
 
             {offer != null && (
               <div className="mt-10">
-                <p className="text-[17px] font-semibold mb-2">How many</p>
+                <p className="text-[17px] font-semibold mb-2">{t('How many')}</p>
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
                   {stepper}
-                  <p className="text-lg tabular-nums">Total <span className="font-bold text-[22px]">{money(unitPrice * quantity)}</span></p>
+                  <p className="text-lg tabular-nums">{t('Total')} <span className="font-bold text-[22px]">{money(unitPrice * quantity)}</span></p>
                 </div>
-                <p className="text-[15px] mt-2">For a few hundred pieces or more, we quote a better rate on WhatsApp.</p>
+                <p className="text-[15px] mt-2">{t('For a few hundred pieces or more, we quote a better rate on WhatsApp.')}</p>
               </div>
             )}
 
             {template && offer != null && (
               <motion.button type="button" onClick={() => setPersonalising(true)} whileTap={{ scale: 0.98 }} className="mt-8 w-full flex items-center justify-between gap-4 p-6 bg-secondary text-[#211114] text-left transition-colors hover:bg-[rgb(var(--accent-light-rgb))]">
                 <span>
-                  <span className="block font-display font-bold text-xl">Put your names on this design</span>
-                  <span className="block text-[17px] mt-1">Add names, date and photos and see the card now.</span>
+                  <span className="block font-display font-bold text-xl">{t('Put your names on this design')}</span>
+                  <span className="block text-[17px] mt-1">{t('Add names, date and photos and see the card now.')}</span>
                 </span>
                 <LuWandSparkles size={30} aria-hidden="true" className="shrink-0" />
               </motion.button>
@@ -273,10 +280,10 @@ export default function ProductPage() {
 
             <div className="mt-4 grid sm:grid-cols-2 gap-2">
               <button type="button" onClick={handleAdd} disabled={offer == null} className="h-16 inline-flex items-center justify-center gap-2 bg-primary text-white text-[17px] font-bold transition-colors hover:bg-primary-dark active:scale-[0.99] disabled:opacity-50">
-                <FiShoppingCart aria-hidden="true" /> {added ? 'Added to cart' : 'Add to cart'}
+                <FiShoppingCart aria-hidden="true" /> {added ? t('Added to cart') : t('Add to cart')}
               </button>
               <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="h-16 inline-flex items-center justify-center gap-2 bg-ink text-paper text-[17px] font-semibold transition-colors hover:bg-night">
-                <FaWhatsapp size={20} aria-hidden="true" /> Ask about this design
+                <FaWhatsapp size={20} aria-hidden="true" /> {t('Ask about this design')}
               </a>
             </div>
 
@@ -292,17 +299,17 @@ export default function ProductPage() {
             )}
 
             <div className="mt-10">
-              <InfoSection title="About this design" open>
+              <InfoSection title={t('About this design')} open>
                 <p>{product.description || meta.longDescription}</p>
               </InfoSection>
-              <InfoSection title="Printing">
-                <p>{product.printingNote || 'Your name, details and wording are printed on every piece. Extra inserts, envelope printing or special finishes can be added; ask us for the price.'}</p>
+              <InfoSection title={t('Printing')}>
+                <p>{product.printingNote || t('Your name, details and wording are printed on every piece. Extra inserts, envelope printing or special finishes can be added; ask us for the price.')}</p>
               </InfoSection>
-              <InfoSection title="Proof and approval">
-                <p>After you order, we message you on WhatsApp for your details and send a digital proof. Changes to text, colours or layout are free. We print only after you approve.</p>
+              <InfoSection title={t('Proof and approval')}>
+                <p>{t('After you order, we message you on WhatsApp for your details and send a digital proof. Changes to text, colours or layout are free. We print only after you approve.')}</p>
               </InfoSection>
-              <InfoSection title="Delivery">
-                <p>Most orders are printed within 5 to 7 working days after approval. We courier across India, or you can collect from our studio in Sivakasi.</p>
+              <InfoSection title={t('Delivery')}>
+                <p>{t('Most orders are printed within 5 to 7 working days after approval. We courier across India, or you can collect from our studio in Sivakasi.')}</p>
               </InfoSection>
             </div>
           </div>
@@ -311,8 +318,8 @@ export default function ProductPage() {
         {related.length > 0 && (
           <section className="mt-24 lg:mt-40">
             <div className="flex items-end justify-between gap-6">
-              <h2 className="font-display font-extrabold tracking-[-0.05em] leading-[1.02] text-[clamp(28px,3vw,44px)]">More {product.category.toLowerCase()}</h2>
-              <Link to={categoryPath(product.category)} className="text-lg font-semibold text-primary underline underline-offset-4 shrink-0">See all</Link>
+              <h2 className="font-display font-extrabold tracking-[-0.05em] leading-[1.02] text-[clamp(28px,3vw,44px)]">{t('More {category}', { category: cat(product.category) })}</h2>
+              <Link to={categoryPath(product.category)} className="text-lg font-semibold text-primary underline underline-offset-4 shrink-0">{t('See all')}</Link>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-5 mt-10">
               {related.map((p) => <ProductCard key={p.id} product={p} />)}
@@ -321,17 +328,17 @@ export default function ProductPage() {
         )}
       </div>
 
-      <QuickEnquiry subject={product.name} title="Questions about this design?" />
+      <QuickEnquiry subject={product.name} title={t('Questions about this design?')} />
 
       {/* Add-to-cart bar on phones */}
       {offer != null && (
         <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-paper2 px-4 py-3 flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-[15px] truncate">{product.name}</p>
+            <p className="text-[15px] truncate">{pname(product)}</p>
             <p className="font-bold text-lg text-primary tabular-nums">{money(unitPrice)} <span className="text-[15px] text-ink font-normal">× {quantity}</span></p>
           </div>
           <button type="button" onClick={handleAdd} className="h-12 inline-flex items-center gap-2 bg-primary text-white font-bold px-5">
-            <FiShoppingCart aria-hidden="true" /> {added ? 'Added' : 'Add'}
+            <FiShoppingCart aria-hidden="true" /> {added ? t('Added') : t('Add')}
           </button>
         </div>
       )}
@@ -343,8 +350,8 @@ export default function ProductPage() {
       {/* Lightbox */}
       <AnimatePresence>
         {zoom && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4" onClick={() => setZoom(false)} role="dialog" aria-label="Image preview">
-            <button type="button" aria-label="Close" className="absolute top-4 right-4 text-white/80 hover:text-white" onClick={() => setZoom(false)}><FiX size={28} /></button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] bg-black/85 flex items-center justify-center p-4" onClick={() => setZoom(false)} role="dialog" aria-label={t('Image preview')}>
+            <button type="button" aria-label={t('Close')} className="absolute top-4 right-4 text-white/80 hover:text-white" onClick={() => setZoom(false)}><FiX size={28} /></button>
             <motion.img initial={{ scale: 0.95 }} animate={{ scale: 1 }} src={safeUrl(image)} alt={product.name} className="max-h-[90vh] max-w-full object-contain " onClick={(e) => e.stopPropagation()} />
           </motion.div>
         )}
