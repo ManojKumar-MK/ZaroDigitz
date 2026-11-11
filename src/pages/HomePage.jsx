@@ -330,7 +330,7 @@ function Questions({ faqs }) {
   );
 }
 
-/* ───────────── Visit: the phone number as the headline ───────────── */
+/* ───────────── Visit: the studio, with the map beside it ───────────── */
 function Visit({ settings }) {
   const links = googleBusinessLinks(settings);
   const [now] = useState(() => new Date());
@@ -339,27 +339,37 @@ function Visit({ settings }) {
   const hour = Number(parts.hour) % 24;
   const open = hour >= fromH && hour < toH;
   return (
-    <section className="mt-24 lg:mt-36 bg-ink text-paper flex flex-col">
-      <div className={`${WRAP} w-full flex-1 flex flex-col py-16 lg:py-24`}>
-        <div className="grid lg:grid-cols-12 gap-8">
-          <Rise as="h2" className="lg:col-span-6 text-[clamp(20px,1.6vw,24px)] leading-snug max-w-[30ch] font-semibold">Send your logo and the quantity. We reply with a price, usually the same day.</Rise>
-        </div>
-        <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like a price for printing.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp 97877 02336" className={`font-display font-extrabold tracking-[-0.04em] leading-none mt-12 block text-[clamp(38px,4.4vw,68px)] whitespace-nowrap tabular-nums transition-colors hover:text-[rgb(var(--accent-light-rgb))]`}>
-          97877 02336
-        </a>
-        <p className="mt-4 text-lg inline-flex items-center gap-3">
-          <span className={`w-3 h-3 rounded-full ${open ? 'bg-emerald-400' : 'bg-red-300'}`} aria-hidden="true" />
-          {open ? `Open now, until ${toH - 12} pm` : `Closed now, opens at ${fromH} am`}
-        </p>
-        <div className="mt-10 grid sm:grid-cols-2 gap-6 text-[17px]">
-          <p>{BUSINESS.address.streetAddress}, Sivakasi {BUSINESS.address.postalCode}<br />Monday to Saturday 9 am to 10 pm, Sunday 10 am to 8 pm</p>
-          <p className="flex flex-wrap gap-x-6 gap-y-2 sm:justify-end sm:self-end font-semibold">
-            <a className="underline underline-offset-4 hover:text-[rgb(var(--accent-light-rgb))]" href={shopWhatsAppLink('Hi Zaro Digitz!', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-            <a className="underline underline-offset-4 hover:text-[rgb(var(--accent-light-rgb))]" href="tel:+919787702336">Call</a>
-            <a className="underline underline-offset-4 hover:text-[rgb(var(--accent-light-rgb))]" href={links.directions} target="_blank" rel="noopener noreferrer">Directions</a>
-          </p>
-        </div>
+    <section className={`${WRAP} pt-24 lg:pt-36 pb-24 lg:pb-32 grid lg:grid-cols-12 gap-10 lg:gap-8 items-stretch`}>
+      <div className="lg:col-span-5 flex flex-col">
+        <Rise as="h2" className={HEAD}>Visit the studio</Rise>
+        <Rise i={1} as="p" className="text-xl leading-relaxed mt-5 max-w-[36ch]">Bring your logo or a sample, see the paper and finishes, and get a price on the spot.</Rise>
+        <Rise i={2} as="dl" className="mt-10 grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-6 text-[17px]">
+          <div>
+            <dt className="font-semibold">Address</dt>
+            <dd className="mt-1">{BUSINESS.address.streetAddress},<br />Sivakasi {BUSINESS.address.postalCode}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold">Hours</dt>
+            <dd className="mt-1">Mon to Sat, 9 am to 10 pm<br />Sunday, 10 am to 8 pm</dd>
+            <dd className="mt-2 inline-flex items-center gap-2"><span className={`w-2.5 h-2.5 rounded-full ${open ? 'bg-emerald-500' : 'bg-red-400'}`} aria-hidden="true" />{open ? `Open now, until ${toH - 12} pm` : `Closed now, opens at ${fromH} am`}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold">Phone and WhatsApp</dt>
+            <dd className="mt-1 tabular-nums"><a href="tel:+919787702336" className="hover:text-primary">+91 97877 02336</a></dd>
+          </div>
+          <div>
+            <dt className="font-semibold">Email</dt>
+            <dd className="mt-1"><a href={`mailto:${BUSINESS.email}`} className="hover:text-primary break-all">{BUSINESS.email}</a></dd>
+          </div>
+        </Rise>
+        <Rise i={3} className="flex flex-wrap gap-2 mt-10 lg:mt-auto lg:pt-10">
+          <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like a price for printing.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="h-14 px-6 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-semibold transition-colors hover:bg-primary-dark active:scale-[0.98]"><FaWhatsapp size={20} aria-hidden="true" /> WhatsApp us</a>
+          <a href={links.directions} target="_blank" rel="noopener noreferrer" className="h-14 px-6 inline-flex items-center bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3 active:scale-[0.98]">Directions</a>
+        </Rise>
       </div>
+      <Rise i={1} className="lg:col-start-7 lg:col-span-6 min-h-[380px] lg:min-h-[520px] bg-paper2">
+        <iframe title="Map to Zaro Digitz, Sivakasi" src={links.embed} className="w-full h-full min-h-[380px] lg:min-h-[520px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+      </Rise>
     </section>
   );
 }
@@ -407,7 +417,7 @@ export default function HomePage() {
       {heroModes.length > 0 && <TryIt heroModes={heroModes} mode={mode} setMode={setMode} live={live} setLive={setLive} proofHref={proofHref} />}
       {show('reviews') && <div className="pt-24 lg:pt-36"><GoogleReviews /></div>}
       {show('faq') && <Questions faqs={getFaqs(settings)} />}
-      {show('visit') ? <Visit settings={settings} /> : <div className="pb-32" />}
+      {show('visit') ? <Visit settings={settings} /> : <div className="pb-24" />}
     </div>
   );
 }

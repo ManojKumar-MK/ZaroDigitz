@@ -1,41 +1,53 @@
 import { Link } from 'react-router-dom';
 import { categoryPath } from '../seo/catalog';
 import { useShopSettings } from '../context/ShopSettingsContext';
+import { shopWhatsAppLink } from '../utils/whatsapp';
 import { googleBusinessLinks, BUSINESS } from '../seo/site';
 
-const LINKS = [
-  [categoryPath('Diaries & Calendars'), 'Calendars'],
-  [categoryPath('Visiting Cards & Stationery'), 'Visiting cards'],
-  ['/cards', 'All designs'],
-  ['/about', 'About'],
-  ['/contact', 'Contact'],
+const COLUMNS = [
+  ['Print', [
+    [categoryPath('Diaries & Calendars'), 'Calendars and diaries'],
+    [categoryPath('Visiting Cards & Stationery'), 'Visiting cards'],
+    [categoryPath('Flyers & Brochures'), 'Flyers and brochures'],
+    [categoryPath('Bill Books & Receipt Books'), 'Bill books'],
+    [categoryPath('Hindu Wedding Cards'), 'Invitations'],
+  ]],
+  ['Shop', [['/cards', 'All designs'], ['/saved', 'Saved designs'], ['/cart', 'Cart'], ['/#faq', 'Questions']]],
+  ['Studio', [['/about', 'About us'], ['/contact', 'Contact']]],
 ];
 
-/** The close of every page: the way to write to us, set as the headline. */
+/** A quiet close: who we are, where things are, how to reach us. */
 export default function Footer() {
   const { settings } = useShopSettings();
   const a = BUSINESS.address;
-  const [user, domain] = String(BUSINESS.email).split('@');
+  const link = 'text-paper/85 hover:text-paper hover:underline underline-offset-4';
   return (
-    <footer className="bg-primary text-white flex flex-col">
-      <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-7 xl:px-10 pt-10 flex-1 flex flex-col">
-        <div className="grid lg:grid-cols-12 gap-6 text-[15px] leading-snug">
-          <Link to="/" className="lg:col-span-2 font-display font-extrabold text-lg tracking-[-0.03em]">ZARO Digitz</Link>
-          <a href={googleBusinessLinks(settings).maps} target="_blank" rel="noopener noreferrer" className="lg:col-span-3 hover:underline underline-offset-4">{a.streetAddress},<br />Sivakasi, Tamil Nadu {a.postalCode}</a>
-          <p className="lg:col-span-3">Monday to Saturday, 9 am to 10 pm<br />Sunday, 10 am to 8 pm</p>
-          <p className="lg:col-span-3">Digital colour printing. A proof on WhatsApp before anything is printed.</p>
-          <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="lg:col-span-1 text-left lg:text-right font-semibold hover:underline underline-offset-4">Back to top</button>
+    <footer className="bg-ink text-paper">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 pt-16 pb-10 grid gap-12 lg:grid-cols-12">
+        <div className="lg:col-span-4">
+          <Link to="/" className="inline-flex items-center gap-3">
+            <img src="/zaro-logo-112.webp" width="40" height="40" loading="lazy" alt="" className="w-10 h-10 object-contain" />
+            <span className="font-display font-extrabold text-xl tracking-[-0.03em]">ZARO Digitz</span>
+          </Link>
+          <p className="mt-4 text-[17px] text-paper/85 max-w-[34ch]">Digital Color Prints, Sivakasi. A proof on WhatsApp before anything is printed.</p>
+          <a href={shopWhatsAppLink(settings.whatsappGreeting, settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center h-12 px-5 bg-primary text-white text-[16px] font-semibold transition-colors hover:bg-primary-dark">Get a price on WhatsApp</a>
         </div>
-
-        <a href={`mailto:${BUSINESS.email}`} className="mt-16 lg:mt-24 block font-display font-extrabold tracking-[-0.04em] leading-[0.95] text-[clamp(30px,4vw,60px)] break-words transition-opacity hover:opacity-80">
-          {user}<wbr />@{domain}
-        </a>
-
-        <div className="mt-10 mb-8 grid gap-3 sm:grid-cols-3 text-[15px]">
-          <nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-1">{LINKS.map(([to, l]) => <Link key={to} to={to} className="hover:underline underline-offset-4">{l}</Link>)}</nav>
-          <p className="sm:text-center">GSTIN {BUSINESS.gstin} · +91 97877 02336</p>
-          <p className="sm:text-right">Sivakasi, {new Date().getFullYear()}</p>
+        {COLUMNS.map(([title, items]) => (
+          <nav key={title} aria-label={title} className="lg:col-span-2">
+            <h2 className="text-[15px] font-semibold text-paper/70">{title}</h2>
+            <ul className="mt-3 space-y-2 text-[16px]">{items.map(([to, l]) => <li key={to}><Link to={to} className={link}>{l}</Link></li>)}</ul>
+          </nav>
+        ))}
+        <div className="lg:col-span-2 text-[16px] space-y-2">
+          <h2 className="text-[15px] font-semibold text-paper/70">Reach us</h2>
+          <p><a href="tel:+919787702336" className={`${link} tabular-nums`}>+91 97877 02336</a></p>
+          <p><a href={`mailto:${BUSINESS.email}`} className={`${link} break-all`}>{BUSINESS.email}</a></p>
+          <p><a href={googleBusinessLinks(settings).maps} target="_blank" rel="noopener noreferrer" className={link}>{a.streetAddress}, Sivakasi</a></p>
         </div>
+      </div>
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10 py-6 flex flex-col sm:flex-row gap-2 sm:justify-between text-[14px] text-paper/70">
+        <p>© {new Date().getFullYear()} Zaro Digitz · GSTIN {BUSINESS.gstin}</p>
+        <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="self-start sm:self-auto hover:text-paper hover:underline underline-offset-4">Back to top</button>
       </div>
     </footer>
   );
