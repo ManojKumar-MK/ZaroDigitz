@@ -13,7 +13,7 @@ import { CategorySketch } from './Sketches';
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
 /** A design in a grid or carousel: picture, name, price per piece and one clear action. */
-export default function ProductCard({ product, previewText = '' }) {
+export default function ProductCard({ product }) {
   const { addItem } = useCart();
   const saved = useSaved().includes(product.code);
   const unit = String(product.per || 'card').replace(/^1\s+/, '');
@@ -34,12 +34,6 @@ export default function ProductCard({ product, previewText = '' }) {
           </div>
         )}
         <span className="absolute left-4 top-4 right-14 text-[13px] font-semibold text-ink/80 truncate">{product.category}</span>
-        {/* "Try your names on every design": the shopper's names set across the design */}
-        {previewText && (
-          <motion.span key={previewText} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="absolute inset-x-[12%] bottom-[16%] text-center font-['Great_Vibes',cursive] text-[clamp(20px,2.2vw,30px)] leading-tight text-primary bg-paper/85 px-2 py-1 break-words">
-            {previewText}
-          </motion.span>
-        )}
       </Link>
       <motion.button
         type="button"
