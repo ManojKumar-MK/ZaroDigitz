@@ -5,20 +5,20 @@ import { useToast } from './Toast';
 import { Button, Card, Toggle } from './ui';
 
 const SECTIONS = [
-  ['newyear', 'Calendars and diaries for 2027', 'Large picture with tabs: desk calendar, wall calendar, diaries, gift set'],
-  ['services', 'Rate card', 'The printed price list on the wine background'],
-  ['numbers', 'Numbers beside the rate card', '13 × 19 in, 350 gsm, 1 day to proof, 7 days printing'],
-  ['traditions', 'Invitations on the rate card', 'The wedding and function cards group in the price list'],
-  ['favourites', 'Designs: calendars and diaries tab', 'Designs ready to order, calendars and diaries first'],
+  ['benefits', 'Every media', 'Photos on the big words, with the full shop-sign list'],
+  ['services', 'Prices', 'Price per piece for calendars, business printing and cards'],
+  ['numbers', 'Numbers beside the prices', '13 × 19 in, 350 gsm, 1 day to proof, 7 days printing'],
+  ['traditions', 'Invitations in the prices', 'The wedding and function cards rows'],
+  ['newyear', 'Calendars and diaries for 2027', 'Big words with the diary photo, and the five New Year pieces'],
+  ['timeline', 'How an order goes', 'The four steps from file to finished job'],
+  ['favourites', 'Designs: calendars tab', 'Ready to order, calendars and diaries first'],
   ['printing', 'Designs: printing tab', 'Visiting cards, flyers, bill books, notebooks…'],
   ['budget', 'Designs: wedding cards tab', 'Wedding and function cards, lowest price first'],
-  ['timeline', 'From your phone to the press', 'The six steps of an order'],
-  ['benefits', 'Shop sign', 'Everything on our shop sign, on a gold background'],
   ['reviews', 'Google reviews', 'Shows only when reviews are available'],
-  ['faq', 'Questions', 'Frequently asked questions, as reading text'],
-  ['visit', 'Visit our studio', 'Address, hours, open now, and the ask-for-a-price coupon'],
+  ['faq', 'Questions', 'Questions with their answers beside them'],
+  ['visit', 'Visit and phone number', 'Phone number, open now, address and directions'],
 ];
-const TABS = [['calendar', 'Calendar'], ['diary', 'Diary'], ['wedding', 'Wedding card']];
+const TABS = [['calendar', 'Calendar'], ['diary', 'Diary'], ['wedding', 'Wedding card']]; // “Try your details on a design” tabs
 
 /** Admin → Settings → Home page: show or hide each section and each hero tab. */
 export default function HomeSectionsCard() {
@@ -41,7 +41,7 @@ export default function HomeSectionsCard() {
     <Card title="Home page">
       <p className="text-sm text-zinc-600 dark:text-zinc-300 mb-4">Choose what customers see on the home page. Turned-off sections disappear as soon as you save; turn them back on any time.</p>
 
-      <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2">Hero tabs</p>
+      <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2">“Try your details on a design” tabs</p>
       <div className="flex flex-wrap gap-6 mb-6">
         {TABS.map(([k, label]) => (
           <label key={k} className="flex items-center gap-2.5 text-sm text-zinc-700 dark:text-zinc-200">

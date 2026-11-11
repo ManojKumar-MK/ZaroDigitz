@@ -22,7 +22,7 @@ const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDi
 const unitOf = (p) => String(p?.per || 'piece').replace(/^1\s+/, '');
 const WRAP = 'max-w-[1440px] mx-auto px-4 sm:px-7 xl:px-10';
 const DISPLAY = 'font-display font-extrabold tracking-[-0.05em] leading-[0.9]';
-const HEAD = `${DISPLAY} text-[clamp(40px,4.6vw,68px)]`;
+const HEAD = 'font-display font-extrabold tracking-[-0.04em] leading-[0.95] text-[clamp(30px,3vw,46px)]';
 
 const rise = {
   hidden: { opacity: 0, y: 24 },
@@ -85,31 +85,33 @@ const INVITES = [
 ];
 
 const STAIRS = [
-  ['First, you send your name.', 'Your shop name, logo, phone and how many you need, on WhatsApp. A photo of last year’s calendar is enough.'],
-  ['Then we send a proof.', 'Your name set on the design, on your phone, usually the same day. Changes are free.'],
+  ['First, you send the file.', 'Your design, logo or text on WhatsApp, with the size, paper and quantity. No design yet? We make one for you.'],
+  ['Then we send a proof.', 'The job laid out on the sheet, on your phone, usually the same day. Changes are free.'],
   ['You reply OK.', 'Pay by UPI or at the counter, and the job goes on the press that day.'],
   ['It is ready in a week.', 'Printed, bound and counted. Collect it from the studio or we courier it anywhere in India.'],
 ];
 
-/* ───────────── First screen: “Your name [calendar] 2027” ───────────── */
-function Hero() {
+/* ───────────── First screen: the shop's own line, “Digital [ink] Color Prints” ───────────── */
+function Hero({ settings }) {
   return (
     <section className={`${WRAP} min-h-[calc(100svh-72px)] flex flex-col justify-center py-14`}>
-      <h1 className={`${DISPLAY} text-[clamp(64px,10vw,168px)] text-ink`}>
-        <span className="sr-only">Your name on a 2027 calendar</span>
-        <span aria-hidden="true" className="flex flex-wrap lg:flex-nowrap items-center gap-x-[0.18em] gap-y-[0.12em]">
-          <span className="whitespace-nowrap">Your name</span>
-          <Shutter eager src="/photos/calendar-dates.webp" className="basis-full lg:basis-auto lg:flex-1 h-[1.5em] lg:h-[0.78em] rounded-[14px] min-w-0" imgClass="object-[50%_40%]" />
-          <span className="whitespace-nowrap">2027</span>
+      <h1 className={`${DISPLAY} text-[clamp(52px,9.4vw,160px)] text-ink`}>
+        <span className="sr-only">Zaro Digitz, Digital Color Prints, Sivakasi</span>
+        <span aria-hidden="true" className="block">
+          <span className="flex flex-wrap sm:flex-nowrap items-center gap-x-[0.18em] gap-y-[0.12em]">
+            <span className="whitespace-nowrap">Digital</span>
+            <Shutter eager src="/photos/ink-trays.webp" className="basis-full sm:basis-auto sm:flex-1 h-[1.3em] sm:h-[0.78em] rounded-[14px] min-w-0" imgClass="object-[50%_55%]" />
+          </span>
+          <span className="block whitespace-nowrap mt-[0.04em]">Color Prints</span>
         </span>
       </h1>
       <div className="grid lg:grid-cols-12 gap-8 items-end mt-12 lg:mt-16">
-        <Rise i={2} as="p" className="lg:col-span-6 text-[clamp(20px,1.6vw,26px)] leading-snug max-w-[34ch]">
-          Desk and wall calendars, diaries and every kind of printing, with your name on it. From our studio in Sivakasi.
+        <Rise i={2} as="p" className="lg:col-span-6 text-[clamp(20px,1.6vw,26px)] leading-snug max-w-[38ch]">
+          Visiting cards, calendars, diaries, flyers, bill books, stickers and invitations, printed in our Sivakasi studio on any media up to 13 × 19 in and 350 gsm.
         </Rise>
         <Rise i={3} className="lg:col-span-6 flex flex-wrap gap-2 lg:justify-end">
-          <Link to={categoryPath('Diaries & Calendars')} className="h-14 px-7 inline-flex items-center bg-primary text-white text-[17px] font-semibold transition-colors hover:bg-primary-dark active:scale-[0.98]">See 2027 calendars</Link>
-          <Link to="/cards" className="h-14 px-7 inline-flex items-center bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3 active:scale-[0.98]">Everything we print</Link>
+          <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like a price for printing.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="h-14 px-7 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-semibold transition-colors hover:bg-primary-dark active:scale-[0.98]"><FaWhatsapp size={20} aria-hidden="true" /> Get a price</a>
+          <Link to="/cards" className="h-14 px-7 inline-flex items-center bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3 active:scale-[0.98]">See what we print</Link>
         </Rise>
       </div>
     </section>
@@ -120,39 +122,34 @@ function Hero() {
 function Yearly({ products }) {
   const list = Object.keys(YEARLY).map((c) => products.find((p) => p.code === c)).filter(Boolean);
   return (
-    <section className="relative overflow-hidden pt-32 lg:pt-48">
-      <div className={WRAP}>
-        <div className={`${DISPLAY} text-[clamp(64px,9vw,150px)] whitespace-nowrap select-none`}>
-          <Rise as="p" className="text-ink/60" aria-hidden="true">Desk and wall</Rise>
-          <Rise as="h2" i={1} className="text-ink">calendars,</Rise>
-          <Rise as="p" i={2} className="text-ink/60" aria-hidden="true">diaries and</Rise>
-          <Rise as="p" i={3} className="text-ink/60" aria-hidden="true">gift sets</Rise>
-        </div>
+    <section className={`${WRAP} pt-24 lg:pt-36 grid lg:grid-cols-12 gap-10 lg:gap-8 items-start`}>
+      <div className={`lg:col-span-6 ${DISPLAY} text-[clamp(38px,4.8vw,76px)] leading-[0.95]`}>
+        <Rise as="p" className="text-ink/60" aria-hidden="true">Desk and wall</Rise>
+        <Rise as="h2" i={1} className="text-ink">calendars,</Rise>
+        <Rise as="p" i={2} className="text-ink/60" aria-hidden="true">diaries and</Rise>
+        <Rise as="p" i={3} className="text-ink/60" aria-hidden="true">gift sets for 2027</Rise>
+      </div>
+      <div className="lg:col-start-8 lg:col-span-5">
         <motion.div
-          initial={{ opacity: 0, y: 60, rotate: 0 }}
-          whileInView={{ opacity: 1, y: 0, rotate: 4 }}
+          initial={{ opacity: 0, y: 40, rotate: 0 }}
+          whileInView={{ opacity: 1, y: 0, rotate: 3 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="relative lg:absolute ml-auto -mr-[6vw] lg:mr-0 mt-6 lg:mt-0 lg:right-[4vw] lg:top-[16%] w-[78vw] lg:w-[42vw] aspect-[4/3] z-10"
+          className="aspect-[4/3]"
         >
           <img src="/photos/orange-diary.webp" alt="A hardbound diary on a desk" loading="lazy" className="w-full h-full object-cover" />
         </motion.div>
-
-        <div className="grid lg:grid-cols-12 gap-10 mt-12 lg:mt-20 relative z-20">
-          <div className="lg:col-start-8 lg:col-span-5 space-y-5 text-[clamp(18px,1.3vw,20px)] leading-relaxed">
-            <Rise as="p">Something your customers use every day of the year, with your shop name, phone and address on it. Order by mid-December and they are in hand before 1 January.</Rise>
-            <Rise as="ul" i={1} className="pt-4">
-              {list.map((p) => (
-                <li key={p.code}>
-                  <Link to={productPath(p)} className="group flex items-baseline justify-between gap-6 py-2.5">
-                    <span className="font-semibold group-hover:text-primary transition-colors">{YEARLY[p.code]}</span>
-                    <span className="tabular-nums whitespace-nowrap">{money(p.price)} <span className="text-ink/70">/ {unitOf(p)}</span> <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">→</span></span>
-                  </Link>
-                </li>
-              ))}
-            </Rise>
-          </div>
-        </div>
+        <Rise as="p" className="mt-10 text-[clamp(18px,1.3vw,20px)] leading-relaxed">Something your customers use every day of the year, with your shop name, phone and address on it. Order by mid-December and they are in hand before 1 January.</Rise>
+        <Rise as="ul" i={1} className="mt-4 text-[clamp(18px,1.3vw,20px)]">
+          {list.map((p) => (
+            <li key={p.code}>
+              <Link to={productPath(p)} className="group flex items-baseline justify-between gap-6 py-2.5">
+                <span className="font-semibold group-hover:text-primary transition-colors">{YEARLY[p.code]}</span>
+                <span className="tabular-nums whitespace-nowrap">{money(p.price)} <span className="text-ink/70">/ {unitOf(p)}</span> <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">→</span></span>
+              </Link>
+            </li>
+          ))}
+        </Rise>
       </div>
     </section>
   );
@@ -161,10 +158,10 @@ function Yearly({ products }) {
 /* ───────────── Try it: your words on the thing we print ───────────── */
 function TryIt({ heroModes, mode, setMode, live, setLive, proofHref }) {
   return (
-    <section className={`${WRAP} pt-32 lg:pt-48 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center`}>
+    <section className={`${WRAP} pt-24 lg:pt-36 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center`}>
       <form className="lg:col-span-6" onSubmit={(e) => { e.preventDefault(); window.open(proofHref, '_blank', 'noopener'); }}>
-        <Rise as="h2" className={HEAD}>See your name on it now</Rise>
-        <Rise i={1} as="p" className="text-xl leading-relaxed mt-6 max-w-[40ch]">Type it in. This is roughly how it prints; we send a proper proof on WhatsApp.</Rise>
+        <Rise as="h2" className={HEAD}>Try your details on a design</Rise>
+        <Rise i={1} as="p" className="text-xl leading-relaxed mt-6 max-w-[40ch]">Every piece is printed with your name, logo and details. Type them in for a rough look; we send a proper proof on WhatsApp.</Rise>
         {heroModes.length > 1 && (
           <Rise i={2} className="flex flex-wrap gap-x-6 gap-y-2 mt-10" role="tablist" aria-label="What to preview">
             {heroModes.map((m) => (
@@ -212,7 +209,7 @@ function Prices({ products, showFacts, showInvites }) {
     ...(showInvites ? [INVITES.map(([c, n]) => ({ kind: 'Cards', name: n, price: from(c), to: categoryPath(c) }))] : []),
   ];
   return (
-    <section className={`${WRAP} pt-32 lg:pt-48`}>
+    <section className={`${WRAP} pt-24 lg:pt-36`}>
       <Rise as="h2" className={`${HEAD} max-w-[18ch] lg:indent-[3vw]`}>Prices per piece, printing included</Rise>
       <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 mt-16 lg:mt-24">
         <div className="lg:col-span-5 flex flex-col justify-end gap-12 order-last lg:order-none">
@@ -220,7 +217,7 @@ function Prices({ products, showFacts, showInvites }) {
             <dl className="grid grid-cols-2 gap-x-6 gap-y-8">
               {[['13 × 19 in', 'largest sheet'], ['350 gsm', 'thickest board'], ['1 day', 'to your proof'], ['7 days', 'to print']].map(([n, l], i) => (
                 <Rise key={l} i={i}>
-                  <dt className={`${DISPLAY} text-[clamp(36px,3.4vw,52px)] tabular-nums`}>{n}</dt>
+                  <dt className="font-display font-extrabold tracking-[-0.03em] text-[clamp(26px,2.2vw,34px)] tabular-nums">{n}</dt>
                   <dd className="text-lg mt-1">{l}</dd>
                 </Rise>
               ))}
@@ -252,13 +249,13 @@ function Prices({ products, showFacts, showInvites }) {
 /* ───────────── How an order goes: lines that step across ───────────── */
 function Stairs() {
   return (
-    <section className={`${WRAP} pt-32 lg:pt-48`}>
+    <section className={`${WRAP} pt-24 lg:pt-36`}>
       <ol className="space-y-14">
         {STAIRS.map(([line, text], i) => {
           const Tag = i === 0 ? 'h2' : 'p';
           return (
             <Rise as="li" key={line} i={i} style={{ '--i': i }} className="pl-[calc(var(--i)*6vw)] lg:pl-[calc(var(--i)*16.66%)]">
-              <Tag className={`${DISPLAY} leading-[1] text-[clamp(32px,4.6vw,76px)] ${i === STAIRS.length - 1 ? 'text-primary' : ''}`}>{line}</Tag>
+              <Tag className={`font-display font-extrabold tracking-[-0.03em] leading-[1.05] text-[clamp(24px,2.4vw,36px)] ${i === STAIRS.length - 1 ? 'text-primary' : ''}`}>{line}</Tag>
               <p className="text-[17px] leading-relaxed mt-3 max-w-[34ch]">{text}</p>
             </Rise>
           );
@@ -276,10 +273,10 @@ function Shop() {
     className: `absolute bg-paper p-2 transition-transform duration-200 outline-none focus-visible:ring-4 focus-visible:ring-ink ${front === k ? 'z-30 !rotate-0' : 'z-20'} ${extra}`,
   });
   return (
-    <section className="relative mt-32 lg:mt-48 bg-paper3 min-h-[78svh] lg:min-h-[100svh] overflow-hidden flex items-center justify-center" onMouseLeave={() => setFront(null)}>
-      <h2 className={`${DISPLAY} text-center text-[clamp(96px,14vw,220px)] leading-[0.85] relative z-10`}>Printed<br />here</h2>
-      <div {...print('a', 'w-[34vw] lg:w-[22vw] aspect-[3/4] -rotate-[8deg] -left-[3vw] lg:left-[6vw] top-[3%] lg:top-[8%]')}><img src="/photos/large-printer.webp" alt="A wide-format printer printing a banner" loading="lazy" className="w-full h-full object-cover" /></div>
-      <div {...print('b', 'w-[34vw] lg:w-[22vw] aspect-[3/4] rotate-[6deg] -right-[3vw] lg:right-[8vw] bottom-[24%] lg:bottom-auto lg:top-[30%]')}><img src="/photos/spiral-binding.jpg" alt="Wire binding on a calendar" loading="lazy" className="w-full h-full object-cover" /></div>
+    <section className="relative bg-paper3 min-h-[70svh] lg:min-h-[86svh] overflow-hidden flex items-center justify-center" onMouseLeave={() => setFront(null)}>
+      <h2 className={`${DISPLAY} text-center text-[clamp(56px,7vw,112px)] leading-[0.9] relative z-10`}>Every<br />media</h2>
+      <div {...print('a', 'w-[34vw] lg:w-[18vw] aspect-[3/4] -rotate-[8deg] -left-[3vw] lg:left-[6vw] top-[3%] lg:top-[8%]')}><img src="/photos/large-printer.webp" alt="A wide-format printer printing a banner" loading="lazy" className="w-full h-full object-cover" /></div>
+      <div {...print('b', 'w-[34vw] lg:w-[18vw] aspect-[3/4] rotate-[6deg] -right-[3vw] lg:right-[8vw] bottom-[24%] lg:bottom-auto lg:top-[30%]')}><img src="/photos/spiral-binding.jpg" alt="Wire binding on a calendar" loading="lazy" className="w-full h-full object-cover" /></div>
       <div {...print('c', 'hidden lg:block w-[14vw] aspect-[3/4] rotate-[3deg] left-[40vw] -bottom-[8%]')}><img src="/photos/ink-trays.webp" alt="Cyan, magenta and yellow ink on a press" loading="lazy" className="w-full h-full object-cover" /></div>
       <p className="absolute left-4 sm:left-7 xl:left-10 bottom-6 right-4 lg:right-auto z-30 text-[17px] max-w-[52ch]">Visiting cards, stickers, invitations, flyers, synthetic, bill books, brochures, letterheads, texture board, branding, ID cards and certificates, on any media up to 13 × 19 in and 350 gsm.</p>
     </section>
@@ -292,7 +289,7 @@ function Designs({ tabs }) {
   const tab = tabs.find((t) => t.key === pick) || tabs[0];
   if (!tab) return null;
   return (
-    <section className={`${WRAP} pt-32 lg:pt-48`}>
+    <section className={`${WRAP} pt-24 lg:pt-36`}>
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
         <Rise as="h2" className={HEAD}>Ready to order</Rise>
         {tabs.length > 1 && (
@@ -319,12 +316,12 @@ function Designs({ tabs }) {
 /* ───────────── Questions: large on the left, answers beside ───────────── */
 function Questions({ faqs }) {
   return (
-    <section id="faq" className={`${WRAP} scroll-mt-28 pt-32 lg:pt-48`}>
-      <Rise as="h2" className="font-display font-semibold text-[clamp(26px,2.6vw,40px)] leading-[1.1] tracking-[-0.03em] text-ink/70">Questions people ask</Rise>
-      <dl className="mt-14 lg:mt-20 space-y-14 lg:space-y-20">
+    <section id="faq" className={`${WRAP} scroll-mt-28 pt-24 lg:pt-36`}>
+      <Rise as="h2" className={HEAD}>Questions people ask</Rise>
+      <dl className="mt-12 lg:mt-16 space-y-10 lg:space-y-12">
         {faqs.slice(0, 7).map((f, i) => (
           <Rise key={f.q} i={Math.min(i, 3)} className="grid lg:grid-cols-12 gap-x-8 gap-y-3">
-            <dt className="lg:col-span-6 font-display font-semibold text-[clamp(24px,2.6vw,40px)] leading-[1.1] tracking-[-0.03em]">{f.q}</dt>
+            <dt className="lg:col-span-6 font-display font-semibold text-[clamp(20px,1.7vw,26px)] leading-[1.2] tracking-[-0.02em]">{f.q}</dt>
             <dd className="lg:col-start-8 lg:col-span-5 text-lg leading-[1.55] max-w-[42ch] lg:pt-2">{f.a}</dd>
           </Rise>
         ))}
@@ -342,18 +339,18 @@ function Visit({ settings }) {
   const hour = Number(parts.hour) % 24;
   const open = hour >= fromH && hour < toH;
   return (
-    <section className="mt-32 lg:mt-48 bg-ink text-paper min-h-[86svh] lg:min-h-[100svh] flex flex-col">
-      <div className={`${WRAP} w-full flex-1 flex flex-col py-10`}>
+    <section className="mt-24 lg:mt-36 bg-ink text-paper flex flex-col">
+      <div className={`${WRAP} w-full flex-1 flex flex-col py-16 lg:py-24`}>
         <div className="grid lg:grid-cols-12 gap-8">
           <Rise as="h2" className="lg:col-span-6 text-[clamp(20px,1.6vw,24px)] leading-snug max-w-[30ch] font-semibold">Send your logo and the quantity. We reply with a price, usually the same day.</Rise>
-          <Rise i={1} as="p" className="lg:col-start-9 lg:col-span-4 text-lg inline-flex items-center gap-3 lg:justify-end">
-            <span className={`w-3 h-3 rounded-full ${open ? 'bg-emerald-400' : 'bg-red-300'}`} aria-hidden="true" />
-            {open ? `Open now, until ${toH - 12} pm` : `Closed now, opens at ${fromH} am`}
-          </Rise>
         </div>
-        <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like a price for printing.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp 97877 02336" className={`${DISPLAY} mt-auto pt-20 block text-[clamp(52px,9.6vw,150px)] whitespace-nowrap tabular-nums transition-colors hover:text-[rgb(var(--accent-light-rgb))]`}>
+        <a href={shopWhatsAppLink('Hi Zaro Digitz! I would like a price for printing.', settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp 97877 02336" className={`font-display font-extrabold tracking-[-0.04em] leading-none mt-12 block text-[clamp(38px,4.4vw,68px)] whitespace-nowrap tabular-nums transition-colors hover:text-[rgb(var(--accent-light-rgb))]`}>
           97877 02336
         </a>
+        <p className="mt-4 text-lg inline-flex items-center gap-3">
+          <span className={`w-3 h-3 rounded-full ${open ? 'bg-emerald-400' : 'bg-red-300'}`} aria-hidden="true" />
+          {open ? `Open now, until ${toH - 12} pm` : `Closed now, opens at ${fromH} am`}
+        </p>
         <div className="mt-10 grid sm:grid-cols-2 gap-6 text-[17px]">
           <p>{BUSINESS.address.streetAddress}, Sivakasi {BUSINESS.address.postalCode}<br />Monday to Saturday 9 am to 10 pm, Sunday 10 am to 8 pm</p>
           <p className="flex flex-wrap gap-x-6 gap-y-2 sm:justify-end sm:self-end font-semibold">
@@ -401,14 +398,14 @@ export default function HomePage() {
   return (
     <div className="bg-paper text-ink">
       <Seo path="/" jsonLd={faqSchema(getFaqs(settings))} />
-      <Hero />
-      {show('newyear') && <Yearly products={priced} />}
-      {heroModes.length > 0 && <TryIt heroModes={heroModes} mode={mode} setMode={setMode} live={live} setLive={setLive} proofHref={proofHref} />}
-      {show('services') && <Prices products={priced} showFacts={show('numbers')} showInvites={show('traditions')} />}
-      {show('timeline') && <Stairs />}
+      <Hero settings={settings} />
       {show('benefits') && <Shop />}
+      {show('services') && <Prices products={priced} showFacts={show('numbers')} showInvites={show('traditions')} />}
+      {show('newyear') && <Yearly products={priced} />}
+      {show('timeline') && <Stairs />}
       {designTabs.length > 0 && <Designs tabs={designTabs} />}
-      {show('reviews') && <div className="pt-32 lg:pt-48"><GoogleReviews /></div>}
+      {heroModes.length > 0 && <TryIt heroModes={heroModes} mode={mode} setMode={setMode} live={live} setLive={setLive} proofHref={proofHref} />}
+      {show('reviews') && <div className="pt-24 lg:pt-36"><GoogleReviews /></div>}
       {show('faq') && <Questions faqs={getFaqs(settings)} />}
       {show('visit') ? <Visit settings={settings} /> : <div className="pb-32" />}
     </div>

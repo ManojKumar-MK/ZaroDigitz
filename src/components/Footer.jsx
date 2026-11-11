@@ -17,7 +17,7 @@ export default function Footer() {
   const a = BUSINESS.address;
   const [user, domain] = String(BUSINESS.email).split('@');
   return (
-    <footer className="bg-primary text-white min-h-[72svh] lg:min-h-[90svh] flex flex-col">
+    <footer className="bg-primary text-white flex flex-col">
       <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-7 xl:px-10 pt-10 flex-1 flex flex-col">
         <div className="grid lg:grid-cols-12 gap-6 text-[15px] leading-snug">
           <Link to="/" className="lg:col-span-2 font-display font-extrabold text-lg tracking-[-0.03em]">ZARO Digitz</Link>
@@ -27,7 +27,7 @@ export default function Footer() {
           <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="lg:col-span-1 text-left lg:text-right font-semibold hover:underline underline-offset-4">Back to top</button>
         </div>
 
-        <a href={`mailto:${BUSINESS.email}`} className="mt-auto pt-24 block font-display font-extrabold tracking-[-0.05em] leading-[0.9] text-[clamp(44px,8.6vw,140px)] break-words transition-opacity hover:opacity-80">
+        <a href={`mailto:${BUSINESS.email}`} className="mt-16 lg:mt-24 block font-display font-extrabold tracking-[-0.04em] leading-[0.95] text-[clamp(30px,4vw,60px)] break-words transition-opacity hover:opacity-80">
           {user}<wbr />@{domain}
         </a>
 
