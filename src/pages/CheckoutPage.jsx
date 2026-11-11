@@ -278,8 +278,8 @@ export default function CheckoutPage() {
           >
             <FiCheckCircle size={48} className="text-green-500" />
           </motion.div>
-          <h2 className="font-display font-black text-4xl text-dark mb-3">Order Placed!</h2>
-          <p className="text-gray-500 mb-6 leading-relaxed">
+          <h1 className="font-display font-bold tracking-[-0.03em] text-[clamp(32px,3.6vw,52px)] leading-[1.02] mb-4">Your order is placed</h1>
+          <p className="text-ink/75 mb-6 leading-relaxed">
             Thank you for your order! Our team will contact you on <strong>{form.mobile}</strong> to confirm delivery details.
           </p>
           {lastOrder && (
@@ -292,13 +292,13 @@ export default function CheckoutPage() {
               <FaWhatsapp size={22} /> Send order on WhatsApp
             </a>
           )}
-          <div className="bg-green-50 p-4 mb-6 text-sm text-green-700">
+          <div className="bg-green-50 p-4 mb-6 text-[15px] text-green-700">
             {whatsappMode === 'auto' ? 'WhatsApp should have opened with your order filled in; just press Send. If it did not open, tap the button above.' : 'Tap the button above and press Send in WhatsApp.'} That lets us confirm your order quickly. Otherwise our team will call you within 24 hours. WhatsApp: +91 9787702336 / +91 6369619148.
           </div>
 
           {lastOrder?.orderNumber && (
-            <p className="text-sm text-gray-600 mb-4">
-              Order ID: <span className="font-bold text-dark">{lastOrder.orderNumber}</span>. Quote this when you contact us.
+            <p className="text-[15px] text-ink mb-4">
+              Order ID: <span className="font-bold text-ink">{lastOrder.orderNumber}</span>. Quote this when you contact us.
             </p>
           )}
           {lastOrder?.pdfBlob && typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [new File([lastOrder.pdfBlob], 'invoice.pdf', { type: 'application/pdf' })] }) && (
@@ -316,7 +316,7 @@ export default function CheckoutPage() {
           {lastOrder && (
             <button
               onClick={() => downloadInvoicePDF(lastOrder, lastOrder.invoiceNo)}
-              className="w-full mb-4 inline-flex items-center justify-center gap-2 bg-paper2 text-primary font-bold px-8 py-3  hover:bg-orange-50 transition-colors"
+              className="w-full mb-4 inline-flex items-center justify-center gap-2 bg-paper2 text-primary font-bold px-8 py-3  hover:bg-paper3 transition-colors"
             >
               <FiDownload /> Download Invoice ({lastOrder.invoiceNo})
             </button>
@@ -342,10 +342,10 @@ export default function CheckoutPage() {
               <div className="flex items-start gap-3">
                 <div className="w-11 h-11 rounded-full bg-green-600 text-white flex items-center justify-center shrink-0"><FaWhatsapp size={24} /></div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-display font-bold text-dark">One last step</div>
-                  <p className="text-sm text-gray-600 mt-0.5">Send us your order on WhatsApp so we can confirm it right away. The message is already written; just press Send.</p>
+                  <div className="font-display font-bold text-ink">One last step</div>
+                  <p className="text-[15px] text-ink mt-0.5">Send us your order on WhatsApp so we can confirm it right away. The message is already written; just press Send.</p>
                 </div>
-                <button type="button" onClick={() => setShowWaPrompt(false)} aria-label="Dismiss" className="text-gray-400 hover:text-dark text-xl leading-none">×</button>
+                <button type="button" onClick={() => setShowWaPrompt(false)} aria-label="Dismiss" className="text-ink/75 hover:text-ink text-xl leading-none">×</button>
               </div>
               <div className="flex gap-2 mt-4">
                 <a
@@ -357,7 +357,7 @@ export default function CheckoutPage() {
                 >
                   <FaWhatsapp /> Send on WhatsApp
                 </a>
-                <button type="button" onClick={() => setShowWaPrompt(false)} className="px-4 py-3 text-sm font-semibold text-gray-600 hover:bg-paper3">Later</button>
+                <button type="button" onClick={() => setShowWaPrompt(false)} className="px-4 py-3 text-[15px] font-semibold text-ink hover:bg-paper3">Later</button>
               </div>
             </motion.div>
           )}
@@ -371,7 +371,7 @@ export default function CheckoutPage() {
       <div className="min-h-[60vh] flex items-center justify-center text-center px-4">
         <div>
           <div className="mx-auto w-20 h-20 mb-5 rounded-full bg-primary/10 text-primary flex items-center justify-center"><LuShoppingCart size={36} /></div>
-          <h2 className="font-display font-black text-3xl text-dark mb-3">Your cart is empty</h2>
+          <h1 className="font-display font-bold tracking-[-0.03em] text-[clamp(32px,3.6vw,52px)] leading-[1.02] mb-4">Your cart is empty</h1>
           <Link to="/cards" className="text-primary hover:underline font-medium">Browse Products</Link>
         </div>
       </div>
@@ -383,14 +383,14 @@ export default function CheckoutPage() {
       <div className="min-h-[60vh] flex items-center justify-center text-center px-4">
         <div className="max-w-md">
           <div className="mx-auto w-20 h-20 mb-5 rounded-full bg-primary/10 text-primary flex items-center justify-center"><LuReceiptText size={36} /></div>
-          <h2 className="font-display font-black text-3xl text-dark mb-3">Minimum Order Not Reached</h2>
-          <p className="text-gray-500 mb-3">Checkout is available only for orders above ₹{MIN_CHECKOUT_AMOUNT.toLocaleString()}.</p>
-          <p className="text-sm text-gray-500 mb-8">Current cart total: ₹{totalAmount.toLocaleString()}</p>
+          <h1 className="font-display font-bold tracking-[-0.03em] text-[clamp(32px,3.6vw,52px)] leading-[1.02] mb-4">Add a little more to order</h1>
+          <p className="text-ink/75 mb-3">Checkout is available only for orders above ₹{MIN_CHECKOUT_AMOUNT.toLocaleString()}.</p>
+          <p className="text-[15px] text-ink/75 mb-8">Current cart total: ₹{totalAmount.toLocaleString()}</p>
           <div className="flex items-center justify-center gap-4">
             <button
               type="button"
               onClick={() => navigate('/cart')}
-              className="bg-paper2 text-primary font-bold px-6 py-3  hover:bg-orange-50 transition-colors"
+              className="bg-paper2 text-primary font-bold px-6 py-3  hover:bg-paper3 transition-colors"
             >
               Back to Cart
             </button>
@@ -404,11 +404,11 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="font-display font-black text-4xl text-dark mb-2">Checkout</h1>
-      <p className="text-gray-500 mb-8">Fill in your details to complete the order</p>
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pt-10 pb-24 lg:pb-32">
+      <h1 className="font-display font-bold tracking-[-0.04em] leading-[0.98] text-primary text-[clamp(40px,5vw,72px)]">Checkout</h1>
+      <p className="text-xl mt-3 mb-10 max-w-[52ch]">Your details for delivery. We send a proof on WhatsApp and print only after you approve it.</p>
       {settings.acceptingOrders === false && (
-        <div className="mb-6 bg-amber-50 text-amber-900 px-5 py-4 text-sm">
+        <div className="mb-6 bg-amber-50 text-amber-900 px-5 py-4 text-[15px]">
           We are not taking online orders right now. Please WhatsApp or call us and we will help you directly.
         </div>
       )}
@@ -417,18 +417,18 @@ export default function CheckoutPage() {
         {/* Form */}
         <div className="lg:col-span-2">
           <form onSubmit={handleSubmit} className="bg-paper2 p-7">
-            <h2 className="font-display font-bold text-xl text-dark mb-6 pb-4 ">Delivery Details</h2>
+            <h2 className="font-display font-bold text-xl text-ink mb-6 pb-4 ">Delivery Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {FIELD_CONFIG.filter(field => field.name !== 'email').map(field => (
                 <div key={field.name} className={field.type === 'textarea' ? 'sm:col-span-2' : ''}>
-                  <label className="block text-sm font-semibold text-dark mb-2">{field.label}</label>
+                  <label className="block text-[15px] font-semibold text-ink mb-2">{field.label}</label>
                   {field.type === 'textarea' ? (
                     <textarea
                       value={form[field.name]}
                       onChange={e => { setForm(f => ({ ...f, [field.name]: e.target.value })); if (errors[field.name]) setErrors(er => ({ ...er, [field.name]: '' })); }}
                       placeholder={field.placeholder}
                       rows={3}
-                      className={`w-full px-4 py-3   text-sm focus:outline-none  resize-none transition-colors ${errors[field.name] ? ' bg-red-50' : ' bg-paper2'}`}
+                      className={`w-full px-4 py-3   text-[15px] focus:outline-none  resize-none transition-colors ${errors[field.name] ? ' bg-red-50' : ' bg-paper2'}`}
                     />
                   ) : (
                     <input
@@ -436,16 +436,16 @@ export default function CheckoutPage() {
                       value={form[field.name]}
                       onChange={e => { setForm(f => ({ ...f, [field.name]: e.target.value })); if (errors[field.name]) setErrors(er => ({ ...er, [field.name]: '' })); }}
                       placeholder={field.placeholder}
-                      className={`w-full px-4 py-3   text-sm focus:outline-none  transition-colors ${errors[field.name] ? ' bg-red-50' : ' bg-paper2'}`}
+                      className={`w-full px-4 py-3   text-[15px] focus:outline-none  transition-colors ${errors[field.name] ? ' bg-red-50' : ' bg-paper2'}`}
                     />
                   )}
-                  {errors[field.name] && <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>}
+                  {errors[field.name] && <p className="text-primary text-[15px] mt-1">{errors[field.name]}</p>}
                 </div>
               ))}
 
               {/* Email box disabled for now (GoDaddy blocks outgoing SMTP).
               <div className="sm:col-span-2">
-                <label className="block text-sm font-semibold text-dark mb-2">Email ID (Optional)</label>
+                <label className="block text-[15px] font-semibold text-ink mb-2">Email ID (Optional)</label>
                 <input
                   type="email"
                   value={form.email}
@@ -454,10 +454,10 @@ export default function CheckoutPage() {
                     if (errors.email) setErrors((current) => ({ ...current, email: '' }));
                   }}
                   placeholder="Optional: invoice will be sent here"
-                  className={`w-full px-4 py-3   text-sm focus:outline-none  transition-colors ${errors.email ? ' bg-red-50' : ' bg-paper2'}`}
+                  className={`w-full px-4 py-3   text-[15px] focus:outline-none  transition-colors ${errors.email ? ' bg-red-50' : ' bg-paper2'}`}
                 />
-                <p className="mt-1 text-xs text-gray-500">If you enter your email, we will send the invoice PDF to it.</p>
-                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                <p className="mt-1 text-[15px] text-ink/75">If you enter your email, we will send the invoice PDF to it.</p>
+                {errors.email && <p className="text-primary text-[15px] mt-1">{errors.email}</p>}
               </div>
               */}
 
@@ -466,26 +466,26 @@ export default function CheckoutPage() {
 
             {/* Card details: optional, they help us prepare the proof faster */}
             <div className="mt-8">
-              <h3 className="font-display font-bold text-lg text-dark">Card details <span className="text-sm font-normal text-gray-400">(optional)</span></h3>
-              <p className="text-xs text-gray-500 mb-4">We confirm everything with you on WhatsApp before printing, so you can skip this and tell us later.</p>
+              <h3 className="font-display font-bold text-lg text-ink">Card details <span className="text-[15px] font-normal text-ink/75">(optional)</span></h3>
+              <p className="text-[15px] text-ink/75 mb-4">We confirm everything with you on WhatsApp before printing, so you can skip this and tell us later.</p>
               <div className="grid sm:grid-cols-2 gap-4">
                 <label className="block">
-                  <span className="text-sm font-medium text-gray-700">Names on the card</span>
+                  <span className="text-[15px] font-medium text-ink">Names on the card</span>
                   <input name="eventFor" value={form.eventFor} onChange={(e) => setForm({ ...form, eventFor: e.target.value })} maxLength={160} placeholder="e.g. Priya & Arjun" className="mt-1 w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </label>
                 <label className="block">
-                  <span className="text-sm font-medium text-gray-700">Event date</span>
+                  <span className="text-[15px] font-medium text-ink">Event date</span>
                   <input type="date" name="eventDate" value={form.eventDate} onChange={(e) => setForm({ ...form, eventDate: e.target.value })} className="mt-1 w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </label>
                 <label className="block sm:col-span-2">
-                  <span className="text-sm font-medium text-gray-700">Wording or special requests</span>
+                  <span className="text-[15px] font-medium text-ink">Wording or special requests</span>
                   <textarea name="eventNotes" value={form.eventNotes} onChange={(e) => setForm({ ...form, eventNotes: e.target.value })} maxLength={2000} rows={3} placeholder="Language (Tamil / English), venue, family names, colours you like…" className="mt-1 w-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/30" />
                 </label>
               </div>
             </div>
 
             <div className="mt-6 bg-paper2 p-4">
-              <p className="text-sm text-gray-600">
+              <p className="text-[15px] text-ink">
                 After you place the order, we will message you on WhatsApp to collect the names and wording and send a digital proof. Printing starts only after you approve it.
               </p>
             </div>
@@ -509,29 +509,29 @@ export default function CheckoutPage() {
         {/* Summary */}
         <div>
           <div className="bg-paper2 p-6 sticky top-[96px]">
-            <h2 className="font-display font-bold text-xl text-dark mb-4 pb-4 ">Order Summary</h2>
+            <h2 className="font-display font-bold text-xl text-ink mb-4 pb-4 ">Order Summary</h2>
             <div className="space-y-3 max-h-64 overflow-y-auto mb-4 pr-1">
               {cart.map(item => (
                 <div key={item.id} className="flex gap-3 items-start">
                   <img src={item.image || undefined} alt={item.name} className="w-12 h-12 object-cover flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm text-dark truncate">{item.name}</div>
-                    <div className="text-xs text-gray-400">Qty: {item.quantity}</div>
-                    <div className="text-sm font-bold text-primary">₹{(item.price * item.quantity).toLocaleString()}</div>
+                    <div className="font-semibold text-[15px] text-ink truncate">{item.name}</div>
+                    <div className="text-[15px] text-ink/75">Qty: {item.quantity}</div>
+                    <div className="text-[15px] font-bold text-primary">₹{(item.price * item.quantity).toLocaleString()}</div>
                   </div>
                 </div>
               ))}
             </div>
             <div className="pt-4 space-y-2">
-              <div className="flex justify-between text-sm text-gray-500"><span>Subtotal</span><span>₹{totalAmount.toLocaleString()}</span></div>
+              <div className="flex justify-between text-[15px] text-ink/75"><span>Subtotal</span><span>₹{totalAmount.toLocaleString()}</span></div>
               {chargeLines.map((line) => (
-                <div key={line.id} className="flex justify-between text-sm text-gray-500"><span>{line.label}</span><span>₹{line.amount.toLocaleString()}</span></div>
+                <div key={line.id} className="flex justify-between text-[15px] text-ink/75"><span>{line.label}</span><span>₹{line.amount.toLocaleString()}</span></div>
               ))}
-              <div className="flex justify-between text-xs text-gray-400 gap-4">
+              <div className="flex justify-between text-[15px] text-ink/75 gap-4">
                 <span>Note</span>
                 <span className="text-right">{chargesNote}</span>
               </div>
-              <div className="flex justify-between font-bold text-lg text-dark pt-2 ">
+              <div className="flex justify-between font-bold text-lg text-ink pt-2 ">
                 <span>Total</span>
                 <span className="text-primary">₹{grandTotal.toLocaleString()}</span>
               </div>

@@ -5,18 +5,18 @@ import { useToast } from './Toast';
 import { Button, Card, Toggle } from './ui';
 
 const SECTIONS = [
-  ['newyear', 'New Year calendars & diaries', 'The kinds of calendars and diaries, notes for companies, and the carousel'],
-  ['benefits', 'Promise strip', 'The moving gold strip under the hero'],
-  ['favourites', 'Customer favourites', 'Carousel of popular designs'],
-  ['services', 'Digital printing services', 'The grid of everything on the shop sign'],
-  ['printing', 'Printing favourites', 'Carousel of notebooks, flyers, ID cards…'],
-  ['traditions', 'Browse by tradition and style', 'Sketched tiles for wedding and function cards'],
-  ['numbers', 'Numbers', 'Gold bar with designs, proof time, printing time'],
-  ['timeline', 'From your phone to the press', 'The four-step timeline'],
-  ['budget', 'Budget-friendly wedding cards', 'Carousel of the lowest-priced cards'],
+  ['newyear', 'Calendars and diaries for 2027', 'Large picture with tabs: desk calendar, wall calendar, diaries, gift set'],
+  ['services', 'Rate card', 'The printed price list on the wine background'],
+  ['numbers', 'Numbers beside the rate card', '13 × 19 in, 350 gsm, 1 day to proof, 7 days printing'],
+  ['traditions', 'Invitations on the rate card', 'The wedding and function cards group in the price list'],
+  ['favourites', 'Designs: calendars and diaries tab', 'Designs ready to order, calendars and diaries first'],
+  ['printing', 'Designs: printing tab', 'Visiting cards, flyers, bill books, notebooks…'],
+  ['budget', 'Designs: wedding cards tab', 'Wedding and function cards, lowest price first'],
+  ['timeline', 'From your phone to the press', 'The six steps of an order'],
+  ['benefits', 'Shop sign', 'Everything on our shop sign, on a gold background'],
   ['reviews', 'Google reviews', 'Shows only when reviews are available'],
-  ['faq', 'Questions', 'Frequently asked questions'],
-  ['visit', 'Visit our studio', 'Address, hours, map, directions'],
+  ['faq', 'Questions', 'Frequently asked questions, as reading text'],
+  ['visit', 'Visit our studio', 'Address, hours, open now, and the ask-for-a-price coupon'],
 ];
 const TABS = [['calendar', 'Calendar'], ['diary', 'Diary'], ['wedding', 'Wedding card']];
 

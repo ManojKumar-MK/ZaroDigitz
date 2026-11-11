@@ -33,7 +33,6 @@ export default function ProductCard({ product }) {
             <CategorySketch category={product.category} className="w-full h-full transition-transform duration-700 group-hover:scale-[1.06] group-hover:-rotate-2" />
           </div>
         )}
-        <span className="absolute left-4 top-4 right-14 text-[13px] font-semibold text-ink/80 truncate">{product.category}</span>
       </Link>
       <motion.button
         type="button"

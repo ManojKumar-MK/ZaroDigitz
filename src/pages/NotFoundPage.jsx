@@ -8,8 +8,8 @@ export default function NotFoundPage() {
       <Seo title="Page Not Found" noindex />
       <div>
         <div className="mx-auto w-20 h-20 mb-5 rounded-full bg-white/10 text-secondary flex items-center justify-center"><LuSparkles size={36} /></div>
-        <h1 className="font-display font-black text-4xl sm:text-5xl text-white">Page not found</h1>
-        <p className="text-gray-400 mt-3 mb-8">That page doesn&apos;t exist, but our card designs do.</p>
+        <h1 className="font-display font-bold text-4xl sm:text-5xl text-white">Page not found</h1>
+        <p className="text-ink/75 mt-3 mb-8">That page doesn&apos;t exist, but our card designs do.</p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link to="/cards" className="bg-primary hover:bg-primary-dark text-white font-bold px-6 py-3 transition-colors">View Price List</Link>
           <Link to="/" className="bg-white/10 hover:bg-white/20 text-white font-bold px-6 py-3 transition-colors">Go Home</Link>

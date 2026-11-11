@@ -1,14 +1,21 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaWhatsapp } from 'react-icons/fa';
-import { FiSend, FiCheckCircle } from 'react-icons/fi';
 import Seo from '../components/Seo';
 import { staticPage } from '../seo/pages';
-import { breadcrumbSchema, googleBusinessLinks } from '../seo/site';
+import { breadcrumbSchema, googleBusinessLinks, BUSINESS } from '../seo/site';
 import { saveEnquiry } from '../firebase/orders';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
-import { LuMail, LuMapPin, LuNavigation, LuPhone, LuStar } from 'react-icons/lu';
+
+const WRAP = 'max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12';
+const rise = { hidden: { opacity: 0, y: 24 }, show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 } }) };
+const Rise = ({ i = 0, as = 'div', className, children }) => {
+  const M = motion[as];
+  return <M variants={rise} custom={i} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className={className}>{children}</M>;
+};
+
+const PHONES = ['+91 97877 02336', '+91 63696 19148', '+91 63830 34170'];
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', mobile: '', email: '', message: '' });
@@ -17,13 +24,15 @@ export default function ContactPage() {
   const [sending, setSending] = useState(false);
   const { settings } = useShopSettings();
   const g = googleBusinessLinks(settings);
+  const a = BUSINESS.address;
+  const wa = shopWhatsAppLink('Hi Zaro Digitz! I have a question about printing.', settings.whatsappNumber);
 
   const validate = () => {
     const errs = {};
-    if (!form.name.trim()) errs.name = 'Name is required';
-    if (!form.mobile.match(/^[6-9]\d{9}$/)) errs.mobile = 'Enter valid mobile number';
-    if (form.email && !form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errs.email = 'Enter valid email';
-    if (!form.message.trim()) errs.message = 'Message is required';
+    if (!form.name.trim()) errs.name = 'Please write your name';
+    if (!form.mobile.replace(/\D/g, '').match(/^(91)?[6-9]\d{9}$/)) errs.mobile = 'A 10-digit mobile number, like 97877 02336';
+    if (form.email && !form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errs.email = 'An email like name@example.com, or leave it empty';
+    if (!form.message.trim()) errs.message = 'Tell us what you would like printed';
     return errs;
   };
 
@@ -32,165 +41,94 @@ export default function ContactPage() {
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setSending(true);
-    // Stored in Firebase when configured; the UI flow is unchanged either way.
-    await Promise.all([saveEnquiry(form), new Promise(r => setTimeout(r, 1200))]);
+    await Promise.all([saveEnquiry(form), new Promise((r) => setTimeout(r, 800))]);
     setSending(false);
     setSent(true);
   };
 
-  const contactInfo = [
-    { icon: LuPhone, label: 'Call Us', value: '+91 9787702336, +91 6369619148', sub: 'Mon-Sat: 9AM - 7PM', color: ' ', href: 'tel:+919787702336' },
-    { icon: LuMail, label: 'Email Us', value: 'zarodigitz@gmail.com', sub: 'We reply within 24 hours', color: ' ', href: 'mailto:zarodigitz@gmail.com' },
-    { icon: FaWhatsapp, label: 'WhatsApp', value: '+91 9787702336', sub: 'Quick responses', color: ' ', href: shopWhatsAppLink('Hi Zaro Digitz! I have a question about invitation cards. Could you help me?', settings.whatsappNumber) },
-    { icon: LuMapPin, label: 'Visit Us', value: 'No. 3U, Maruthu Pandiyar Mettu Street', sub: 'Sivakasi, Tamil Nadu - 626123', color: ' ', href: '#map' },
-  ];
+  const set = (k) => (e) => { setForm((f) => ({ ...f, [k]: e.target.value })); setErrors((er) => ({ ...er, [k]: '' })); };
+  const input = (bad) => `w-full px-4 bg-white/15 text-white text-[17px] placeholder:text-white/75 focus:outline-none focus:bg-white/25 focus-visible:ring-2 focus-visible:ring-secondary ${bad ? 'ring-2 ring-[rgb(var(--accent-light-rgb))]' : ''}`;
 
   return (
-    <div>
+    <div className="bg-paper text-ink">
       <Seo
         title={staticPage('/contact').title}
         description="Contact Zaro Digitz, Sivakasi. Call or WhatsApp +91 97877 02336, or visit us at No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123."
         path="/contact"
         jsonLd={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Contact Us', path: '/contact' }])}
       />
-      {/* Hero */}
-      <section className="bg-primary py-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <span className="text-secondary font-bold text-sm ">Get In Touch</span>
-            <h1 className="font-display font-black text-5xl text-white mt-2">Contact <span className="gradient-text">Zaro Digitz</span></h1>
-            <p className="text-gray-400 mt-3 max-w-xl mx-auto">Call, WhatsApp or message us about card designs, prices, wording or delivery. We usually reply the same day.</p>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* Contact Cards */}
-      <section className="py-12 bg-paper">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {contactInfo.map((info, i) => (
-              <motion.a
-                key={i}
-                href={info.href}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -5 }}
-                className="bg-paper2 p-6      transition group block"
-              >
-                <div className={`w-12 h-12  bg-primary ${info.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <info.icon size={22} className="text-white" />
-                </div>
-                <div className="text-xs text-gray-400 font-semibold mb-1">{info.label}</div>
-                <div className="font-bold text-dark text-sm">{info.value}</div>
-                <div className="text-xs text-gray-400 mt-1">{info.sub}</div>
-              </motion.a>
-            ))}
+      {/* Where we are, with the map */}
+      <section className={`${WRAP} pt-14 sm:pt-20 pb-24 lg:pb-32 grid lg:grid-cols-12 gap-12 lg:gap-8`}>
+        <div className="lg:col-span-5 flex flex-col">
+          <Rise as="h1" className="font-display font-bold tracking-[-0.04em] leading-[0.98] text-primary text-[clamp(40px,5vw,76px)] max-w-[12ch]">Call, WhatsApp or visit us</Rise>
+          <Rise i={1} as="p" className="text-xl leading-relaxed mt-6 max-w-[40ch]">Ask about designs, prices, wording or delivery. We usually reply the same day.</Rise>
+          <Rise i={2} className="flex flex-wrap gap-2 mt-10">
+            <a href={wa} target="_blank" rel="noopener noreferrer" className="h-14 px-6 inline-flex items-center gap-2 bg-primary text-white text-[17px] font-bold transition-colors hover:bg-primary-dark"><FaWhatsapp size={20} aria-hidden="true" /> WhatsApp us</a>
+            <a href="tel:+919787702336" className="h-14 px-6 inline-flex items-center bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3">Call +91 97877 02336</a>
+          </Rise>
+          <Rise i={3} as="dl" className="grid sm:grid-cols-2 gap-x-8 gap-y-8 mt-14 text-lg">
+            <div>
+              <dt className="font-display font-semibold text-primary">Studio</dt>
+              <dd className="mt-1"><a href={g.maps} target="_blank" rel="noopener noreferrer" className="hover:text-primary">{a.streetAddress},<br />Sivakasi, Tamil Nadu {a.postalCode}</a></dd>
+            </div>
+            <div>
+              <dt className="font-display font-semibold text-primary">Hours</dt>
+              <dd className="mt-1">Monday to Saturday<br />9 am to 10 pm<br />Sunday 10 am to 8 pm</dd>
+            </div>
+            <div>
+              <dt className="font-display font-semibold text-primary">Phone</dt>
+              <dd className="mt-1 grid tabular-nums">{PHONES.map((p) => <a key={p} href={`tel:${p.replace(/\s/g, '')}`} className="hover:text-primary">{p}</a>)}</dd>
+            </div>
+            <div>
+              <dt className="font-display font-semibold text-primary">Email</dt>
+              <dd className="mt-1"><a href={`mailto:${BUSINESS.email}`} className="hover:text-primary break-all">{BUSINESS.email}</a></dd>
+            </div>
+          </Rise>
+        </div>
+        <Rise i={1} className="lg:col-start-7 lg:col-span-6 min-h-[420px] lg:min-h-[640px] bg-paper2 flex flex-col">
+          <iframe title="Map to Zaro Digitz, Sivakasi" src={g.embed} className="w-full flex-1 min-h-[420px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+          <div className="grid grid-cols-2 gap-2 p-2">
+            <a href={g.directions} target="_blank" rel="noopener noreferrer" className="h-14 inline-flex items-center justify-center bg-ink text-paper text-[17px] font-semibold transition-colors hover:bg-night">Get directions</a>
+            <a href={g.review} target="_blank" rel="noopener noreferrer" className="h-14 inline-flex items-center justify-center bg-paper text-[17px] font-semibold transition-colors hover:bg-paper3">Review us on Google</a>
           </div>
-        </div>
+        </Rise>
       </section>
 
-      {/* Map + Form */}
-      <section className="py-12 bg-paper2">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Map */}
-            <motion.div
-              id="map"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="font-display font-bold text-2xl text-dark mb-5">Find Our Store</h2>
-              <div className="overflow-hidden h-80">
-                <iframe
-                  title="Zaro Digitz on Google Maps"
-                  src={g.embed}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                />
-              </div>
-              <div className="mt-4 p-4 bg-paper ">
-                <div className="font-bold text-dark">ZARO Digitz</div>
-                <div className="text-sm text-gray-500 mt-1">No. 3U, Maruthu Pandiyar Mettu Street,<br />Sivakasi, Tamil Nadu - 626123</div>
-                <div className="text-sm text-primary font-medium mt-2 flex items-center gap-1.5"><LuPhone aria-hidden="true" /> +91 9787702336 / +91 6369619148</div>
-                <div className="flex flex-wrap gap-2 mt-4">
-                  <a href={g.directions} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors bg-dark text-white hover:bg-black"><LuNavigation aria-hidden="true" /> Get directions</a>
-                  <a href={g.maps} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors bg-paper2 text-dark ring-1 ring-gray-200 hover:bg-paper3"><LuMapPin aria-hidden="true" /> Open in Google Maps</a>
-                  <a href={g.review} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold transition-colors on-light bg-secondary text-dark hover:brightness-95"><LuStar aria-hidden="true" /> Rate us on Google</a>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Contact Form */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="font-display font-bold text-2xl text-dark mb-5">Send Us a Message</h2>
-              {sent ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="bg-green-50 p-10 text-center"
-                >
-                  <FiCheckCircle size={48} className="text-green-500 mx-auto mb-4" />
-                  <h3 className="font-display font-bold text-xl text-dark mb-2">Message Sent!</h3>
-                  <p className="text-gray-500 text-sm">Thank you, {form.name}! We'll get back to you within 24 hours.</p>
-                  <button onClick={() => { setSent(false); setForm({ name: '', mobile: '', email: '', message: '' }); }} className="mt-5 text-primary hover:underline text-sm font-medium">Send another message</button>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  {[
-                    { name: 'name', label: 'Your Name *', type: 'text', placeholder: 'Enter your name' },
-                    { name: 'mobile', label: 'Mobile Number *', type: 'tel', placeholder: '10-digit number' },
-                    { name: 'email', label: 'Email Address', type: 'email', placeholder: 'Optional' },
-                  ].map(field => (
-                    <div key={field.name}>
-                      <label className="block text-sm font-semibold text-dark mb-2">{field.label}</label>
-                      <input
-                        type={field.type}
-                        value={form[field.name]}
-                        onChange={e => { setForm(f => ({ ...f, [field.name]: e.target.value })); setErrors(er => ({ ...er, [field.name]: '' })); }}
-                        placeholder={field.placeholder}
-                        className={`w-full px-4 py-3   text-sm focus:outline-none  transition-colors ${errors[field.name] ? ' bg-red-50' : ' bg-paper2'}`}
-                      />
-                      {errors[field.name] && <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>}
-                    </div>
-                  ))}
-                  <div>
-                    <label className="block text-sm font-semibold text-dark mb-2">Message *</label>
-                    <textarea
-                      value={form.message}
-                      onChange={e => { setForm(f => ({ ...f, message: e.target.value })); setErrors(er => ({ ...er, message: '' })); }}
-                      placeholder="How can we help you?"
-                      rows={5}
-                      className={`w-full px-4 py-3   text-sm focus:outline-none  transition-colors resize-none ${errors.message ? ' bg-red-50' : ' bg-paper2'}`}
-                    />
-                    {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
+      {/* A message, on a coupon */}
+      <section className={`${WRAP} pb-24 lg:pb-40`}>
+        <Rise className="coupon bg-primary text-white grid lg:grid-cols-[46%_auto_1fr] max-w-[1200px] mx-auto">
+          <div className="p-8 sm:p-12 flex flex-col justify-between gap-8">
+            <h2 className="font-display font-bold tracking-[-0.03em] leading-[1.02] text-[clamp(30px,3vw,44px)]">Send us a message</h2>
+            <p className="text-lg max-w-[34ch]">Tell us what you need and how many. We reply on your phone with a price, usually the same day.</p>
+          </div>
+          <span className="coupon-perforation" aria-hidden="true" />
+          <div className="p-8 sm:p-12">
+            {sent ? (
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="py-10" role="status">
+                <p className="font-display font-bold text-[28px]">Thank you, {form.name}.</p>
+                <p className="text-lg mt-3">We have your message and will call or WhatsApp you on {form.mobile}.</p>
+                <button type="button" onClick={() => { setSent(false); setForm({ name: '', mobile: '', email: '', message: '' }); }} className="mt-6 text-lg font-semibold underline underline-offset-4">Send another message</button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-2.5">
+                {[['name', 'Your name', 'text'], ['mobile', 'Mobile number', 'tel'], ['email', 'Email (if you like)', 'email']].map(([k, label, type]) => (
+                  <div key={k}>
+                    <label htmlFor={`c-${k}`} className="sr-only">{label}</label>
+                    <input id={`c-${k}`} type={type} value={form[k]} onChange={set(k)} placeholder={label} aria-invalid={Boolean(errors[k])} aria-describedby={errors[k] ? `c-${k}-err` : undefined} className={`${input(errors[k])} h-[54px]`} />
+                    {errors[k] && <p id={`c-${k}-err`} className="text-[15px] mt-1 text-[rgb(var(--accent-light-rgb))]">{errors[k]}</p>}
                   </div>
-                  <motion.button
-                    type="submit"
-                    disabled={sending}
-                    whileTap={{ scale: 0.97 }}
-                    className="w-full flex items-center justify-center gap-2 bg-primary text-white font-bold py-4  transition   disabled:opacity-60"
-                  >
-                    {sending ? (
-                      <><svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg> Sending...</>
-                    ) : (
-                      <><FiSend /> Send Message</>
-                    )}
-                  </motion.button>
-                </form>
-              )}
-            </motion.div>
+                ))}
+                <div>
+                  <label htmlFor="c-message" className="sr-only">What would you like printed?</label>
+                  <textarea id="c-message" rows={4} value={form.message} onChange={set('message')} placeholder="What would you like printed?" aria-invalid={Boolean(errors.message)} aria-describedby={errors.message ? 'c-message-err' : undefined} className={`${input(errors.message)} py-3 resize-none`} />
+                  {errors.message && <p id="c-message-err" className="text-[15px] mt-1 text-[rgb(var(--accent-light-rgb))]">{errors.message}</p>}
+                </div>
+                <button type="submit" disabled={sending} className="h-14 mt-1 bg-night text-white text-[17px] font-bold transition-colors hover:bg-black active:scale-[0.99] disabled:opacity-70">{sending ? 'Sending…' : 'Send message'}</button>
+              </form>
+            )}
           </div>
-        </div>
+        </Rise>
       </section>
     </div>
   );

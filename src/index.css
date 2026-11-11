@@ -5,9 +5,10 @@
 
 :root {
   /* storefront theme: paper surfaces, ink text, brand accent text, night fields */
-  --paper: 251 245 236;
-  --paper2: 243 232 216;
-  --paper3: 234 216 192;
+  /* bone paper, not yellow cream: the stock our cards are printed on */
+  --paper: 244 242 239;
+  --paper2: 233 229 224;
+  --paper3: 219 213 206;
   --ink: 33 17 20;
   /* brand colours (overridden from Admin → Settings → Brand colours) */
   --primary-rgb: 122 31 43;
@@ -39,8 +40,8 @@ body { overflow-x: clip; }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #FBF5EC;
-  color: #1A0E10;
+  background-color: rgb(var(--paper));
+  color: rgb(var(--ink));
   margin: 0;
 }
 
@@ -109,4 +110,34 @@ tr.table-row:hover { background: rgba(122,31,43,0.05); }
   background-color: rgb(var(--paper2));
   color: rgb(var(--ink));
   border-radius: 0;
+}
+
+/* A printed sheet with scalloped top and bottom edges (the rate card). */
+.sheet-scallop {
+  --s: 10px;
+  -webkit-mask: radial-gradient(var(--s) at 50% 0, #0000 98%, #000) 50% 0 / calc(2 * var(--s)) 51% repeat-x,
+                radial-gradient(var(--s) at 50% 100%, #0000 98%, #000) 50% 100% / calc(2 * var(--s)) 51% repeat-x;
+          mask: radial-gradient(var(--s) at 50% 0, #0000 98%, #000) 50% 0 / calc(2 * var(--s)) 51% repeat-x,
+                radial-gradient(var(--s) at 50% 100%, #0000 98%, #000) 50% 100% / calc(2 * var(--s)) 51% repeat-x;
+}
+
+/* A coupon to cut out: notches where the perforation meets the edges. */
+.coupon { --n: 16px; }
+.coupon-perforation {
+  display: block;
+  height: 6px;
+  margin: 0 24px;
+  background: radial-gradient(circle, rgb(var(--paper)) 2.6px, transparent 3px) 0 0 / 14px 6px repeat-x;
+}
+@media (min-width: 1024px) {
+  .coupon {
+    -webkit-mask: radial-gradient(circle var(--n) at 46% 0, #0000 98%, #000) 0 0 / 100% 51% no-repeat,
+                  radial-gradient(circle var(--n) at 46% 100%, #0000 98%, #000) 0 100% / 100% 51% no-repeat;
+            mask: radial-gradient(circle var(--n) at 46% 0, #0000 98%, #000) 0 0 / 100% 51% no-repeat,
+                  radial-gradient(circle var(--n) at 46% 100%, #0000 98%, #000) 0 100% / 100% 51% no-repeat;
+  }
+  .coupon-perforation {
+    width: 6px; height: auto; margin: 32px 0;
+    background: radial-gradient(circle, rgb(var(--paper)) 2.6px, transparent 3px) 0 0 / 6px 14px repeat-y;
+  }
 }

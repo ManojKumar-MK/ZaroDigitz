@@ -4,9 +4,8 @@ import PersonaliseDialog from '../personalise/PersonaliseDialog';
 import { loadTemplate } from '../personalise/templates';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FiShoppingCart, FiArrowLeft, FiMinus, FiPlus, FiX, FiChevronDown } from 'react-icons/fi';
+import { FiShoppingCart, FiMinus, FiPlus, FiX, FiChevronDown } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
-import { LuFileCheck2, LuMessageCircle, LuPrinter } from 'react-icons/lu';
 import Seo from '../components/Seo';
 import Breadcrumbs from '../components/Breadcrumbs';
 import ProductCard from '../components/ProductCard';
@@ -27,14 +26,14 @@ function InfoSection({ title, children, open: startOpen = false }) {
   const [open, setOpen] = useState(startOpen);
   return (
     <div className="bg-paper2 mb-1.5">
-      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="w-full flex items-center justify-between py-4 px-5 text-left font-display font-bold text-dark hover:bg-paper3 transition-colors">
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="w-full flex items-center justify-between min-h-[60px] px-5 text-left font-display font-semibold text-lg hover:bg-paper3 transition-colors">
         {title}
         <FiChevronDown className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-            <div className="px-5 pb-5 text-base text-dark leading-relaxed space-y-2">{children}</div>
+            <div className="px-5 pb-5 text-[17px] leading-relaxed space-y-2">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -152,7 +151,7 @@ export default function ProductPage() {
 
   const stepper = (
     <div className="inline-flex items-center bg-paper2">
-      <button type="button" aria-label="Fewer" disabled={quantity <= min} onClick={() => setQty(clampQty(product, quantity - step))} className="w-11 h-11 flex items-center justify-center text-gray-600 disabled:opacity-30"><FiMinus /></button>
+      <button type="button" aria-label="Fewer" disabled={quantity <= min} onClick={() => setQty(clampQty(product, quantity - step))} className="w-12 h-12 flex items-center justify-center hover:text-primary disabled:opacity-30"><FiMinus /></button>
       <input
         type="number"
         inputMode="numeric"
@@ -162,9 +161,9 @@ export default function ProductPage() {
         aria-label="Quantity"
         onChange={(e) => setQty(Number(e.target.value) || min)}
         onBlur={() => setQty(clampQty(product, quantity))}
-        className="w-20 text-center font-bold text-dark bg-transparent focus:outline-none"
+        className="w-20 h-12 text-center text-lg font-bold bg-transparent focus:outline-none"
       />
-      <button type="button" aria-label="More" onClick={() => setQty(clampQty(product, quantity + step))} className="w-11 h-11 flex items-center justify-center text-gray-600"><FiPlus /></button>
+      <button type="button" aria-label="More" onClick={() => setQty(clampQty(product, quantity + step))} className="w-12 h-12 flex items-center justify-center hover:text-primary"><FiPlus /></button>
     </div>
   );
 
@@ -179,197 +178,160 @@ export default function ProductPage() {
         jsonLd={[breadcrumbSchema(crumbs), productSchema]}
       />
 
-      <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <Breadcrumbs items={crumbs} />
-          <Link to={categoryPath(product.category)} className="hidden sm:inline-flex items-center gap-1 text-sm text-primary hover:underline">
-            <FiArrowLeft size={14} /> Back to {product.category}
-          </Link>
-        </div>
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pt-6 pb-24 lg:pb-32">
+        <Breadcrumbs items={crumbs} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-paper p-5 sm:p-8">
-          {/* Gallery */}
-          <div>
-            <button type="button" onClick={() => setZoom(true)} aria-label="Open larger image" className="w-full bg-orange-50/60   flex items-center justify-center p-4 min-h-[320px] cursor-zoom-in">
-              <motion.img
-                key={image}
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                data-product-image
-                src={safeUrl(image)}
-                alt={`${product.name} - ${product.category} by Zaro Digitz`}
-                className="max-h-[460px] w-full object-contain"
-                onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }}
-              />
-            </button>
-            {images.length > 1 && (
-              <div className="flex gap-3 mt-3 overflow-x-auto scrollbar-none">
-                {images.map((src, i) => (
-                  <button key={src} type="button" onClick={() => setActive(i)} aria-label={`Image ${i + 1} of ${images.length}`} className={`shrink-0 w-20 h-20  border-2 overflow-hidden ${i === active ? '' : ''}`}>
-                    <img src={safeUrl(src)} alt="" className="w-full h-full object-cover" loading="lazy" />
-                  </button>
-                ))}
-              </div>
-            )}
-            <p className="text-center text-xs text-gray-400 mt-2">{Math.min(active, images.length - 1) + 1} / {images.length}</p>
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 mt-6">
+          {/* Gallery: the piece, large, held in place while the details scroll */}
+          <div className="lg:col-span-7">
+            <div className="lg:sticky lg:top-28">
+              <button type="button" onClick={() => setZoom(true)} aria-label="Open larger image" className="block w-full aspect-square bg-paper2 overflow-hidden cursor-zoom-in">
+                <motion.img
+                  key={image}
+                  initial={{ opacity: 0, scale: 1.03 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  data-product-image
+                  src={safeUrl(image)}
+                  alt={`${product.name} - ${product.category} by Zaro Digitz`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }}
+                />
+              </button>
+              {images.length > 1 && (
+                <div className="flex gap-2 mt-2 overflow-x-auto scrollbar-none">
+                  {images.map((src, i) => (
+                    <button key={src} type="button" onClick={() => setActive(i)} aria-label={`Image ${i + 1} of ${images.length}`} aria-pressed={i === active} className={`shrink-0 w-24 h-24 overflow-hidden transition-opacity ${i === active ? 'ring-4 ring-primary ring-inset' : 'opacity-80 hover:opacity-100'}`}>
+                      <img src={safeUrl(src)} alt="" className="w-full h-full object-cover" loading="lazy" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Details */}
-          <div>
-            <Link to={categoryPath(product.category)} className="inline-block bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full hover:bg-primary/20 transition-colors">
-              {product.category}
-            </Link>
-            <h1 className="font-display font-black text-3xl sm:text-4xl text-dark mt-3 leading-tight">{product.name}</h1>
-            {product.tamil && <p className="text-gray-500 mt-1 text-lg" lang="ta">{product.tamil}</p>}
+          <div className="lg:col-span-5">
+            <h1 className="font-display font-bold tracking-[-0.03em] leading-[1.02] text-[clamp(34px,3.6vw,56px)]">{product.name}</h1>
+            <p className="text-xl mt-3">{product.category}, printed with your name in our Sivakasi studio.</p>
+            {product.tamil && <p className="mt-2 text-xl" lang="ta">{product.tamil}</p>}
 
-            <div className="mt-5 flex items-end gap-3">
+            <div className="mt-8 flex items-baseline flex-wrap gap-x-3 tabular-nums">
               {offer == null ? (
-                <span className="text-lg text-gray-500">Price on request</span>
+                <span className="text-xl">Price on request: ask us on WhatsApp</span>
               ) : (
                 <>
-                  <span className="text-4xl font-black text-primary">{money(unitPrice)}</span>
-                  <span className="text-sm text-gray-400 mb-1">per {unit}</span>
-                  {discounted && unitPrice === offer && <span className="text-sm text-gray-400 line-through mb-1">{money(product.mrp)}</span>}
+                  <span className="font-display font-bold text-[48px] leading-none text-primary">{money(unitPrice)}</span>
+                  <span className="text-lg">per {unit}</span>
+                  {discounted && unitPrice === offer && <span className="text-lg line-through text-ink/70">{money(product.mrp)}</span>}
                 </>
               )}
             </div>
-            {offer != null && <p className="text-xs text-gray-500 mt-1">Prices include printing of your names and wording. Courier extra.</p>}
-
+            {offer != null && <p className="text-[17px] mt-3">Printing of your name and wording is included. Courier is extra.</p>}
 
             {offer != null && groups.length > 0 && (
-              <div className="mt-6 bg-paper2 p-4 sm:p-5">
-                <p className="font-display font-bold text-lg">Configure &amp; price</p>
-                <div className="mt-3 space-y-4">
-                  {groups.map((g) => (
-                    <div key={g.name}>
-                      <p className="text-sm font-semibold mb-2">{g.name}</p>
-                      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={g.name}>
-                        {g.choices.map((c, ci) => {
-                          const on = (picks[g.name] ?? 0) === ci;
-                          return (
-                            <button key={c.label} type="button" role="radio" aria-checked={on} onClick={() => setPicks({ ...picks, [g.name]: ci })} className={`min-h-[40px] px-3 py-2 text-sm font-medium text-left transition-colors ${on ? 'bg-primary text-white' : 'bg-paper hover:bg-paper3'}`}>
-                              {c.label}{Number(c.add) ? <span className={on ? 'text-white/85' : 'text-brand'}> +₹{Number(c.add)}</span> : null}
-                            </button>
-                          );
-                        })}
-                      </div>
+              <div className="mt-10 space-y-6">
+                <h2 className="font-display font-bold text-[22px]">Choose paper and finish</h2>
+                {groups.map((g) => (
+                  <div key={g.name}>
+                    <p className="text-[17px] font-semibold mb-2">{g.name}</p>
+                    <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={g.name}>
+                      {g.choices.map((c, ci) => {
+                        const on = (picks[g.name] ?? 0) === ci;
+                        return (
+                          <button key={c.label} type="button" role="radio" aria-checked={on} onClick={() => setPicks({ ...picks, [g.name]: ci })} className={`min-h-[48px] px-4 py-2 text-[17px] font-medium text-left transition-colors ${on ? 'bg-ink text-paper' : 'bg-paper2 hover:bg-paper3'}`}>
+                            {c.label}{Number(c.add) ? <span className={on ? 'text-paper/85' : 'text-primary'}> {Number(c.add) > 0 ? '+' : '−'}₹{Math.abs(Number(c.add))}</span> : null}
+                          </button>
+                        );
+                      })}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             )}
 
             {offer != null && (
-              <div className="mt-6">
-                <div className="text-sm text-gray-600 mb-2">Quantity <span className="text-gray-400">(big orders: we confirm the best price on WhatsApp)</span></div>
-                <div className="flex flex-wrap items-center gap-4">
+              <div className="mt-10">
+                <p className="text-[17px] font-semibold mb-2">How many</p>
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
                   {stepper}
-                  <div className="text-sm text-gray-600">Total <span className="font-bold text-dark text-lg">{money(unitPrice * quantity)}</span></div>
+                  <p className="text-lg tabular-nums">Total <span className="font-bold text-[22px]">{money(unitPrice * quantity)}</span></p>
                 </div>
+                <p className="text-[15px] mt-2">For a few hundred pieces or more, we quote a better rate on WhatsApp.</p>
               </div>
             )}
 
             {template && offer != null && (
-              <motion.button
-                type="button"
-                onClick={() => setPersonalising(true)}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className="mt-6 w-full flex items-center justify-between gap-4 p-5 bg-secondary text-[#211114] text-left"
-              >
+              <motion.button type="button" onClick={() => setPersonalising(true)} whileTap={{ scale: 0.98 }} className="mt-8 w-full flex items-center justify-between gap-4 p-6 bg-secondary text-[#211114] text-left transition-colors hover:bg-[rgb(var(--accent-light-rgb))]">
                 <span>
-                  <span className="block font-display font-bold text-xl">Personalise this design</span>
-                  <span className="block">Add your names, date and photos and see them on the card now.</span>
+                  <span className="block font-display font-bold text-xl">Put your names on this design</span>
+                  <span className="block text-[17px] mt-1">Add names, date and photos and see the card now.</span>
                 </span>
                 <LuWandSparkles size={30} aria-hidden="true" className="shrink-0" />
               </motion.button>
             )}
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={handleAdd}
-                disabled={offer == null}
-                className="inline-flex items-center gap-2 bg-primary hover:bg-orange-800 disabled:opacity-50 text-white font-bold px-6 py-3 transition-colors"
-              >
-                <FiShoppingCart /> {added ? 'Added to cart' : 'Add to cart'}
+            <div className="mt-4 grid sm:grid-cols-2 gap-2">
+              <button type="button" onClick={handleAdd} disabled={offer == null} className="h-16 inline-flex items-center justify-center gap-2 bg-primary text-white text-[17px] font-bold transition-colors hover:bg-primary-dark active:scale-[0.99] disabled:opacity-50">
+                <FiShoppingCart aria-hidden="true" /> {added ? 'Added to cart' : 'Add to cart'}
               </button>
-              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 transition-colors">
-                <FaWhatsapp /> Ask about this design
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="h-16 inline-flex items-center justify-center gap-2 bg-ink text-paper text-[17px] font-semibold transition-colors hover:bg-night">
+                <FaWhatsapp size={20} aria-hidden="true" /> Ask about this design
               </a>
             </div>
 
             {specs.length > 0 && (
-              <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+              <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-5 text-[17px]">
                 {specs.map(([k, v]) => (
                   <div key={k}>
-                    <dt className="text-gray-400">{k}</dt>
-                    <dd className="font-medium text-dark">{v}</dd>
+                    <dt className="text-ink/75">{k}</dt>
+                    <dd className="font-semibold">{v}</dd>
                   </div>
                 ))}
               </dl>
             )}
 
-            <div className="mt-8">
-              <InfoSection title="Description" open>
+            <div className="mt-10">
+              <InfoSection title="About this design" open>
                 <p>{product.description || meta.longDescription}</p>
               </InfoSection>
               <InfoSection title="Printing">
-                <p>{product.printingNote || 'Your names, dates, venue and wording are printed on the card. Extra inserts, envelopes printing or special finishes can be added; ask us for the price.'}</p>
+                <p>{product.printingNote || 'Your name, details and wording are printed on every piece. Extra inserts, envelope printing or special finishes can be added; ask us for the price.'}</p>
               </InfoSection>
-              <InfoSection title="Design & approval">
-                <p>After you order, we contact you on WhatsApp to collect the details and send a digital proof. You can ask for changes to the text, colours or layout. We print only after you approve.</p>
+              <InfoSection title="Proof and approval">
+                <p>After you order, we message you on WhatsApp for your details and send a digital proof. Changes to text, colours or layout are free. We print only after you approve.</p>
               </InfoSection>
               <InfoSection title="Delivery">
-                <p>Most orders are printed within 5 to 7 working days after approval. We courier across India; charges are shown at checkout. You can also collect from our shop in Sivakasi.</p>
+                <p>Most orders are printed within 5 to 7 working days after approval. We courier across India, or you can collect from our studio in Sivakasi.</p>
               </InfoSection>
             </div>
           </div>
         </div>
 
-        {/* How it comes to life */}
-        <section className="mt-10 grid sm:grid-cols-3 gap-4">
-          {[
-            { icon: LuMessageCircle, title: 'We reach out on WhatsApp', desc: 'for your names, dates and wording.' },
-            { icon: LuFileCheck2, title: 'You approve the proof', desc: 'changes are free until it is right.' },
-            { icon: LuPrinter, title: 'We print and dispatch', desc: 'packed carefully and couriered to you.' },
-          ].map((s, i) => (
-            <motion.div key={s.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="flex gap-3 items-start bg-paper2 p-4">
-              <div className="w-10 h-10 shrink-0 bg-primary text-secondary flex items-center justify-center"><s.icon aria-hidden="true" /></div>
-              <div><div className="font-bold text-dark text-sm">{s.title}</div><div className="text-xs text-gray-500">{s.desc}</div></div>
-            </motion.div>
-          ))}
-        </section>
-
-
         {related.length > 0 && (
-          <section className="mt-14">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display font-black text-2xl sm:text-3xl text-dark">
-                More <span className="gradient-text">{product.category}</span>
-              </h2>
-              <Link to={categoryPath(product.category)} className="text-sm text-primary hover:underline">View all</Link>
+          <section className="mt-24 lg:mt-40">
+            <div className="flex items-end justify-between gap-6">
+              <h2 className="font-display font-bold tracking-[-0.03em] leading-[1.02] text-[clamp(28px,3vw,44px)]">More {product.category.toLowerCase()}</h2>
+              <Link to={categoryPath(product.category)} className="text-lg font-semibold text-primary underline underline-offset-4 shrink-0">See all</Link>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-5 mt-10">
               {related.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           </section>
         )}
       </div>
 
-      <div className="mt-16">
-        <QuickEnquiry subject={product.name} title="Questions about this design?" />
-      </div>
+      <QuickEnquiry subject={product.name} title="Questions about this design?" />
 
-      {/* Sticky add-to-cart bar on phones: it floats over the page, so it may cast a shadow. taste-skill-ignore */}
+      {/* Add-to-cart bar on phones */}
       {offer != null && (
-        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-paper px-4 py-3 flex items-center gap-3 " data-floating="taste-skill-ignore">
+        <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-paper2 px-4 py-3 flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <div className="text-xs text-gray-500 truncate">{product.name}</div>
-            <div className="font-bold text-primary">{money(unitPrice)} <span className="text-xs text-gray-400 font-normal">× {quantity}</span></div>
+            <p className="text-[15px] truncate">{product.name}</p>
+            <p className="font-bold text-lg text-primary tabular-nums">{money(unitPrice)} <span className="text-[15px] text-ink font-normal">× {quantity}</span></p>
           </div>
-          <button type="button" onClick={handleAdd} className="inline-flex items-center gap-2 bg-primary text-white font-bold px-5 py-3 ">
-            <FiShoppingCart /> {added ? 'Added' : 'Add'}
+          <button type="button" onClick={handleAdd} className="h-12 inline-flex items-center gap-2 bg-primary text-white font-bold px-5">
+            <FiShoppingCart aria-hidden="true" /> {added ? 'Added' : 'Add'}
           </button>
         </div>
       )}

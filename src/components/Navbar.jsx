@@ -2,38 +2,31 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMinus, FiPlus } from 'react-icons/fi';
-import { LuCalendarDays, LuChevronDown, LuHeart, LuMapPin, LuMenu, LuPrinter, LuSearch, LuShoppingBag, LuX } from 'react-icons/lu';
+import { LuChevronDown, LuHeart, LuMenu, LuSearch, LuShoppingBag, LuX } from 'react-icons/lu';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { useCart } from '../context/CartContext';
 import { getCatalogProducts, PLACEHOLDER_IMAGE } from '../data/products';
 import { useSaved } from '../utils/favourites';
 import { categoryPath, productPath } from '../seo/catalog';
 import { qtyRules } from '../utils/pricing';
-import { InviteCardSketch, NotebookSketch, CalendarSketch } from './Sketches';
 
 // Menu groups, in the order a visitor thinks about them.
 const MENUS = [
   {
     label: 'Calendars & Diaries',
-    icon: LuCalendarDays,
-    sketch: CalendarSketch,
     items: ['Diaries & Calendars', 'School & College Notebooks', 'Return Gifts', 'Custom Printing'],
   },
   {
     label: 'Invitations',
-    icon: LuHeart,
-    sketch: InviteCardSketch,
     items: ['Hindu Wedding Cards', 'Muslim Wedding Cards', 'Christian Wedding Cards', 'Budget Wedding Cards', 'Scroll Invitations', 'Acrylic Invitations', 'Foil & Metallic Cards', 'Premium Box Invitations', 'Birthday Invitations', 'House Warming Invitations', 'Ear Piercing Invitations', 'Baby Shower Invitations', 'Puberty Ceremony Invitations', 'Holy Communion Invitations'],
   },
   {
     label: 'Printing',
-    icon: LuPrinter,
-    sketch: NotebookSketch,
     items: ['Visiting Cards & Stationery', 'Labels & Stickers', 'Flyers & Brochures', 'Bill Books & Receipt Books', 'Letterheads & Envelopes', 'ID Cards', 'Certificates', 'Synthetic & Texture Board Prints', 'Sweet & Cake Boxes', 'Branding & Signage'],
   },
 ];
 // Single-page sections sit beside the menus.
-const LINKS = [{ to: '/contact', label: 'Visit Us', icon: LuMapPin }];
+const LINKS = [{ to: '/cards', label: 'All designs' }, { to: '/contact', label: 'Visit us' }];
 const money = (n) => `₹${Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
 function SearchPanel({ onClose }) {
@@ -44,7 +37,7 @@ function SearchPanel({ onClose }) {
   const cats = term ? MENUS.flatMap((m) => m.items).filter((c) => c.toLowerCase().includes(term)).slice(0, 4) : [];
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60" onClick={onClose}>
-      <motion.div initial={{ y: -24 }} animate={{ y: 0 }} exit={{ y: -24 }} className="bg-paper text-ink px-4 sm:px-8 py-6 shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Search designs">
+      <motion.div initial={{ y: -24 }} animate={{ y: 0 }} exit={{ y: -24 }} className="bg-paper text-ink px-4 sm:px-8 py-6" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Search designs">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 bg-paper2 px-4">
             <LuSearch className="shrink-0" size={20} />
@@ -78,7 +71,7 @@ function CartDrawer({ onClose }) {
   const { cart, updateQuantity, removeItem, totalAmount } = useCart();
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60" onClick={onClose}>
-      <motion.aside initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute right-0 top-0 h-full w-full max-w-md bg-paper text-ink flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Your cart">
+      <motion.aside initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute right-0 top-0 h-full w-full max-w-md bg-paper text-ink flex flex-col" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Your cart">
         <div className="flex items-center justify-between px-6 h-16 bg-paper2">
           <h2 className="font-display font-bold text-xl">Your cart</h2>
           <button type="button" onClick={onClose} aria-label="Close cart" className="p-2 hover:text-brand"><LuX size={22} /></button>
@@ -132,11 +125,9 @@ export default function Navbar() {
   const show = openedOn === location.key ? panel : null;
   const openPanel = (p) => { setOpenedOn(location.key); setPanel(p); };
   const close = () => setPanel(null);
-  // An open dropdown closes as soon as the page scrolls; once scrolled, the bar casts a soft shadow
-  // so it reads as a bar over the page (its height never changes).
-  const [lifted, setLifted] = useState(false);
+  // An open dropdown closes as soon as the page scrolls.
   useEffect(() => {
-    const onScroll = () => { setOpen(null); setLifted(window.scrollY > 8); };
+    const onScroll = () => setOpen(null);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -144,7 +135,7 @@ export default function Navbar() {
   return (
     <>
     <header className="sticky top-0 z-50">
-      <nav className={`relative bg-paper dark:bg-paper2 text-ink transition-shadow duration-300 ${lifted ? 'shadow-[0_6px_24px_rgba(20,8,10,0.14)] dark:shadow-[0_6px_24px_rgba(0,0,0,0.5)]' : ''}`} onMouseLeave={() => setOpen(null)} aria-label="Main">
+      <nav className="relative bg-paper text-ink" onMouseLeave={() => setOpen(null)} aria-label="Main">
         <div className="max-w-[1440px] mx-auto px-5 sm:px-8 xl:px-12 h-20 grid grid-cols-[1fr_auto] xl:grid-cols-[auto_1fr_auto] items-center gap-4 xl:gap-8">
           <div className="flex items-center gap-2">
             <button type="button" aria-label="Open menu" className="xl:hidden w-11 h-11 -ml-2 rounded-full flex items-center justify-center hover:bg-paper3 hover:text-brand" onClick={() => openPanel('menu')}><LuMenu size={22} /></button>
@@ -152,7 +143,7 @@ export default function Navbar() {
               <img src="/zaro-logo-112.webp" width="52" height="52" alt="" className="w-12 h-12 sm:w-[52px] sm:h-[52px] object-contain transition-transform duration-500 group-hover:scale-105" />
               <span className="leading-tight">
                 <span className="block font-display font-bold text-lg sm:text-xl text-brand whitespace-nowrap">ZARO Digitz</span>
-                <span className="hidden sm:block xl:hidden 2xl:block text-[13px] mt-0.5 whitespace-nowrap">Digital Color Prints</span>
+                <span className="hidden sm:block xl:hidden 2xl:block text-sm mt-0.5 whitespace-nowrap">Digital Color Prints</span>
               </span>
             </Link>
           </div>
@@ -160,14 +151,14 @@ export default function Navbar() {
           <ul className="hidden xl:flex items-center justify-center gap-0.5 whitespace-nowrap min-w-0">
             {MENUS.map((m) => (
               <li key={m.label} onMouseEnter={() => setOpen(m.label)}>
-                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(m.label)} className={`relative h-20 px-3.5 inline-flex items-center gap-2 text-[15px] font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
-                  <m.icon size={17} className="text-brand/80" aria-hidden="true" />{m.label}<LuChevronDown size={15} className={`opacity-70 transition-transform ${open === m.label ? 'rotate-180' : ''}`} aria-hidden="true" />
+                <button type="button" aria-expanded={open === m.label} onClick={() => setOpen(m.label)} className={`relative h-20 px-3.5 inline-flex items-center gap-2 text-[17px] font-medium transition-colors ${open === m.label ? 'text-brand' : 'hover:text-brand'}`}>
+                  {m.label}<LuChevronDown size={15} className={`opacity-70 transition-transform ${open === m.label ? 'rotate-180' : ''}`} aria-hidden="true" />
                   {open === m.label && <motion.span layoutId="nav-open" className="absolute left-3.5 right-3.5 bottom-0 h-[3px] bg-secondary" />}
                 </button>
               </li>
             ))}
             {LINKS.map((l) => (
-              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-20 px-3.5 inline-flex items-center gap-2 text-[15px] font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}><l.icon size={17} className="text-brand/80" aria-hidden="true" />{l.label}</Link></li>
+              <li key={l.to}><Link to={l.to} onMouseEnter={() => setOpen(null)} className={`h-20 px-3.5 inline-flex items-center gap-2 text-[17px] font-medium transition-colors ${location.pathname === l.to ? 'text-brand' : 'hover:text-brand'}`}>{l.label}</Link></li>
             ))}
           </ul>
 
@@ -188,15 +179,14 @@ export default function Navbar() {
         {/* Desktop mega menu */}
         <AnimatePresence>
           {open && (
-            <motion.div key={open} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="hidden xl:block absolute inset-x-0 top-full bg-paper2 dark:bg-paper3 text-ink shadow-xl">
+            <motion.div key={open} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="hidden xl:block absolute inset-x-0 top-full bg-paper2 text-ink">
               {MENUS.filter((m) => m.label === open).map((m) => (
                 <div key={m.label} className="max-w-[1440px] mx-auto px-12 py-12 grid grid-cols-12 gap-x-8 gap-y-6">
-                  <p className="col-span-12 -mb-3 inline-flex items-center gap-2 font-display font-bold text-xl text-brand"><m.icon size={22} aria-hidden="true" />{m.label}</p>
-                  <ul className={`col-span-8 grid ${m.items.length > 8 ? 'grid-cols-3' : 'grid-cols-2'} gap-x-10 gap-y-3`}>
+                  <p className="col-span-12 -mb-3 font-display font-bold text-[22px] text-brand">{m.label}</p>
+                  <ul className={`col-span-12 grid ${m.items.length > 8 ? 'grid-cols-4' : 'grid-cols-3'} gap-x-10 gap-y-3`}>
                     {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={() => setOpen(null)} className="text-lg hover:text-brand hover:translate-x-1 inline-block transition-transform">{c}</Link></li>)}
                     <li className="col-span-full mt-3"><Link to="/cards" onClick={() => setOpen(null)} className="font-semibold text-brand underline underline-offset-4">See every design</Link></li>
                   </ul>
-                  <div className="col-span-4 text-brand"><m.sketch className="w-full max-w-[220px] ml-auto" /></div>
                 </div>
               ))}
             </motion.div>
@@ -209,7 +199,7 @@ export default function Navbar() {
         {show === 'cart' && <CartDrawer key="cart" onClose={close} />}
         {show === 'menu' && (
           <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] bg-night/60 xl:hidden" onClick={close}>
-            <motion.aside initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute left-0 top-0 h-full w-[86%] max-w-sm bg-paper text-ink overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Menu">
+            <motion.aside initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'tween', duration: 0.3 }} className="absolute left-0 top-0 h-full w-[86%] max-w-sm bg-paper text-ink overflow-y-auto" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Menu">
               <div className="flex items-center justify-between px-5 h-16 bg-paper2">
                 <span className="font-display font-bold text-lg text-brand">ZARO Digitz</span>
                 <button type="button" onClick={close} aria-label="Close menu" className="p-2"><LuX size={22} /></button>
@@ -217,13 +207,13 @@ export default function Navbar() {
               <div className="px-5 py-4">
                 {MENUS.map((m) => (
                   <details key={m.label} className="group">
-                    <summary className="flex items-center justify-between h-14 font-semibold text-lg cursor-pointer list-none"><span className="inline-flex items-center gap-3"><m.icon size={20} className="text-brand" aria-hidden="true" />{m.label}</span><LuChevronDown className="group-open:rotate-180 transition-transform" /></summary>
+                    <summary className="flex items-center justify-between h-14 font-semibold text-lg cursor-pointer list-none"><span>{m.label}</span><LuChevronDown className="group-open:rotate-180 transition-transform" /></summary>
                     <ul className="pb-3 pl-8 space-y-2.5">
                       {m.items.map((c) => <li key={c}><Link to={categoryPath(c)} onClick={close} className="block hover:text-brand">{c}</Link></li>)}
                     </ul>
                   </details>
                 ))}
-                {[{ to: '/cards', label: 'All designs' }, ...LINKS, { to: '/about', label: 'About us' }].map((l) => (
+                {[...LINKS, { to: '/about', label: 'About us' }].map((l) => (
                   <Link key={l.to} to={l.to} onClick={close} className="flex items-center h-14 font-semibold text-lg hover:text-brand">{l.label}</Link>
                 ))}
               </div>

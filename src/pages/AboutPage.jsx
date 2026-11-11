@@ -1,29 +1,41 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FiArrowRight } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import Seo from '../components/Seo';
 import { staticPage } from '../seo/pages';
-import { breadcrumbSchema } from '../seo/site';
-import { LuBadgeIndianRupee, LuFileCheck2, LuHeart, LuLanguages, LuPrinter, LuStamp, LuTarget, LuTruck } from 'react-icons/lu';
+import { breadcrumbSchema, googleBusinessLinks, BUSINESS } from '../seo/site';
+import { categoryPath } from '../seo/catalog';
+import { useShopSettings } from '../context/ShopSettingsContext';
+import { shopWhatsAppLink } from '../utils/whatsapp';
+
+const WRAP = 'max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12';
+const H2 = 'font-display font-bold tracking-[-0.03em] leading-[1.02] text-[clamp(32px,3.6vw,52px)]';
+const rise = { hidden: { opacity: 0, y: 24 }, show: (i = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 } }) };
+const Rise = ({ i = 0, as = 'div', className, children }) => {
+  const M = motion[as];
+  return <M variants={rise} custom={i} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className={className}>{children}</M>;
+};
+
+const PROMISES = [
+  ['A proof before we print.', 'Every order gets a digital proof on WhatsApp. Nothing goes to the press until you say yes.'],
+  ['Tamil, English or both.', 'We set your wording with care for spelling, and print in either language or both.'],
+  ['One person for your order.', 'The person who takes your first message follows the order to dispatch, so you always know who to ask.'],
+  ['Prices you can see.', 'Every design shows its price per piece. For big quantities we quote a better rate on WhatsApp or a call.'],
+  ['Finishes in your hand.', 'Come to the studio to feel the boards, foils and laminations before you choose.'],
+  ['Packed flat, sent anywhere.', 'Collect from the studio or we courier across India, packed flat and counted.'],
+];
+
+const MAKE = [
+  { cat: 'Diaries & Calendars', title: 'Calendars and diaries', text: 'Desk and wall calendars, executive and pocket diaries, with your shop or company name. Our busiest work from October to January.', img: '/products-art/desk-calendar.svg', big: true },
+  { cat: 'Visiting Cards & Stationery', title: 'Printing for your business', text: 'Visiting cards, bill books, letterheads, flyers, stickers, ID cards and certificates.', img: '/products-art/zd-015.svg' },
+  { cat: 'Hindu Wedding Cards', title: 'Invitations', text: 'Wedding and function cards for every tradition, from single cards to scrolls and boxes.', img: '/products-art/zd-001.svg' },
+];
 
 export default function AboutPage() {
-  const offer = [
-    { title: 'Wedding invitations', desc: 'Hindu, Muslim and Christian wedding cards, from simple single cards to scrolls, acrylic and keepsake boxes.' },
-    { title: 'Function cards', desc: 'Birthdays, house warmings, ear piercing, baby showers, puberty ceremonies and holy communions.' },
-    { title: 'Printing', desc: 'Calendars, diaries, return gifts, visiting cards and stationery for families and businesses.' },
-  ];
-
-  const values = [
-    { icon: LuFileCheck2, title: 'Proof before print', desc: 'Every order gets a digital proof on WhatsApp. We print only after you say yes.' },
-    { icon: LuLanguages, title: 'Your language', desc: 'Tamil, English or both, with careful spelling and layout.' },
-    { icon: LuStamp, title: 'Finishes that last', desc: 'Foil, embossing, laser cuts and good boards, so the card feels special in hand.' },
-    { icon: LuBadgeIndianRupee, title: 'Honest prices', desc: 'Every design shows its price per piece. Big orders get the best price on a quick call.' },
-    { icon: LuPrinter, title: 'Printed in Sivakasi', desc: 'Sivakasi is known across India for printing. We work with experienced local presses.' },
-    { icon: LuTruck, title: 'Delivered with care', desc: 'Packed flat and couriered across India, or ready for pickup at our shop.' },
-  ];
-
+  const { settings } = useShopSettings();
+  const a = BUSINESS.address;
   return (
-    <div>
+    <div className="bg-paper text-ink">
       <Seo
         title={staticPage('/about').title}
         description={staticPage('/about').description}
@@ -31,98 +43,79 @@ export default function AboutPage() {
         jsonLd={breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'About Us', path: '/about' }])}
       />
 
-      {/* Hero */}
-      <section className="hero-bg py-24 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="text-secondary font-bold text-sm ">About Us</span>
-            <h1 className="font-display font-black text-5xl sm:text-6xl text-white mt-3 mb-6">
-              The <span className="gradient-text">Zaro Digitz</span> Story
-            </h1>
-            <p className="text-orange-50/80 text-xl max-w-2xl mx-auto leading-relaxed">
-              Invitations and printing from Sivakasi, by the family behind Zaro Crackers.
-            </p>
-          </motion.div>
+      {/* The shop, introduced by its own visiting card */}
+      <section className={`${WRAP} pt-14 sm:pt-20 pb-24 lg:pb-40 grid lg:grid-cols-2 gap-14 lg:gap-16 items-center`}>
+        <div>
+          <Rise as="h1" className="font-display font-bold tracking-[-0.04em] leading-[0.98] text-primary text-[clamp(40px,5.4vw,80px)] max-w-[13ch]">A print shop in Sivakasi</Rise>
+          <Rise i={1} as="p" className="text-xl leading-relaxed mt-6 max-w-[44ch]">Zaro Digitz prints calendars, diaries, business stationery and invitations in its own studio, on paper and board up to 13 × 19 inches and 350 gsm.</Rise>
+          <Rise i={2} className="flex flex-wrap gap-2 mt-10">
+            <Link to="/cards" className="h-14 px-7 inline-flex items-center bg-primary text-white text-[17px] font-bold transition-colors hover:bg-primary-dark">See our designs</Link>
+            <a href={shopWhatsAppLink(settings.whatsappGreeting, settings.whatsappNumber)} target="_blank" rel="noopener noreferrer" className="h-14 px-6 inline-flex items-center gap-2 bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3"><FaWhatsapp size={20} aria-hidden="true" /> Message us</a>
+          </Rise>
         </div>
-      </section>
-
-      {/* Story */}
-      <section className="py-20 bg-paper2">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-              <span className="text-primary font-bold text-sm ">Who we are</span>
-              <h2 className="font-display font-black text-4xl text-dark mt-2 mb-6">
-                Cards That Start the <span className="gradient-text">Celebration</span>
-              </h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed">
-                <p>The invitation is the first thing your guests see of your celebration. Zaro Digitz was started in Sivakasi to make that first impression easy to get right: good designs, clear prices, and a simple way to order from anywhere.</p>
-                <p>Our office and print unit are on Maruthu Pandiyar Mettu Street, Sivakasi. Sivakasi has long been one of India&apos;s printing centres, and we work with local presses to print every card carefully.</p>
-                <p>You choose a design online, we prepare a proof with your details on WhatsApp, and we print only after you approve it.</p>
+        <Rise i={1} className="relative">
+          <div className="aspect-[1.75/1] bg-primary text-white p-7 sm:p-10 flex flex-col justify-between -rotate-2 transition-transform duration-500 hover:rotate-0">
+            <div className="flex items-center gap-4">
+              <img src="/zaro-logo-112.webp" width="64" height="64" alt="" className="w-12 h-12 sm:w-16 sm:h-16 object-contain bg-white rounded-full" />
+              <div>
+                <p className="font-display font-bold text-[clamp(26px,3vw,44px)] leading-none tracking-[-0.03em]">ZARO Digitz</p>
+                <p className="text-[rgb(var(--accent-light-rgb))] text-lg mt-1">Digital Color Prints</p>
               </div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-4">
-              {offer.map((item, i) => (
-                <motion.div key={item.title} whileHover={{ x: 6 }} className="flex gap-4 items-start p-5 bg-paper">
-                  <div className="flex-shrink-0 w-10 h-10 bg-primary flex items-center justify-center text-secondary font-black">{i + 1}</div>
-                  <div>
-                    <div className="font-bold text-dark">{item.title}</div>
-                    <div className="text-gray-500 text-sm">{item.desc}</div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+            </div>
+            <div className="text-[15px] sm:text-[17px] leading-snug">
+              <p>{a.streetAddress}, Sivakasi {a.postalCode}</p>
+              <p className="tabular-nums">+91 97877 02336 · {BUSINESS.email}</p>
+            </div>
+          </div>
+        </Rise>
+      </section>
+
+      {/* How the shop works, as reading text */}
+      <section className="bg-paper2 py-24 lg:py-40">
+        <div className={`${WRAP} grid lg:grid-cols-12 gap-10 lg:gap-8`}>
+          <Rise as="h2" className={`${H2} lg:col-span-4`}>How we work</Rise>
+          <div className="lg:col-start-6 lg:col-span-7 space-y-6 text-xl leading-relaxed">
+            <Rise as="p">Sivakasi has printed India’s calendars for generations. Our studio on Maruthu Pandiyar Mettu Street carries that on with digital colour presses: short runs the same week, long runs on offset with presses down the road.</Rise>
+            <Rise i={1} as="p">You choose a design here or send your own. We set your name, logo and wording, send a proof to your phone, and print only after you approve it. Most orders are ready in five to seven working days.</Rise>
+            <Rise i={2} as="p">Walk in to see paper, foil and finishes in your hand, or do the whole order on WhatsApp from anywhere in India.</Rise>
           </div>
         </div>
       </section>
 
-      {/* Values */}
-      <section className="py-20 bg-paper">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-            <span className="text-primary font-bold text-sm ">Our promise</span>
-            <h2 className="font-display font-black text-4xl text-dark mt-2">What You Can <span className="gradient-text">Expect</span></h2>
-          </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {values.map((v, i) => (
-              <motion.div
-                key={v.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(122,31,43,0.15)' }}
-                className="bg-paper2 p-7     transition group"
-              >
-                <div className="w-14 h-14 mb-4 bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-secondary transition-colors"><v.icon size={28} aria-hidden="true" /></div>
-                <h3 className="font-display font-bold text-xl text-dark mb-3">{v.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{v.desc}</p>
-              </motion.div>
+      {/* What we make, with the pieces themselves */}
+      <section className={`${WRAP} py-24 lg:py-40`}>
+        <Rise as="h2" className={H2}>What we make</Rise>
+        <div className="grid lg:grid-cols-12 gap-x-6 gap-y-14 mt-14">
+          {MAKE.map((m, i) => (
+            <Rise key={m.title} i={i} className={m.big ? 'lg:col-span-7 lg:row-span-2' : 'lg:col-span-5'}>
+              <Link to={categoryPath(m.cat)} className="group block">
+                <div className={`${m.big ? 'aspect-[4/3]' : 'aspect-[16/9]'} bg-paper2 overflow-hidden`}><img src={m.img} alt="" width="800" height="600" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" /></div>
+                <h3 className="font-display font-bold text-[clamp(22px,2vw,30px)] mt-5 group-hover:text-primary transition-colors">{m.title}</h3>
+                <p className="text-lg leading-relaxed mt-2 max-w-[48ch]">{m.text}</p>
+              </Link>
+            </Rise>
+          ))}
+        </div>
+      </section>
+
+      {/* Promises, as reading text */}
+      <section className="bg-primary-dark text-white py-24 lg:py-40">
+        <div className={`${WRAP} grid lg:grid-cols-12 gap-10 lg:gap-8`}>
+          <Rise as="h2" className={`${H2} lg:col-span-4`}>What you can count on</Rise>
+          <div className="lg:col-start-6 lg:col-span-7 md:columns-2 md:gap-14">
+            {PROMISES.map(([t, d], i) => (
+              <Rise key={t} i={Math.min(i, 4)} as="p" className="text-lg leading-[1.6] mb-6 break-inside-avoid"><strong className="font-semibold text-[rgb(var(--accent-light-rgb))]">{t}</strong> {d}</Rise>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Vision / Mission */}
-      <section className="py-20 bg-dark">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              { icon: LuTarget, title: 'Our aim', text: 'To be the easiest place to order invitations online: clear designs, fair prices, and no surprises between the proof and the printed card.' },
-              { icon: LuHeart, title: 'How we work', text: 'One person follows your order from the first message to dispatch, so you always know who to ask and what happens next.' },
-            ].map((item, i) => (
-              <motion.div key={item.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="bg-white/5 p-8">
-                <h3 className="font-display font-bold text-2xl text-white mb-4 flex items-center gap-3"><span className="w-10 h-10 bg-primary/40 text-secondary flex items-center justify-center"><item.icon size={20} aria-hidden="true" /></span>{item.title}</h3>
-                <p className="text-gray-400 leading-relaxed">{item.text}</p>
-              </motion.div>
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <Link to="/cards" className="on-light inline-flex items-center gap-2 bg-secondary text-dark font-bold px-8 py-4 hover:scale-105 transition-transform">
-              Browse Designs <FiArrowRight />
-            </Link>
-          </div>
-        </div>
+      <section className={`${WRAP} py-24 lg:py-32 grid lg:grid-cols-2 gap-8 items-end`}>
+        <Rise as="h2" className={H2}>Bring your logo, leave with a proof</Rise>
+        <Rise i={1} className="flex flex-wrap gap-2 lg:justify-end">
+          <a href={googleBusinessLinks(settings).directions} target="_blank" rel="noopener noreferrer" className="h-14 px-7 inline-flex items-center bg-primary text-white text-[17px] font-bold transition-colors hover:bg-primary-dark">Directions to the studio</a>
+          <Link to="/contact" className="h-14 px-7 inline-flex items-center bg-paper2 text-[17px] font-semibold transition-colors hover:bg-paper3">Hours and phone numbers</Link>
+        </Rise>
       </section>
     </div>
   );

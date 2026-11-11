@@ -36,25 +36,25 @@ export default function InvoicePage() {
     <div className="bg-paper min-h-[70vh]">
       <Seo title="Invoice" noindex path={`/invoice/${token}`} />
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {state.status === 'loading' && <p className="text-gray-500 text-center py-20">Preparing your invoice…</p>}
+        {state.status === 'loading' && <p className="text-ink/75 text-center py-20">Preparing your invoice…</p>}
         {state.status === 'missing' && (
           <div className="text-center py-20">
-            <h1 className="font-display font-black text-2xl text-dark">Invoice not found</h1>
-            <p className="text-gray-500 mt-2">This link is not valid. Please check the message you received, or contact us on WhatsApp at +91 9787702336.</p>
+            <h1 className="font-display font-bold text-2xl text-ink">Invoice not found</h1>
+            <p className="text-ink/75 mt-2">This link is not valid. Please check the message you received, or contact us on WhatsApp at +91 9787702336.</p>
           </div>
         )}
         {state.status === 'error' && (
           <div className="text-center py-20">
-            <h1 className="font-display font-black text-2xl text-dark">Invoice unavailable</h1>
-            <p className="text-gray-500 mt-2">Please try again in a moment or contact us on WhatsApp at +91 9787702336.</p>
+            <h1 className="font-display font-bold text-2xl text-ink">Invoice unavailable</h1>
+            <p className="text-ink/75 mt-2">Please try again in a moment or contact us on WhatsApp at +91 9787702336.</p>
           </div>
         )}
         {state.status === 'ready' && (
           <>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div>
-                <h1 className="font-display font-black text-2xl text-dark">Invoice {state.invoiceNo}</h1>
-                <p className="text-sm text-gray-500">
+                <h1 className="font-display font-bold text-2xl text-ink">Invoice {state.invoiceNo}</h1>
+                <p className="text-[15px] text-ink/75">
                   {state.share.orderNumber ? `Order ${state.share.orderNumber} · ` : ''}{state.share.snapshot?.form?.fullName} · ₹{Number(state.share.snapshot?.grandTotal || 0).toLocaleString('en-IN')}
                 </p>
               </div>
@@ -63,7 +63,7 @@ export default function InvoicePage() {
               </a>
             </div>
             <iframe title="Invoice PDF" src={state.url} className="w-full h-[75vh] bg-paper2" />
-            <p className="text-xs text-gray-400 mt-3 text-center">Zaro Digitz · No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123 · <Link to="/" className="text-primary hover:underline">digitz.zarocrackers.com</Link></p>
+            <p className="text-[15px] text-ink/75 mt-3 text-center">Zaro Digitz · No. 3U, Maruthu Pandiyar Mettu Street, Sivakasi 626123 · <Link to="/" className="text-primary hover:underline">digitz.zarocrackers.com</Link></p>
           </>
         )}
       </div>

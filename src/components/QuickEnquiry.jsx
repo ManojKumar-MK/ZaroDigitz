@@ -5,9 +5,8 @@ import { saveEnquiry } from '../firebase/orders';
 import { useShopSettings } from '../context/ShopSettingsContext';
 import { shopWhatsAppLink } from '../utils/whatsapp';
 import { trackLead } from '../utils/analytics';
-import { EnvelopeSketch } from './Sketches';
 
-const field = 'w-full h-14 px-4 bg-paper text-ink text-base placeholder:text-ink/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary';
+const field = 'w-full h-14 px-4 bg-paper text-ink text-[17px] placeholder:text-ink/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary';
 
 /**
  * "Tell us what you need" enquiry: name, mobile, quantity and a note about what the visitor
@@ -38,11 +37,10 @@ export default function QuickEnquiry({ subject, title = 'Tell us what you have i
 
   return (
     <section className="bg-paper2 text-ink" aria-label="Enquiry">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-16 lg:py-24 grid lg:grid-cols-12 gap-10 items-center">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 py-24 lg:py-32 grid lg:grid-cols-12 gap-10 items-start">
         <div className="lg:col-span-5">
-          <h2 className="font-display font-bold tracking-tight text-[clamp(28px,3vw,44px)] leading-tight">{title}</h2>
+          <h2 className="font-display font-bold tracking-[-0.03em] text-[clamp(28px,3vw,44px)] leading-[1.02]">{title}</h2>
           <p className="text-lg mt-4 max-w-[40ch]">Leave your number and we call you back with designs and prices, or chat with us on WhatsApp right now.</p>
-          <div className="hidden lg:block text-brand mt-8 max-w-[260px]"><EnvelopeSketch className="w-full h-auto" /></div>
         </div>
 
         <div className="lg:col-span-7">
@@ -73,12 +71,12 @@ export default function QuickEnquiry({ subject, title = 'Tell us what you have i
                 <span className="block font-semibold mb-1.5">Anything else? <span className="font-normal">(optional)</span></span>
                 <textarea className={`${field} h-auto min-h-[96px] py-3`} value={form.note} onChange={set('note')} placeholder="Event date, colours you like, language, delivery city…" />
               </label>
-              {error && <p className="sm:col-span-2 text-red-700 dark:text-red-300 font-medium" role="alert">{error}</p>}
+              {error && <p className="sm:col-span-2 text-red-700 font-medium" role="alert">{error}</p>}
               <div className="sm:col-span-2 flex flex-wrap gap-3 mt-1">
                 <button type="submit" disabled={state === 'sending'} className="inline-flex items-center justify-center h-14 px-8 bg-primary text-white font-bold transition-colors hover:bg-primary-dark disabled:opacity-60">
                   {state === 'sending' ? 'Sending…' : 'Call me back'}
                 </button>
-                <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 h-14 px-8 bg-[#1F7A4D] text-white font-bold transition-transform hover:-translate-y-0.5">
+                <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 h-14 px-8 bg-ink text-paper font-bold transition-colors hover:bg-night">
                   <FaWhatsapp size={20} aria-hidden="true" /> WhatsApp us
                 </a>
               </div>

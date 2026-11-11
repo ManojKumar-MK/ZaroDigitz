@@ -116,6 +116,10 @@ export default function PriceListPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryItems, routeCategory, pagePath]);
 
+  // Only categories that have designs, this season's calendars and diaries first.
+  const withDesigns = new Set(catalogProducts.map((p) => p.category));
+  const shownCategories = ['All', ...categories.filter((c) => c !== 'All' && (withDesigns.has(c) || c === routeCategory)).sort((a, b) => Number(/diar|calendar/i.test(b)) - Number(/diar|calendar/i.test(a)))];
+
   if (slug && !routeCategory) return live ? <NotFoundPage /> : <div className="min-h-[60vh]" aria-busy="true" />; // a new category may still be loading
 
   return (
@@ -128,33 +132,29 @@ export default function PriceListPage() {
       />
 
       {/* Header */}
-      <section className="hero-bg py-14">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Breadcrumbs items={crumbs} light />
-            <h1 className="font-display font-black text-4xl sm:text-5xl text-white mt-4">
-              <span className="gradient-text">{meta ? meta.h1 : 'All Card Designs'}</span>
-            </h1>
-            {meta?.tamil && <p className="text-secondary text-lg mt-1" lang="ta">{meta.tamil}</p>}
-            <p className="text-orange-50/80 mt-4 max-w-2xl mx-auto leading-relaxed">
-              {meta ? meta.intro : 'Wedding and function invitations, calendars, return gifts and printing. Every design shows its price per card; bigger orders cost less per card.'}
-            </p>
-            <p className="text-secondary/90 text-sm mt-3">{categoryItems.length} {categoryItems.length === 1 ? 'design' : 'designs'}</p>
-          </motion.div>
-        </div>
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pt-6 pb-10">
+        <Breadcrumbs items={crumbs} />
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="grid lg:grid-cols-12 gap-6 items-end mt-8">
+          <h1 className="lg:col-span-7 font-display font-bold tracking-[-0.04em] leading-[0.98] text-primary text-[clamp(40px,5.2vw,80px)]">{meta ? meta.h1 : 'Everything we print'}</h1>
+          <div className="lg:col-span-5">
+            {meta?.tamil && <p className="text-xl" lang="ta">{meta.tamil}</p>}
+            <p className="text-xl leading-relaxed mt-2">{meta ? meta.intro : 'Calendars, diaries, business printing and invitations. Every design shows its price per piece, with printing included.'}</p>
+          </div>
+        </motion.div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 py-8">
-        {/* Category chips */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-none pb-2 -mx-4 px-4">
-          {categories.map((c) => {
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-8 xl:px-12 pb-24 lg:pb-32">
+        {/* Categories */}
+        <div className="flex flex-wrap gap-2">
+          {shownCategories.map((c) => {
             const active = (c === 'All' && !routeCategory) || c === routeCategory;
             return (
               <button
                 key={c}
                 type="button"
+                aria-pressed={active}
                 onClick={() => navigate(c === 'All' ? '/cards' : categoryPath(c))}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium  transition-colors ${active ? 'bg-primary text-white ' : 'bg-paper2 text-gray-700   hover:text-primary'}`}
+                className={`h-11 px-4 text-[15px] font-medium transition-colors ${active ? 'bg-ink text-paper' : 'bg-paper2 hover:bg-paper3'}`}
               >
                 {c === 'All' ? 'All designs' : c}
               </button>
@@ -162,23 +162,22 @@ export default function PriceListPage() {
           })}
         </div>
 
-
         {/* Toolbar */}
         <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mt-6 mb-6">
           <div className="relative md:w-80">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2" aria-hidden="true" />
             <input
               type="search"
               value={search}
               onChange={(e) => update(() => setSearch(e.target.value))}
               placeholder="Search designs or codes"
               aria-label="Search designs"
-              className="w-full pl-9 pr-9 py-2.5 bg-paper2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full h-12 pl-11 pr-10 bg-paper2 text-[17px] placeholder:text-ink/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             />
-            {search && <button type="button" aria-label="Clear search" onClick={() => update(() => setSearch(''))} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"><FiX /></button>}
+            {search && <button type="button" aria-label="Clear search" onClick={() => update(() => setSearch(''))} className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-primary"><FiX /></button>}
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <label className="flex items-center gap-2 text-sm text-gray-600">
+            <label className="flex items-center gap-2 text-[17px]">
               Up to ₹
               <input
                 type="number"
@@ -187,12 +186,12 @@ export default function PriceListPage() {
                 value={maxPrice}
                 onChange={(e) => update(() => setMaxPrice(e.target.value))}
                 placeholder={highestPrice ? String(highestPrice) : 'any'}
-                aria-label="Highest price per card"
-                className="w-24 px-3 py-2 bg-paper2"
+                aria-label="Highest price per piece"
+                className="w-24 h-12 px-3 bg-paper2"
               />
-              per card
+              per piece
             </label>
-            <select value={sortBy} onChange={(e) => update(() => setSortBy(e.target.value))} aria-label="Sort designs" className="px-3 py-2 bg-paper2 text-sm">
+            <select value={sortBy} onChange={(e) => update(() => setSortBy(e.target.value))} aria-label="Sort designs" className="h-12 px-3 bg-paper2 text-[17px]">
               {SORTS.map(([v, label]) => <option key={v} value={v}>{label}</option>)}
             </select>
           </div>
@@ -209,7 +208,7 @@ export default function PriceListPage() {
 
         {/* Grid */}
         {shown.length ? (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-5">
             {shown.map((product, i) => (
               <motion.div key={product.id ?? product.code} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 8) * 0.04 }}>
                 <ProductCard product={product} />
@@ -217,25 +216,25 @@ export default function PriceListPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 text-gray-500">
-            <LuSearchX size={40} className="mx-auto mb-3 text-gray-300" aria-hidden="true" />
-            <p>No designs match. Try another search or price.</p>
+          <div className="py-20">
+            <LuSearchX size={40} className="mb-3 text-primary" aria-hidden="true" />
+            <p className="text-xl">No designs match. Try another search or price, or ask us on WhatsApp: we print to order.</p>
           </div>
         )}
 
         {/* Pagination */}
         {pages > 1 && (
           <nav className="flex flex-wrap justify-center gap-2 mt-10" aria-label="Pages">
-            <button type="button" disabled={current === 1} onClick={() => goTo(current - 1)} className="px-3 py-2 bg-paper2 disabled:opacity-40">Previous</button>
+            <button type="button" disabled={current === 1} onClick={() => goTo(current - 1)} className="h-12 px-4 bg-paper2 hover:bg-paper3 disabled:opacity-40">Previous</button>
             {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
-              <button key={n} type="button" aria-current={n === current ? 'page' : undefined} onClick={() => goTo(n)} className={`w-10 py-2   ${n === current ? 'bg-primary text-white ' : 'bg-paper2  '}`}>{n}</button>
+              <button key={n} type="button" aria-current={n === current ? 'page' : undefined} onClick={() => goTo(n)} className={`w-12 h-12 ${n === current ? 'bg-ink text-paper' : 'bg-paper2 hover:bg-paper3'}`}>{n}</button>
             ))}
-            <button type="button" disabled={current === pages} onClick={() => goTo(current + 1)} className="px-3 py-2 bg-paper2 disabled:opacity-40">Next</button>
+            <button type="button" disabled={current === pages} onClick={() => goTo(current + 1)} className="h-12 px-4 bg-paper2 hover:bg-paper3 disabled:opacity-40">Next</button>
           </nav>
         )}
       </section>
 
-      <QuickEnquiry subject={routeCategory || 'invitation cards'} title="Can't find the right design?" />
+      <QuickEnquiry subject={routeCategory || 'invitation cards'} title="Need something not listed here?" />
     </div>
   );
 }

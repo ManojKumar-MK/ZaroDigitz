@@ -30,3 +30,4 @@ dist-ssr
 # public Firebase web config, not a secret
 !.env.production
 .vercel
+.taste-skill/
